@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- Устанавливаем кодировку страницы для правильного отображения символов -->
+    <meta charset="UTF-8">
+    <!-- Настройка масштабирования для адаптивного дизайна на мобильных устройствах -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Заголовок страницы -->
+    <title>Edit Service</title>
+    <!-- Подключаем стили для Bootstrap из статической папки -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+    <!-- Подключаем пользовательский стиль из статической папки -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+    <!-- Контейнер для основного контента страницы -->
+    <div class="container">
+        <!-- Заголовок страницы -->
+        <h1 class="mt-5">Edit Service</h1>
+
+        <!-- Блок для отображения флэш-сообщений -->
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <!-- Если есть флэш-сообщения, показываем их в виде всплывающего уведомления -->
+        <div class="alert alert-success mt-3">
+            {{ messages[0] }}
+        </div>
+        {% endif %}
+        {% endwith %}
+
+        <!-- Форма для редактирования услуги -->
+        <form method="POST" action="{{ url_for('update', id=service.id) }}">
+            <!-- Поле для ввода названия услуги -->
+            <div class="form-group">
+                <label for="name">Service Name</label>
+                <input type="text" class="form-control" id="name" name="name" value="{{ service.name }}" maxlength="20" required>
+                <!-- Ограничение на 20 символов для имени услуги -->
+            </div>
+            <!-- Поле для ввода описания услуги -->
+            <div class="form-group">
+                <label for="description">Description</label>
+                <input type="text" class="form-control" id="description" name="description" value="{{ service.description }}" maxlength="20" required>
+                <!-- Ограничение на 20 символов для описания услуги -->
+            </div>
+            <!-- Поле для ввода стоимости услуги -->
+            <div class="form-group">
+                <label for="cost">Cost</label>
+                <input type="number" step="0.01" class="form-control" id="cost" name="cost" value="{{ service.cost }}" min="0" max="999999.99" required>
+                <!-- Атрибут step позволяет вводить значения с двумя знаками после запятой -->
+                <!-- Атрибут min задает минимальное значение, а max — максимальное значение -->
+            </div>
+            <!-- Поле для ввода года -->
+            <div class="form-group">
+                <label for="year">Year</label>
+                <input type="date" class="form-control" id="year" name="year" value="{{ service.year }}" required>
+                <!-- Тип поля date автоматически предоставляет календарный вид для выбора даты -->
+            </div>
+            <br>
+            <!-- Кнопка для отправки формы -->
+            <button type="submit" class="btn btn-primary">Update Service</button>
+        </form>
+
+
+        <!-- Ссылка для возврата на главную страницу -->
+        <a href="{{ url_for('index') }}" class="btn btn-primary mt-3">Back to Services</a>
+    </div>
+
+    <!-- Подключаем jQuery из статической папки -->
+    <script src="{{ url_for('static', filename='js/jquery-3.5.1.slim.min.js') }}"></script>
+    <!-- Подключаем JavaScript для Bootstrap из статической папки -->
+    <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
+</body>
+
+</html>

@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- Устанавливаем кодировку страницы для правильного отображения символов -->
+    <meta charset="UTF-8">
+    <!-- Настройка масштабирования для адаптивного дизайна на мобильных устройствах -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Заголовок страницы -->
+    <title>Service Management</title>
+    <!-- Подключаем стили для Bootstrap из статической папки -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+    <!-- Подключаем пользовательский стиль из статической папки -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+    <div class="container">
+        <h1 class="mt-5">Service Management</h1>
+
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <div class="alert alert-success mt-3">
+            {{ messages[0] }}
+        </div>
+        {% endif %}
+        {% endwith %}
+
+        <form method="GET" action="/" id="filter-form">
+            <div class="form-group">
+                <label for="keyword">Search by Keyword:</label>
+                <input type="text" class="form-control" id="keyword" name="keyword" placeholder="Enter a keyword"
+                    value="{{ request.args.get('keyword', '') }}">
+            </div>
+            <div class="form-group">
+                <label for="year">Choose Year:</label>
+                <select name="year" id="year" class="form-control">
+                    <option value="">Select Year</option>
+                    {% for year in service_years %}
+                    <option value="{{ year }}" {% if year == selected_year %}selected{% endif %}>
+                        {{ year }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <br>
+            <button type="submit" class="btn btn-primary">Filter by Year</button>
+            <button type="button" class="btn btn-secondary" id="reset-filters">Reset All</button>
+        </form>
+
+        <table class="table table-bordered mt-5" id="services-table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th>Cost</th>
+                    <th>Year</th>
+                    <th>Actions</th>
+                    <th>Color</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for service in services %}
+                <tr class="service-row" data-id="{{ service.id }}">
+                    <td style="background-color: {{ service.color or '' }}">{{ service.name }}</td>
+                    <td style="background-color: {{ service.color or '' }}">{{ service.description }}</td>
+                    <td style="background-color: {{ service.color or '' }}">{{ service.cost }}</td>
+                    <td style="background-color: {{ service.color or '' }}">{{ service.year }}</td>
+                    <td>
+                        <a href="{{ url_for('edit', id=service.id) }}" class="btn btn-sm btn-warning">Edit</a>
+                        <form method="POST" action="{{ url_for('delete', id=service.id) }}" style="display:inline;" onsubmit="return confirmDelete();">
+                            <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                        </form>
+                    </td>
+                    <td>
+                        <select class="form-control color-select" data-id="{{ service.id }}">
+                            <option value="">Default</option>
+                            <option value="#eaf7ff" {% if service.color == '#eaf7ff' %}selected{% endif %}>Light Blue</option>
+                            <option value="#ffebeb" {% if service.color == '#ffebeb' %}selected{% endif %}>Light Red</option>
+                            <option value="#dff0d8" {% if service.color == '#dff0d8' %}selected{% endif %}>Light Green</option>
+                        </select>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <h4>Total Cost for Year: ${{ total_cost }}</h4>
+
+        <!-- Pagination Controls -->
+        <nav aria-label="Page navigation">
+            <ul class="pagination">
+                {% if page > 1 %}
+                <li class="page-item">
+                    <a class="page-link" href="{{ url_for('index', year=selected_year, page=page-1) }}" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+                {% endif %}
+                {% for p in range(1, total_pages + 1) %}
+                <li class="page-item {% if p == page %}active{% endif %}">
+                    <a class="page-link" href="{{ url_for('index', year=selected_year, page=p) }}">{{ p }}</a>
+                </li>
+                {% endfor %}
+                {% if page < total_pages %}
+                <li class="page-item">
+                    <a class="page-link" href="{{ url_for('index', year=selected_year, page=page+1) }}" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+
+        <h2 class="mt-5">Export Services to Excel</h2>
+        <form method="GET" action="{{ url_for('export_excel') }}" id="export-form">
+            <input type="hidden" name="year" value="{{ selected_year }}">
+            <button type="submit" class="btn btn-info">Export to Excel</button>
+        </form>
+
+        <h2 class="mt-5">Add New Service</h2>
+        <form method="POST" action="{{ url_for('add') }}" id="add-service-form">
+            <div class="form-group">
+                <label for="name">Service Name</label>
+                <input type="text" class="form-control" id="name" name="name" maxlength="30" required>
+            </div>
+            <div class="form-group">
+                <label for="description">Description</label>
+                <input type="text" class="form-control" id="description" name="description" maxlength="30" required>
+            </div>
+            <div class="form-group">
+                <label for="cost">Cost</label>
+                <input type="number" step="0.01" class="form-control" id="cost" name="cost" min="0" max="999999.99" required>
+            </div>
+            <div class="form-group">
+                <label for="year">Year</label>
+                <input type="date" class="form-control" id="year" name="year" required>
+            </div>
+            <br>
+            <button type="submit" class="btn btn-success">Add Service</button>
+        </form>
+
+    </div>
+
+    <script src="{{ url_for('static', filename='js/jquery-3.5.1.slim.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
+    <script>
+        // Функция сброса фильтров и прокрутки
+        function resetFilters() {
+            document.getElementById('year').value = '';
+            document.getElementById('keyword').value = '';
+            document.getElementById('filter-form').submit();
+            window.scrollTo(0, 0);
+        }
+
+        // Функция обновления цвета строки
+        function updateColor(rowId, color) {
+            fetch(`/update-color/${rowId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ color: color })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    const row = document.querySelector(`.service-row[data-id="${data.id}"]`);
+                    if (row) {
+                        row.style.backgroundColor = data.color;
+                        const cells = row.querySelectorAll('td');
+                        cells.forEach(cell => cell.style.backgroundColor = data.color);
+                    }
+                } else {
+                    alert('Не удалось обновить цвет');
+                }
+            })
+            .catch(error => console.error('Ошибка:', error));
+        }
+
+        function confirmDelete() {
+            return confirm('Вы уверены, что хотите удалить этот элемент?');
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const colorSelects = document.querySelectorAll('.color-select');
+
+            colorSelects.forEach(select => {
+                select.addEventListener('change', function () {
+                    const rowId = this.getAttribute('data-id');
+                    const selectedColor = this.value;
+
+                    updateColor(rowId, selectedColor);
+                });
+            });
+
+            // Восстановление позиции скролла
+            const scrollPosition = localStorage.getItem('scrollPosition');
+            if (scrollPosition) {
+                window.scrollTo(0, scrollPosition);
+            }
+        });
+
+        window.addEventListener('beforeunload', function () {
+            // Сохранение позиции скролла
+            localStorage.setItem('scrollPosition', window.scrollY);
+        });
+
+        // Обработчик нажатия на кнопку сброса фильтров
+        document.getElementById('reset-filters').addEventListener('click', function() {
+            resetFilters();
+        });
+
+        // Обработчик нажатия на кнопку добавления сервиса
+        document.getElementById('add-service-form').addEventListener('submit', function() {
+            window.scrollTo(0, 0);
+        });
+
+        // Обработчик нажатия на кнопку фильтрации
+        document.getElementById('filter-form').addEventListener('submit', function() {
+            window.scrollTo(0, 0);
+        });
+    </script>
+</body>
+
+</html>
