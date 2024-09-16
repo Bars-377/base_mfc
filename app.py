@@ -50,7 +50,15 @@ def index():
 
     # Получаем общую сумму для выбранного года
     total_cost_query = query.with_entities(db.func.sum(Service.cost).label('total_cost')).scalar()  # Запрашиваем сумму стоимости
-    total_cost = total_cost_query if total_cost_query else 0  # Если сумма отсутствует, устанавливаем 0
+    total_cost_1 = total_cost_query if total_cost_query else 0  # Если сумма отсутствует, устанавливаем 0
+
+    # Получаем общую сумму для выбранного года
+    total_cost_query = query.with_entities(db.func.sum(Service.certificate).label('total_cost')).scalar()  # Запрашиваем сумму стоимости
+    total_cost_2 = total_cost_query if total_cost_query else 0  # Если сумма отсутствует, устанавливаем 0
+
+    # Получаем общую сумму для выбранного года
+    total_cost_query = query.with_entities(db.func.sum(Service.certificate_no).label('total_cost')).scalar()  # Запрашиваем сумму стоимости
+    total_cost_3 = total_cost_query if total_cost_query else 0  # Если сумма отсутствует, устанавливаем 0
 
     # Пагинация
     offset = (page - 1) * per_page  # Вычисляем смещение для пагинации
@@ -62,7 +70,9 @@ def index():
     return render_template(
         'index.html',
         services=services,
-        total_cost=total_cost,
+        total_cost_1=total_cost_1,
+        total_cost_2=total_cost_2,
+        total_cost_3=total_cost_3,
         selected_year=year,
         keyword=keyword,
         page=page,
@@ -84,22 +94,22 @@ from datetime import datetime  # Импортируем datetime для рабо
 # Определяем маршрут для обновления услуги
 @app.route('/edit/<int:id>', methods=['POST'])
 def update(id):
-    # Пример проверки длины
-    name = request.form['name']
-    location = request.form['location']
-    address_p = request.form['address_p']
-    address = request.form['address']
-    benefit = request.form['benefit']
-    number = request.form['number']
-    certificate_no = request.form['certificate_no']
+    # # Пример проверки длины
+    # name = request.form['name']
+    # location = request.form['location']
+    # address_p = request.form['address_p']
+    # address = request.form['address']
+    # benefit = request.form['benefit']
+    # number = request.form['number']
+    # certificate_no = request.form['certificate_no']
 
-    snils = request.form['snils']
-    cost = request.form['cost']
-    certificate = request.form['certificate']
+    # snils = request.form['snils']
+    # cost = request.form['cost']
+    # certificate = request.form['certificate']
 
-    if (len(name) or len(location) or len(address_p) or len(address) or len(benefit) or len(number) or len(certificate_no)) > 30 or (int(snils) or int(cost) or int(certificate)) > 30:
-        flash('Service Name and Description must be 20 characters or less.')
-        return redirect(url_for('index'))
+    # if (len(name) or len(location) or len(address_p) or len(address) or len(benefit) or len(number) or len(certificate_no)) > 30 or (int(snils) or int(cost) or int(certificate)) > 30:
+    #     flash('Service Name and Description must be 30 characters or less.')
+    #     return redirect(url_for('index'))
 
     # Получаем услугу по идентификатору или возвращаем ошибку 404, если услуга не найдена
     service = Service.query.get_or_404(id)
@@ -184,22 +194,33 @@ def delete(id):
 # Определяем маршрут для добавления новой услуги
 @app.route('/add', methods=['POST'])
 def add():
-    # Пример проверки длины
-    name = request.form['name']
-    location = request.form['location']
-    address_p = request.form['address_p']
-    address = request.form['address']
-    benefit = request.form['benefit']
-    number = request.form['number']
-    certificate_no = request.form['certificate_no']
+    # # Пример проверки длины
+    # name = request.form['name']
+    # location = request.form['location']
+    # address_p = request.form['address_p']
+    # address = request.form['address']
+    # benefit = request.form['benefit']
+    # number = request.form['number']
+    # certificate_no = request.form['certificate_no']
 
-    snils = request.form['snils']
-    cost = request.form['cost']
-    certificate = request.form['certificate']
+    # snils = request.form['snils']
+    # cost = request.form['cost']
+    # certificate = request.form['certificate']
 
-    if (len(name) or len(location) or len(address_p) or len(address) or len(benefit) or len(number) or len(certificate_no)) > 30 or (int(snils) or int(cost) or int(certificate)) > 30:
-        flash('Service Name and Description must be 20 characters or less.')
-        return redirect(url_for('index'))
+    # print(name)
+    # print(location)
+    # print(address_p)
+    # print(address)
+    # print(benefit)
+    # print(number)
+    # print(certificate_no)
+    # print(snils)
+    # print(cost)
+    # print(certificate)
+
+    # if (len(name) or len(location) or len(address_p) or len(address) or len(benefit) or len(number) or len(certificate_no)) > 30 or (int(snils) or int(cost) or int(certificate)) > 30:
+    #     flash('Service Name and Description must be 20 characters or less.')
+    #     return redirect(url_for('index'))
 
     # Получаем данные из формы
     name = request.form['name']
@@ -270,6 +291,35 @@ def export_excel():
         'Color': getattr(service, 'color', '')
     } for service in services])
 
+    # Расчет итогов
+    total_cost = df['Cost'].sum()
+    total_certificate = df['Certificate'].sum()
+    total_certificate_no = df['Certificate_no'].sum()
+
+    # Создание строки с итогами
+    totals_row = pd.DataFrame([{
+        'Name': '',
+        'Snils': '',
+        'Location': '',
+        'Address_p': '',
+        'Address': '',
+        'Benefit': '',
+        'Number': '',
+        'Year': '',
+        'Cost': total_cost,
+        'Certificate': total_certificate,
+        'Date_number_get': '',
+        'Date_number_cancellation': '',
+        'Date_number_no': '',
+        'Certificate_no': total_certificate_no,
+        'Track': '',
+        'Date_post': '',
+        'Color': ''
+    }])
+
+    # Добавление строки с итогами в DataFrame
+    df = pd.concat([df, totals_row], ignore_index=True)
+
     # Создаем файл Excel
     output = BytesIO()
     with pd.ExcelWriter(output, engine='openpyxl') as writer:
@@ -283,6 +333,9 @@ def export_excel():
                             right=Side(style='thin'),
                             top=Side(style='thin'),
                             bottom=Side(style='thin'))
+
+        # Определяем стиль для заливки желтым цветом
+        yellow_fill = PatternFill(start_color='FFFF00', end_color='FFFF00', fill_type='solid')
 
         # Применяем границы ко всем ячейкам и цвет к ячейкам, где он задан
         for row_num in range(2, worksheet.max_row + 1):  # Пропускаем заголовки
@@ -298,6 +351,13 @@ def export_excel():
         # Применяем границы к заголовкам
         for col_num in range(1, worksheet.max_column + 1):
             cell = worksheet.cell(row=1, column=col_num)
+            cell.border = border_style
+
+        # Применяем желтый цвет к строке с итогами
+        totals_row_num = worksheet.max_row
+        for col_num in range(1, worksheet.max_column + 1):
+            cell = worksheet.cell(row=totals_row_num, column=col_num)
+            cell.fill = yellow_fill
             cell.border = border_style
 
         # Удаляем столбец Color из Excel-файла

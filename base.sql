@@ -23,7 +23,7 @@ USE `mdtomskbot`;
 CREATE TABLE IF NOT EXISTS `services` (
   `id` bigint NOT NULL AUTO_INCREMENT,
   `name` varchar(100) NOT NULL,
-  `snils` int NOT NULL DEFAULT '0',
+  `snils` bigint NOT NULL DEFAULT '0',
   `location` varchar(50) NOT NULL DEFAULT '0',
   `address_p` varchar(50) NOT NULL DEFAULT '0',
   `address` varchar(50) NOT NULL DEFAULT '0',
@@ -35,7 +35,7 @@ CREATE TABLE IF NOT EXISTS `services` (
   `date_number_get` date NOT NULL,
   `date_number_cancellation` date NOT NULL,
   `date_number_no` date NOT NULL,
-  `certificate_no` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '0',
+  `certificate_no` int NOT NULL DEFAULT '0',
   `track` varchar(50) NOT NULL DEFAULT '0',
   `date_post` date NOT NULL,
   `color` varchar(7) DEFAULT NULL,

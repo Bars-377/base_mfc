@@ -7,7 +7,7 @@
     <!-- Настройка масштабирования для адаптивного дизайна на мобильных устройствах -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Заголовок страницы -->
-    <title>Edit Service</title>
+    <title>Редактирование записи</title>
     <!-- Подключаем стили для Bootstrap из статической папки -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
     <!-- Подключаем пользовательский стиль из статической папки -->
@@ -18,7 +18,7 @@
     <!-- Контейнер для основного контента страницы -->
     <div class="container">
         <!-- Заголовок страницы -->
-        <h1 class="mt-5">Edit Service</h1>
+        <h1 class="mt-5">Редактирование записи</h1>
 
         <!-- Блок для отображения флэш-сообщений -->
         {% with messages = get_flashed_messages() %}
@@ -31,98 +31,97 @@
         {% endwith %}
 
         <!-- Форма для редактирования услуги -->
-        <form method="POST" action="{{ url_for('update', id=service.id) }}">
+        <form method="POST" action="{{ url_for('update', id=service.id) }}" class="form-group-neverov">
             <!-- Поле для ввода названия услуги -->
             <div class="form-group">
-                <label for="name">Name</label>
+                <label for="name">ФИО заявителя</label>
                 <input type="text" class="form-control" id="name" name="name" value="{{ service.name }}" maxlength="30" required>
                 <!-- Ограничение на 20 символов для имени услуги -->
             </div>
             <div class="form-group">
-                <label for="cost">Snils</label>
+                <label for="cost">СНИЛС</label>
                 <input type="number" class="form-control" id="snils" name="snils" value="{{ service.snils }}" min="0" max="99999999999.99" required>
                 <!-- Атрибут step позволяет вводить значения с двумя знаками после запятой -->
                 <!-- Атрибут min задает минимальное значение, а max — максимальное значение -->
             </div>
             <div class="form-group">
-                <label for="name">Location</label>
+                <label for="name">Район</label>
                 <input type="text" class="form-control" id="location" name="location" value="{{ service.location }}" maxlength="30" required>
                 <!-- Ограничение на 20 символов для имени услуги -->
             </div>
             <div class="form-group">
-                <label for="name">Address_p</label>
+                <label for="name">Населённый пункт</label>
                 <input type="text" class="form-control" id="address_p" name="address_p" value="{{ service.address_p }}" maxlength="30" required>
                 <!-- Ограничение на 20 символов для имени услуги -->
             </div>
             <div class="form-group">
-                <label for="name">Address</label>
+                <label for="name">Адрес</label>
                 <input type="text" class="form-control" id="address" name="address" value="{{ service.address }}" maxlength="30" required>
                 <!-- Ограничение на 20 символов для имени услуги -->
             </div>
             <div class="form-group">
-                <label for="name">Benefit</label>
+                <label for="name">Льгота</label>
                 <input type="text" class="form-control" id="benefit" name="benefit" value="{{ service.benefit }}" maxlength="30" required>
                 <!-- Ограничение на 20 символов для имени услуги -->
             </div>
             <div class="form-group">
-                <label for="name">Number</label>
+                <label for="name">Серия и номер</label>
                 <input type="text" class="form-control" id="number" name="number" value="{{ service.number }}" maxlength="30" required>
                 <!-- Ограничение на 20 символов для имени услуги -->
             </div>
             <div class="form-group">
-                <label for="year">Year</label>
+                <label for="year">Дата выдачи сертификата</label>
                 <input type="date" class="form-control" id="year" name="year" value="{{ service.year }}" required>
                 <!-- Тип поля date автоматически предоставляет календарный вид для выбора даты -->
             </div>
             <div class="form-group">
-                <label for="cost">Cost</label>
+                <label for="cost">Размер выплаты</label>
                 <input type="number" step="0.01" class="form-control" id="cost" name="cost" value="{{ service.cost }}" min="0" max="999999.99" required>
                 <!-- Атрибут step позволяет вводить значения с двумя знаками после запятой -->
                 <!-- Атрибут min задает минимальное значение, а max — максимальное значение -->
             </div>
             <div class="form-group">
-                <label for="name">Certificate</label>
+                <label for="name">Сертификат</label>
                 <input type="number" class="form-control" id="certificate" name="certificate" value="{{ service.certificate }}" min="0" max="9.99" required>
                 <!-- Ограничение на 20 символов для имени услуги -->
             </div>
             <div class="form-group">
-                <label for="year">Date_number_get</label>
+                <label for="year">Дата и номер решения о выдаче</label>
                 <input type="date" class="form-control" id="date_number_get" name="date_number_get" value="{{ service.date_number_get }}" required>
                 <!-- Тип поля date автоматически предоставляет календарный вид для выбора даты -->
             </div>
             <div class="form-group">
-                <label for="year">Date_number_cancellation</label>
+                <label for="year">Дата и № решения об аннулировании</label>
                 <input type="date" class="form-control" id="date_number_cancellation" name="date_number_cancellation" value="{{ service.date_number_cancellation }}" required>
                 <!-- Тип поля date автоматически предоставляет календарный вид для выбора даты -->
             </div>
             <div class="form-group">
-                <label for="year">Date_number_no</label>
+                <label for="year">Дата и № решения об отказе в выдаче</label>
                 <input type="date" class="form-control" id="date_number_no" name="date_number_no" value="{{ service.date_number_no }}" required>
                 <!-- Тип поля date автоматически предоставляет календарный вид для выбора даты -->
             </div>
             <div class="form-group">
-                <label for="name">Certificate_no</label>
+                <label for="name">Отказ в выдаче</label>
                 <input type="text" class="form-control" id="certificate_no" name="certificate_no" value="{{ service.certificate_no }}" maxlength="30" required>
                 <!-- Ограничение на 20 символов для имени услуги -->
             </div>
             <div class="form-group">
-                <label for="name">Track</label>
+                <label for="name">ТРЕК</label>
                 <input type="text" class="form-control" id="track" name="track" value="{{ service.track }}" maxlength="30" required>
                 <!-- Ограничение на 20 символов для имени услуги -->
             </div>
             <div class="form-group">
-                <label for="year">Date_post</label>
+                <label for="year">Дата отправки почтой</label>
                 <input type="date" class="form-control" id="date_post" name="date_post" value="{{ service.date_post }}" required>
                 <!-- Тип поля date автоматически предоставляет календарный вид для выбора даты -->
             </div>
             <br>
             <!-- Кнопка для отправки формы -->
-            <button type="submit" class="btn btn-primary">Update Service</button>
+            <button type="submit" class="btn btn-primary">Внести изменения</button>
+            <br>
+            <!-- Ссылка для возврата на главную страницу -->
+            <a href="{{ url_for('index') }}" class="btn btn-primary mt-3">Вернуться назад</a>
         </form>
-
-
-        <!-- Ссылка для возврата на главную страницу -->
-        <a href="{{ url_for('index') }}" class="btn btn-primary mt-3">Back to Services</a>
     </div>
 
     <!-- Подключаем jQuery из статической папки -->

@@ -21,18 +21,18 @@ class Service(db.Model):
     date_number_get = db.Column(db.Date, nullable=False)
     date_number_cancellation = db.Column(db.Date, nullable=False)
     date_number_no = db.Column(db.Date, nullable=False)
-    certificate_no = db.Column(db.String(50), nullable=False)
+    certificate_no = db.Column(db.Integer, nullable=False)
     track = db.Column(db.String(50), nullable=False)
     # description = db.Column(db.String(200), nullable=False)  # Описание услуги, обязательное поле, максимум 200 символов
     date_post = db.Column(db.Date, nullable=False)  # Год предоставления услуги, обязательное поле, тип данных - дата
     color = db.Column(db.String(7))  # Дополнительное поле для хранения цвета (HEX код), длина 7 символов (включая #), может быть пустым
 
     # Конструктор класса для создания новых объектов
-    def __init__(self, id,  name, snils, location,
+    def __init__(self, name, snils, location,
                 address_p, address, benefit, number,
-                cost, certificate, date_number_get,
+                year, cost, certificate, date_number_get,
                 date_number_cancellation, date_number_no,
-                certificate_no, track, year, date_post, color=None):
+                certificate_no, track, date_post, id=None, color=None):
         self.id = id
         self.name = name  # Устанавливаем название услуги
         self.snils = snils
