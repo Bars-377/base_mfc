@@ -16,21 +16,33 @@
 
 
 -- Дамп структуры базы данных mdtomskbot
-CREATE DATABASE IF NOT EXISTS `mdtomskbot` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
+CREATE DATABASE IF NOT EXISTS `mdtomskbot` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
 USE `mdtomskbot`;
 
 -- Дамп структуры для таблица mdtomskbot.services
 CREATE TABLE IF NOT EXISTS `services` (
   `id` bigint NOT NULL AUTO_INCREMENT,
   `name` varchar(100) NOT NULL,
-  `description` varchar(200) NOT NULL,
-  `cost` float NOT NULL,
+  `snils` int NOT NULL DEFAULT '0',
+  `location` varchar(50) NOT NULL DEFAULT '0',
+  `address_p` varchar(50) NOT NULL DEFAULT '0',
+  `address` varchar(50) NOT NULL DEFAULT '0',
+  `benefit` int NOT NULL DEFAULT '0',
+  `number` int NOT NULL DEFAULT '0',
   `year` date NOT NULL,
+  `cost` float NOT NULL,
+  `certificate` int NOT NULL DEFAULT '0',
+  `date_number_get` date NOT NULL,
+  `date_number_cancellation` date NOT NULL,
+  `date_number_no` date NOT NULL,
+  `certificate_no` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '0',
+  `track` varchar(50) NOT NULL DEFAULT '0',
+  `date_post` date NOT NULL,
   `color` varchar(7) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=32 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Экспортируемые данные не выделены.
+-- Дамп данных таблицы mdtomskbot.services: ~0 rows (приблизительно)
 
 /*!40103 SET TIME_ZONE=IFNULL(@OLD_TIME_ZONE, 'system') */;
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;

@@ -38,7 +38,14 @@ def index():
     if keyword:
         query = query.filter(
             (Service.name.like(f'%{keyword}%')) |
-            (Service.description.like(f'%{keyword}%'))
+            (Service.location.like(f'%{keyword}%')) |
+            (Service.address_p.like(f'%{keyword}%')) |
+            (Service.address.like(f'%{keyword}%')) |
+            (Service.benefit.like(f'%{keyword}%')) |
+            (Service.number.like(f'%{keyword}%')) |
+            (Service.certificate.like(f'%{keyword}%')) |
+            (Service.certificate_no.like(f'%{keyword}%')) |
+            (Service.track.like(f'%{keyword}%'))
         )  # Фильтруем по ключевому слову в названии и описании
 
     # Получаем общую сумму для выбранного года
@@ -79,8 +86,18 @@ from datetime import datetime  # Импортируем datetime для рабо
 def update(id):
     # Пример проверки длины
     name = request.form['name']
-    description = request.form['description']
-    if len(name) > 20 or len(description) > 20:
+    location = request.form['location']
+    address_p = request.form['address_p']
+    address = request.form['address']
+    benefit = request.form['benefit']
+    number = request.form['number']
+    certificate_no = request.form['certificate_no']
+
+    snils = request.form['snils']
+    cost = request.form['cost']
+    certificate = request.form['certificate']
+
+    if (len(name) or len(location) or len(address_p) or len(address) or len(benefit) or len(number) or len(certificate_no)) > 30 or (int(snils) or int(cost) or int(certificate)) > 30:
         flash('Service Name and Description must be 20 characters or less.')
         return redirect(url_for('index'))
 
@@ -89,9 +106,21 @@ def update(id):
 
     # Обновляем данные услуги на основе данных из формы
     service.name = request.form['name']
-    service.description = request.form['description']
-    service.cost = request.form['cost']
+    service.snils = request.form['snils']
+    service.location = request.form['location']
+    service.address_p = request.form['address_p']
+    service.address = request.form['address']
+    service.benefit = request.form['benefit']
+    service.number = request.form['number']
     service.year = datetime.strptime(request.form['year'], '%Y-%m-%d').date()  # Преобразуем строку в дату
+    service.cost = request.form['cost']
+    service.certificate = request.form['certificate']
+    service.date_number_get = datetime.strptime(request.form['date_number_get'], '%Y-%m-%d').date()  # Преобразуем строку в дату
+    service.date_number_cancellation = datetime.strptime(request.form['date_number_cancellation'], '%Y-%m-%d').date()  # Преобразуем строку в дату
+    service.date_number_no = datetime.strptime(request.form['date_number_no'], '%Y-%m-%d').date()  # Преобразуем строку в дату
+    service.certificate_no = request.form['certificate_no']
+    service.track = request.form['track']
+    service.date_post = datetime.strptime(request.form['date_post'], '%Y-%m-%d').date()  # Преобразуем строку в дату
     service.color = request.form.get('color')  # Получаем значение цвета
 
     # Сохраняем изменения в базе данных
@@ -117,11 +146,23 @@ def update_color(id):
     return jsonify({
         'success': True,
         'id': service.id,
-        'color': service.color,
         'name': service.name,
-        'description': service.description,
+        'snils': service.snils,
+        'location': service.location,
+        'address_p': service.address_p,
+        'address': service.address,
+        'benefit': service.benefit,
+        'number': service.number,
+        'year': service.year.strftime('%Y-%m-%d'),  # Преобразуем дату в строку
         'cost': service.cost,
-        'year': service.year.strftime('%Y-%m-%d')  # Преобразуем дату в строку
+        'certificate': service.certificate,
+        'date_number_get': service.date_number_get.strftime('%Y-%m-%d'),  # Преобразуем дату в строку
+        'date_number_cancellation': service.date_number_cancellation.strftime('%Y-%m-%d'),  # Преобразуем дату в строку
+        'date_number_no': service.date_number_no.strftime('%Y-%m-%d'),  # Преобразуем дату в строку
+        'certificate_no': service.certificate_no,
+        'track': service.track,
+        'date_post': service.date_post.strftime('%Y-%m-%d'),  # Преобразуем дату в строку
+        'color': service.color  # Добавляем цвет в ответ
     })
 
 # Определяем маршрут для удаления услуги
@@ -145,20 +186,48 @@ def delete(id):
 def add():
     # Пример проверки длины
     name = request.form['name']
-    description = request.form['description']
-    if len(name) > 20 or len(description) > 20:
+    location = request.form['location']
+    address_p = request.form['address_p']
+    address = request.form['address']
+    benefit = request.form['benefit']
+    number = request.form['number']
+    certificate_no = request.form['certificate_no']
+
+    snils = request.form['snils']
+    cost = request.form['cost']
+    certificate = request.form['certificate']
+
+    if (len(name) or len(location) or len(address_p) or len(address) or len(benefit) or len(number) or len(certificate_no)) > 30 or (int(snils) or int(cost) or int(certificate)) > 30:
         flash('Service Name and Description must be 20 characters or less.')
         return redirect(url_for('index'))
 
     # Получаем данные из формы
     name = request.form['name']
-    description = request.form['description']
-    cost = request.form['cost']
+    snils = request.form['snils']
+    location = request.form['location']
+    address_p = request.form['address_p']
+    address = request.form['address']
+    benefit = request.form['benefit']
+    number = request.form['number']
     year = datetime.strptime(request.form['year'], '%Y-%m-%d').date()  # Преобразуем строку в дату
+    cost = request.form['cost']
+    certificate = request.form['certificate']
+    date_number_get = datetime.strptime(request.form['date_number_get'], '%Y-%m-%d').date()  # Преобразуем строку в дату
+    date_number_cancellation = datetime.strptime(request.form['date_number_cancellation'], '%Y-%m-%d').date()  # Преобразуем строку в дату
+    date_number_no = datetime.strptime(request.form['date_number_no'], '%Y-%m-%d').date()  # Преобразуем строку в дату
+    certificate_no = request.form['certificate_no']
+    track = request.form['track']
+    date_post = datetime.strptime(request.form['date_post'], '%Y-%m-%d').date()  # Преобразуем строку в дату
     color = request.form.get('color')  # Получаем значение цвета
 
     # Создаем новый объект услуги
-    new_service = Service(name=name, description=description, cost=cost, year=year, color=color)
+    new_service = Service(name=name, snils=snils, location=location,
+                        address_p=address_p, address=address, benefit=benefit,
+                        number=number, year=year, cost=cost,
+                        certificate=certificate, date_number_get=date_number_get,
+                        date_number_cancellation=date_number_cancellation,
+                        date_number_no=date_number_no, certificate_no=certificate_no,
+                        track=track, date_post=date_post, color=color)
     db.session.add(new_service)  # Добавляем новый объект в базу данных
     db.session.commit()  # Сохраняем изменения
     flash('Service added successfully!')  # Отображаем флэш-сообщение об успешном добавлении
@@ -183,9 +252,21 @@ def export_excel():
     # Создаем DataFrame из данных
     df = pd.DataFrame([{
         'Name': service.name,
-        'Description': service.description,
-        'Cost': service.cost,
+        'Snils': service.snils,
+        'Location': service.location,
+        'Address_p': service.address_p,
+        'Address': service.address,
+        'Benefit': service.benefit,
+        'Number': service.number,
         'Year': service.year.strftime('%Y-%m-%d'),
+        'Cost': service.cost,
+        'Certificate': service.certificate,
+        'Date_number_get': service.date_number_get.strftime('%Y-%m-%d'),
+        'Date_number_cancellation': service.date_number_cancellation.strftime('%Y-%m-%d'),
+        'Date_number_no': service.date_number_no.strftime('%Y-%m-%d'),
+        'Certificate_no': service.certificate_no,
+        'Track': service.track,
+        'Date_post': service.date_post.strftime('%Y-%m-%d'),
         'Color': getattr(service, 'color', '')
     } for service in services])
 
@@ -199,9 +280,9 @@ def export_excel():
 
         # Определяем стиль для границ
         border_style = Border(left=Side(style='thin'),
-                              right=Side(style='thin'),
-                              top=Side(style='thin'),
-                              bottom=Side(style='thin'))
+                            right=Side(style='thin'),
+                            top=Side(style='thin'),
+                            bottom=Side(style='thin'))
 
         # Применяем границы ко всем ячейкам и цвет к ячейкам, где он задан
         for row_num in range(2, worksheet.max_row + 1):  # Пропускаем заголовки
