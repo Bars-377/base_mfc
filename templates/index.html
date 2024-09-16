@@ -16,7 +16,7 @@
 
 <body>
     <div class="container-fluid">
-        
+
         <h1>Газификация</h1>
 
         <!-- Flash Messages -->
@@ -163,8 +163,9 @@
                 <input type="text" class="form-control" id="name" name="name" maxlength="30" required>
             </div>
             <div class="form-group">
-                <label for="snils">СНИЛС</label>
-                <input type="number" class="form-control" id="snils" name="snils" min="0" max="99999999999.99" required>
+                <label for="snils">СНИЛС (только числа)</label>
+                <input type="text" class="form-control" id="snils" name="snils" pattern="\d{11}" maxlength="11"
+                    required>
             </div>
             <div class="form-group">
                 <label for="location">Район</label>
@@ -180,11 +181,11 @@
             </div>
             <div class="form-group">
                 <label for="benefit">Льгота</label>
-                <input type="number" class="form-control" id="benefit" name="benefit" maxlength="30" required>
+                <input type="text" class="form-control" id="benefit" name="benefit" maxlength="30" required>
             </div>
             <div class="form-group">
                 <label for="number">Серия и номер</label>
-                <input type="number" class="form-control" id="number" name="number" maxlength="30" required>
+                <input type="text" class="form-control" id="number" name="number" maxlength="30" required>
             </div>
             <div class="form-group">
                 <label for="year">Дата выдачи сертификата</label>
@@ -196,8 +197,8 @@
             </div>
             <div class="form-group">
                 <label for="certificate">Сертификат</label>
-                <input type="number" class="form-control" id="certificate" name="certificate" min="0" max="9.99"
-                    required>
+                <input type="text" class="form-control" id="certificate" name="certificate" pattern="\d{2}"
+                    minlength="1" maxlength="2" required>
             </div>
             <div class="form-group">
                 <label for="date_number_get">Дата и номер решения о выдаче</label>
@@ -216,7 +217,12 @@
             </div>
             <div class="form-group">
                 <label for="certificate_no">Отказ в выдаче</label>
-                <input type="number" class="form-control" id="certificate_no" name="certificate_no" min="0" max="9.99
+                <input type="text" class="form-control" id="certificate_no" name="certificate_no" pattern="\d{2}"
+                    minlength="1" maxlength="2" required>
+            </div>
+            <div class=" form-group">
+                <label for="reason">Причина отказа</label>
+                <input type="text" class="form-control" id="reason" name="reason" pattern="\d{2}" minlength="1" maxlength="2"
                     required>
             </div>
             <div class="form-group">

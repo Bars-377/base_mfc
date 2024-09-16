@@ -38,15 +38,26 @@ def index():
     if keyword:
         query = query.filter(
             (Service.name.like(f'%{keyword}%')) |
+            (Service.snils.like(f'%{keyword}%')) |
             (Service.location.like(f'%{keyword}%')) |
             (Service.address_p.like(f'%{keyword}%')) |
             (Service.address.like(f'%{keyword}%')) |
             (Service.benefit.like(f'%{keyword}%')) |
             (Service.number.like(f'%{keyword}%')) |
+            (Service.year.like(f'%{keyword}%')) |
+            (Service.cost.like(f'%{keyword}%')) |
             (Service.certificate.like(f'%{keyword}%')) |
+            (Service.date_number_get.like(f'%{keyword}%')) |
+            (Service.date_number_cancellation.like(f'%{keyword}%')) |
+            (Service.date_number_no.like(f'%{keyword}%')) |
             (Service.certificate_no.like(f'%{keyword}%')) |
-            (Service.track.like(f'%{keyword}%'))
+            (Service.reason.like(f'%{keyword}%')) |
+            (Service.track.like(f'%{keyword}%')) |
+            (Service.date_post.like(f'%{keyword}%'))
         )  # Фильтруем по ключевому слову в названии и описании
+
+    # Сортировка по возрастанию года
+    query = query.order_by(Service.year.asc())
 
     # Получаем общую сумму для выбранного года
     total_cost_query = query.with_entities(db.func.sum(Service.cost).label('total_cost')).scalar()  # Запрашиваем сумму стоимости
@@ -129,6 +140,7 @@ def update(id):
     service.date_number_cancellation = datetime.strptime(request.form['date_number_cancellation'], '%Y-%m-%d').date()  # Преобразуем строку в дату
     service.date_number_no = datetime.strptime(request.form['date_number_no'], '%Y-%m-%d').date()  # Преобразуем строку в дату
     service.certificate_no = request.form['certificate_no']
+    service.reason = request.form['reason']
     service.track = request.form['track']
     service.date_post = datetime.strptime(request.form['date_post'], '%Y-%m-%d').date()  # Преобразуем строку в дату
     service.color = request.form.get('color')  # Получаем значение цвета
@@ -170,6 +182,7 @@ def update_color(id):
         'date_number_cancellation': service.date_number_cancellation.strftime('%Y-%m-%d'),  # Преобразуем дату в строку
         'date_number_no': service.date_number_no.strftime('%Y-%m-%d'),  # Преобразуем дату в строку
         'certificate_no': service.certificate_no,
+        'reason': service.reason,
         'track': service.track,
         'date_post': service.date_post.strftime('%Y-%m-%d'),  # Преобразуем дату в строку
         'color': service.color  # Добавляем цвет в ответ
@@ -237,6 +250,7 @@ def add():
     date_number_cancellation = datetime.strptime(request.form['date_number_cancellation'], '%Y-%m-%d').date()  # Преобразуем строку в дату
     date_number_no = datetime.strptime(request.form['date_number_no'], '%Y-%m-%d').date()  # Преобразуем строку в дату
     certificate_no = request.form['certificate_no']
+    reason = request.form['reason']
     track = request.form['track']
     date_post = datetime.strptime(request.form['date_post'], '%Y-%m-%d').date()  # Преобразуем строку в дату
     color = request.form.get('color')  # Получаем значение цвета
@@ -248,7 +262,7 @@ def add():
                         certificate=certificate, date_number_get=date_number_get,
                         date_number_cancellation=date_number_cancellation,
                         date_number_no=date_number_no, certificate_no=certificate_no,
-                        track=track, date_post=date_post, color=color)
+                        reason=reason, track=track, date_post=date_post, color=color)
     db.session.add(new_service)  # Добавляем новый объект в базу данных
     db.session.commit()  # Сохраняем изменения
     flash('Service added successfully!')  # Отображаем флэш-сообщение об успешном добавлении
@@ -272,22 +286,23 @@ def export_excel():
 
     # Создаем DataFrame из данных
     df = pd.DataFrame([{
-        'Name': service.name,
-        'Snils': service.snils,
-        'Location': service.location,
-        'Address_p': service.address_p,
-        'Address': service.address,
-        'Benefit': service.benefit,
-        'Number': service.number,
-        'Year': service.year.strftime('%Y-%m-%d'),
-        'Cost': service.cost,
-        'Certificate': service.certificate,
-        'Date_number_get': service.date_number_get.strftime('%Y-%m-%d'),
-        'Date_number_cancellation': service.date_number_cancellation.strftime('%Y-%m-%d'),
-        'Date_number_no': service.date_number_no.strftime('%Y-%m-%d'),
-        'Certificate_no': service.certificate_no,
-        'Track': service.track,
-        'Date_post': service.date_post.strftime('%Y-%m-%d'),
+        'ФИО заявителя': service.name,
+        'СНИЛС': service.snils,
+        'Район': service.location,
+        'Населённый пункт': service.address_p,
+        'Адрес': service.address,
+        'Льгота': service.benefit,
+        'Серия и номер': service.number,
+        'Дата выдачи сертификата': service.year.strftime('%Y-%m-%d'),
+        'Размер выплаты': service.cost,
+        'Сертификат': service.certificate,
+        'Дата и номер решения о выдаче': service.date_number_get.strftime('%Y-%m-%d'),
+        'Дата и № решения об аннулировании': service.date_number_cancellation.strftime('%Y-%m-%d'),
+        'Дата и № решения об отказе в выдаче': service.date_number_no.strftime('%Y-%m-%d'),
+        'Отказ в выдаче': service.certificate_no,
+        'Причина отказа': service.reason,
+        'ТРЕК': service.track,
+        'Дата отправки почтой': service.date_post.strftime('%Y-%m-%d'),
         'Color': getattr(service, 'color', '')
     } for service in services])
 
@@ -298,22 +313,23 @@ def export_excel():
 
     # Создание строки с итогами
     totals_row = pd.DataFrame([{
-        'Name': '',
-        'Snils': '',
-        'Location': '',
-        'Address_p': '',
-        'Address': '',
-        'Benefit': '',
-        'Number': '',
-        'Year': '',
-        'Cost': total_cost,
-        'Certificate': total_certificate,
-        'Date_number_get': '',
-        'Date_number_cancellation': '',
-        'Date_number_no': '',
-        'Certificate_no': total_certificate_no,
-        'Track': '',
-        'Date_post': '',
+        'ФИО заявителя': '',
+        'СНИЛС': '',
+        'Район': '',
+        'Населённый пункт': '',
+        'Адрес': '',
+        'Льгота': '',
+        'Серия и номер': '',
+        'Дата выдачи сертификата': '',
+        'Размер выплаты': total_cost,
+        'Сертификат': total_certificate,
+        'Дата и номер решения о выдаче': '',
+        'Дата и № решения об аннулировании': '',
+        'Дата и № решения об отказе в выдаче': '',
+        'Отказ в выдаче': total_certificate_no,
+        'Причина отказа': '',
+        'ТРЕК': '',
+        'Дата отправки почтой': '',
         'Color': ''
     }])
 

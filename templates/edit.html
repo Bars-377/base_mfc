@@ -39,33 +39,33 @@
                 <!-- Ограничение на 20 символов для имени услуги -->
             </div>
             <div class="form-group">
-                <label for="cost">СНИЛС</label>
-                <input type="number" class="form-control" id="snils" name="snils" value="{{ service.snils }}" min="0" max="99999999999.99" required>
+                <label for="snils">СНИЛС (только числа)</label>
+                <input type="text" class="form-control" id="snils" name="snils" value="{{ service.snils }}" pattern="\d{11}" maxlength="11" required>
                 <!-- Атрибут step позволяет вводить значения с двумя знаками после запятой -->
                 <!-- Атрибут min задает минимальное значение, а max — максимальное значение -->
             </div>
             <div class="form-group">
-                <label for="name">Район</label>
+                <label for="location">Район</label>
                 <input type="text" class="form-control" id="location" name="location" value="{{ service.location }}" maxlength="30" required>
                 <!-- Ограничение на 20 символов для имени услуги -->
             </div>
             <div class="form-group">
-                <label for="name">Населённый пункт</label>
+                <label for="address_p">Населённый пункт</label>
                 <input type="text" class="form-control" id="address_p" name="address_p" value="{{ service.address_p }}" maxlength="30" required>
                 <!-- Ограничение на 20 символов для имени услуги -->
             </div>
             <div class="form-group">
-                <label for="name">Адрес</label>
+                <label for="address">Адрес</label>
                 <input type="text" class="form-control" id="address" name="address" value="{{ service.address }}" maxlength="30" required>
                 <!-- Ограничение на 20 символов для имени услуги -->
             </div>
             <div class="form-group">
-                <label for="name">Льгота</label>
+                <label for="benefit">Льгота</label>
                 <input type="text" class="form-control" id="benefit" name="benefit" value="{{ service.benefit }}" maxlength="30" required>
                 <!-- Ограничение на 20 символов для имени услуги -->
             </div>
             <div class="form-group">
-                <label for="name">Серия и номер</label>
+                <label for="number">Серия и номер</label>
                 <input type="text" class="form-control" id="number" name="number" value="{{ service.number }}" maxlength="30" required>
                 <!-- Ограничение на 20 символов для имени услуги -->
             </div>
@@ -81,37 +81,42 @@
                 <!-- Атрибут min задает минимальное значение, а max — максимальное значение -->
             </div>
             <div class="form-group">
-                <label for="name">Сертификат</label>
-                <input type="number" class="form-control" id="certificate" name="certificate" value="{{ service.certificate }}" min="0" max="9.99" required>
+                <label for="certificate">Сертификат</label>
+                <input type="text" class="form-control" id="certificate" name="certificate" value="{{ service.certificate }}" pattern="\d{2}" maxlength="2" required>
                 <!-- Ограничение на 20 символов для имени услуги -->
             </div>
             <div class="form-group">
-                <label for="year">Дата и номер решения о выдаче</label>
+                <label for="date_number_get">Дата и номер решения о выдаче</label>
                 <input type="date" class="form-control" id="date_number_get" name="date_number_get" value="{{ service.date_number_get }}" required>
                 <!-- Тип поля date автоматически предоставляет календарный вид для выбора даты -->
             </div>
             <div class="form-group">
-                <label for="year">Дата и № решения об аннулировании</label>
+                <label for="date_number_cancellation">Дата и № решения об аннулировании</label>
                 <input type="date" class="form-control" id="date_number_cancellation" name="date_number_cancellation" value="{{ service.date_number_cancellation }}" required>
                 <!-- Тип поля date автоматически предоставляет календарный вид для выбора даты -->
             </div>
             <div class="form-group">
-                <label for="year">Дата и № решения об отказе в выдаче</label>
+                <label for="date_number_no">Дата и № решения об отказе в выдаче</label>
                 <input type="date" class="form-control" id="date_number_no" name="date_number_no" value="{{ service.date_number_no }}" required>
                 <!-- Тип поля date автоматически предоставляет календарный вид для выбора даты -->
             </div>
             <div class="form-group">
-                <label for="name">Отказ в выдаче</label>
-                <input type="text" class="form-control" id="certificate_no" name="certificate_no" value="{{ service.certificate_no }}" maxlength="30" required>
+                <label for="certificate_no">Отказ в выдаче</label>
+                <input type="text" class="form-control" id="certificate_no" name="certificate_no" value="{{ service.certificate_no }}" pattern="\d{2}" maxlength="2 required>
                 <!-- Ограничение на 20 символов для имени услуги -->
             </div>
             <div class="form-group">
-                <label for="name">ТРЕК</label>
+                <label for="reason">Причина отказа</label>
+                <input type="text" class="form-control" id="reason" name="reason" value="{{ service.track }}" pattern="\d{2}" maxlength="2" required>
+                <!-- Ограничение на 20 символов для имени услуги -->
+            </div>
+            <div class="form-group">
+                <label for="track">ТРЕК</label>
                 <input type="text" class="form-control" id="track" name="track" value="{{ service.track }}" maxlength="30" required>
                 <!-- Ограничение на 20 символов для имени услуги -->
             </div>
             <div class="form-group">
-                <label for="year">Дата отправки почтой</label>
+                <label for="date_post">Дата отправки почтой</label>
                 <input type="date" class="form-control" id="date_post" name="date_post" value="{{ service.date_post }}" required>
                 <!-- Тип поля date автоматически предоставляет календарный вид для выбора даты -->
             </div>

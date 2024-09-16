@@ -22,6 +22,7 @@ class Service(db.Model):
     date_number_cancellation = db.Column(db.Date, nullable=False)
     date_number_no = db.Column(db.Date, nullable=False)
     certificate_no = db.Column(db.Integer, nullable=False)
+    reason = db.Column(db.Integer, nullable=False)
     track = db.Column(db.String(50), nullable=False)
     # description = db.Column(db.String(200), nullable=False)  # Описание услуги, обязательное поле, максимум 200 символов
     date_post = db.Column(db.Date, nullable=False)  # Год предоставления услуги, обязательное поле, тип данных - дата
@@ -32,7 +33,7 @@ class Service(db.Model):
                 address_p, address, benefit, number,
                 year, cost, certificate, date_number_get,
                 date_number_cancellation, date_number_no,
-                certificate_no, track, date_post, id=None, color=None):
+                certificate_no, reason, track, date_post, id=None, color=None):
         self.id = id
         self.name = name  # Устанавливаем название услуги
         self.snils = snils
@@ -48,6 +49,7 @@ class Service(db.Model):
         self.date_number_cancellation = date_number_cancellation
         self.date_number_no = date_number_no
         self.certificate_no = certificate_no
+        self.reason = reason
         self.track = track
         # self.description = description  # Устанавливаем описание услуги
         self.date_post = date_post
