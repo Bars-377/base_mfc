@@ -20,7 +20,7 @@ class Service(db.Model):
     certificate = db.Column(db.Integer, nullable=False)
     date_number_get = db.Column(db.Date, nullable=False)
     date_number_cancellation = db.Column(db.Date, nullable=False)
-    date_number_no = db.Column(db.Date, nullable=False)
+    date_number_no = db.Column(db.String(50), nullable=False)
     certificate_no = db.Column(db.Integer, nullable=False)
     reason = db.Column(db.Integer, nullable=False)
     track = db.Column(db.String(50), nullable=False)

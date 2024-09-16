@@ -138,7 +138,7 @@ def update(id):
     service.certificate = request.form['certificate']
     service.date_number_get = datetime.strptime(request.form['date_number_get'], '%Y-%m-%d').date()  # Преобразуем строку в дату
     service.date_number_cancellation = datetime.strptime(request.form['date_number_cancellation'], '%Y-%m-%d').date()  # Преобразуем строку в дату
-    service.date_number_no = datetime.strptime(request.form['date_number_no'], '%Y-%m-%d').date()  # Преобразуем строку в дату
+    service.date_number_no = request.form['date_number_no']
     service.certificate_no = request.form['certificate_no']
     service.reason = request.form['reason']
     service.track = request.form['track']
@@ -180,7 +180,7 @@ def update_color(id):
         'certificate': service.certificate,
         'date_number_get': service.date_number_get.strftime('%Y-%m-%d'),  # Преобразуем дату в строку
         'date_number_cancellation': service.date_number_cancellation.strftime('%Y-%m-%d'),  # Преобразуем дату в строку
-        'date_number_no': service.date_number_no.strftime('%Y-%m-%d'),  # Преобразуем дату в строку
+        'date_number_no': service.date_number_no
         'certificate_no': service.certificate_no,
         'reason': service.reason,
         'track': service.track,
@@ -248,7 +248,7 @@ def add():
     certificate = request.form['certificate']
     date_number_get = datetime.strptime(request.form['date_number_get'], '%Y-%m-%d').date()  # Преобразуем строку в дату
     date_number_cancellation = datetime.strptime(request.form['date_number_cancellation'], '%Y-%m-%d').date()  # Преобразуем строку в дату
-    date_number_no = datetime.strptime(request.form['date_number_no'], '%Y-%m-%d').date()  # Преобразуем строку в дату
+    date_number_no = request.form['date_number_no']
     certificate_no = request.form['certificate_no']
     reason = request.form['reason']
     track = request.form['track']
@@ -298,7 +298,7 @@ def export_excel():
         'Сертификат': service.certificate,
         'Дата и номер решения о выдаче': service.date_number_get.strftime('%Y-%m-%d'),
         'Дата и № решения об аннулировании': service.date_number_cancellation.strftime('%Y-%m-%d'),
-        'Дата и № решения об отказе в выдаче': service.date_number_no.strftime('%Y-%m-%d'),
+        'Дата и № решения об отказе в выдаче': service.date_number_no,
         'Отказ в выдаче': service.certificate_no,
         'Причина отказа': service.reason,
         'ТРЕК': service.track,

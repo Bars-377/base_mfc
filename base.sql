@@ -34,7 +34,7 @@ CREATE TABLE IF NOT EXISTS `services` (
   `certificate` int NOT NULL DEFAULT '0',
   `date_number_get` date NOT NULL,
   `date_number_cancellation` date NOT NULL,
-  `date_number_no` date NOT NULL,
+  `date_number_no` varchar(50) NOT NULL DEFAULT '0',
   `certificate_no` int NOT NULL DEFAULT '0',
   `reason` int NOT NULL DEFAULT '0',
   `track` varchar(50) NOT NULL DEFAULT '0',
