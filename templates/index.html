@@ -16,225 +16,231 @@
 
 <body>
     <div class="container-fluid">
+        <div class="container-fluid-neverov">
 
-        <h1>Газификация</h1>
+            <h1>Газификация</h1>
 
-        <!-- Flash Messages -->
-        {% with messages = get_flashed_messages() %}
-        {% if messages %}
-        <div class="alert alert-success mt-3">
-            {{ messages[0] }}
-        </div>
-        {% endif %}
-        {% endwith %}
-
-        <form method="GET" action="/" id="filter-form" class="form-group-neverov">
-            <div class="form-group">
-                <label for="keyword">Поиск по ключевому слову:</label>
-                <input type="text" class="form-control" id="keyword" name="keyword" placeholder="Введите ключевое слово"
-                    value="{{ request.args.get('keyword', '') }}">
+            <!-- Flash Messages -->
+            {% with messages = get_flashed_messages() %}
+            {% if messages %}
+            <div class="alert alert-success mt-3">
+                {{ messages[0] }}
             </div>
-            <div class="form-group">
-                <label for="year">Выберите год:</label>
-                <select name="year" id="year" class="form-control">
-                    <option value="">Выберите год</option>
-                    {% for year in service_years %}
-                    <option value="{{ year }}" {% if year==selected_year %}selected{% endif %}>
-                        {{ year }}
-                    </option>
-                    {% endfor %}
-                </select>
+            {% endif %}
+            {% endwith %}
+
+            <form method="GET" action="/" id="filter-form" class="form-group-neverov">
+                <div class="form-group form-item">
+                    <label for="keyword">Поиск по ключевому слову:</label>
+                    <input type="text" class="form-control" id="keyword" name="keyword" placeholder="Введите ключевое слово"
+                        value="{{ request.args.get('keyword', '') }}">
+                </div>
+                <div class="form-group form-item">
+                    <label for="year">Выберите год:</label>
+                    <select name="year" id="year" class="form-control">
+                        <option value="">Выберите год</option>
+                        {% for year in service_years %}
+                        <option value="{{ year }}" {% if year==selected_year %}selected{% endif %}>
+                            {{ year }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-item">
+                    <button type="submit" class="btn btn-primary">Фильтровать по году</button>
+                    <button type="button" class="btn btn-secondary" id="reset-filters">Сбросить всё</button>
+                </div>
+            </form>
+
+            <div class="scroll-container">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>№ п/п</th>
+                            <th>ФИО заявителя</th>
+                            <th>СНИЛС</th>
+                            <th>Район</th>
+                            <th>Населённый пункт</th>
+                            <th>Адрес</th>
+                            <th>Льгота</th>
+                            <th>Серия и номер</th>
+                            <th>Дата выдачи сертификата</th>
+                            <th>Размер выплаты</th>
+                            <th>Сертификат</th>
+                            <th>Дата и номер решения о выдаче</th>
+                            <th>Дата и № решения об аннулировании</th>
+                            <th>Дата и № решения об отказе в выдаче</th>
+                            <th>Отказ в выдаче</th>
+                            <th>ТРЕК</th>
+                            <th>Дата отправки почтой</th>
+                            <th>Управление</th>
+                            <th>Выбор цвета</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for service in services %}
+                        <tr class="service-row" data-id="{{ service.id }}">
+                            <td style="background-color: {{ service.color or '' }}">{{ service.id }}</td>
+                            <td style="background-color: {{ service.color or '' }}">{{ service.name }}</td>
+                            <td style="background-color: {{ service.color or '' }}">{{ service.snils }}</td>
+                            <td style="background-color: {{ service.color or '' }}">{{ service.location }}</td>
+                            <td style="background-color: {{ service.color or '' }}">{{ service.address_p }}</td>
+                            <td style="background-color: {{ service.color or '' }}">{{ service.address }}</td>
+                            <td style="background-color: {{ service.color or '' }}">{{ service.benefit }}</td>
+                            <td style="background-color: {{ service.color or '' }}">{{ service.number }}</td>
+                            <td style="background-color: {{ service.color or '' }}">{{ service.year }}</td>
+                            <td style="background-color: {{ service.color or '' }}">{{ service.cost }}</td>
+                            <td style="background-color: {{ service.color or '' }}">{{ service.certificate }}</td>
+                            <td style="background-color: {{ service.color or '' }}">{{ service.date_number_get }}</td>
+                            <td style="background-color: {{ service.color or '' }}">{{ service.date_number_cancellation }}</td>
+                            <td style="background-color: {{ service.color or '' }}">{{ service.date_number_no }}</td>
+                            <td style="background-color: {{ service.color or '' }}">{{ service.certificate_no }}</td>
+                            <td style="background-color: {{ service.color or '' }}">{{ service.track }}</td>
+                            <td style="background-color: {{ service.color or '' }}">{{ service.date_post }}</td>
+                            <td style="text-align: center;">
+                                <div style="display: flex; justify-content: center; align-items: center; gap: 5px;">
+                                    <a href="{{ url_for('edit', id=service.id) }}" class="btn btn-sm btn-warning">Edit</a>
+                                    <form method="POST" action="{{ url_for('delete', id=service.id) }}" style="display:inline;"
+                                        onsubmit="return confirmDelete();">
+                                        <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                                    </form>
+                                </div>
+                            </td>
+                            <td>
+                                <select class="form-control color-select" data-id="{{ service.id }}">
+                                    <option value="">Default</option>
+                                    <option value="#eaf7ff" {% if service.color=='#eaf7ff' %}selected{% endif %}>Light Blue
+                                    </option>
+                                    <option value="#ffebeb" {% if service.color=='#ffebeb' %}selected{% endif %}>Light Red
+                                    </option>
+                                    <option value="#dff0d8" {% if service.color=='#dff0d8' %}selected{% endif %}>Light Green
+                                    </option>
+                                </select>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
             </div>
             <br>
-            <button type="submit" class="btn btn-primary">Фильтровать по году</button>
-            <button type="button" class="btn btn-secondary" id="reset-filters">Сбросить всё</button>
-        </form>
-
-        <table class="table table-bordered mt-5">
-            <thead>
-                <tr>
-                    <th>№ п/п</th>
-                    <th>ФИО заявителя</th>
-                    <th>СНИЛС</th>
-                    <th>Район</th>
-                    <th>Населённый пункт</th>
-                    <th>Адрес</th>
-                    <th>Льгота</th>
-                    <th>Серия и номер</th>
-                    <th>Дата выдачи сертификата</th>
-                    <th>Размер выплаты</th>
-                    <th>Сертификат</th>
-                    <th>Дата и номер решения о выдаче</th>
-                    <th>Дата и № решения об аннулировании</th>
-                    <th>Дата и № решения об отказе в выдаче</th>
-                    <th>Отказ в выдаче</th>
-                    <th>ТРЕК</th>
-                    <th>Дата отправки почтой</th>
-                    <th>Управление</th>
-                    <th>Выбор цвета</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for service in services %}
-                <tr class="service-row" data-id="{{ service.id }}">
-                    <td style="background-color: {{ service.color or '' }}">{{ service.id }}</td>
-                    <td style="background-color: {{ service.color or '' }}">{{ service.name }}</td>
-                    <td style="background-color: {{ service.color or '' }}">{{ service.snils }}</td>
-                    <td style="background-color: {{ service.color or '' }}">{{ service.location }}</td>
-                    <td style="background-color: {{ service.color or '' }}">{{ service.address_p }}</td>
-                    <td style="background-color: {{ service.color or '' }}">{{ service.address }}</td>
-                    <td style="background-color: {{ service.color or '' }}">{{ service.benefit }}</td>
-                    <td style="background-color: {{ service.color or '' }}">{{ service.number }}</td>
-                    <td style="background-color: {{ service.color or '' }}">{{ service.year }}</td>
-                    <td style="background-color: {{ service.color or '' }}">{{ service.cost }}</td>
-                    <td style="background-color: {{ service.color or '' }}">{{ service.certificate }}</td>
-                    <td style="background-color: {{ service.color or '' }}">{{ service.date_number_get }}</td>
-                    <td style="background-color: {{ service.color or '' }}">{{ service.date_number_cancellation }}</td>
-                    <td style="background-color: {{ service.color or '' }}">{{ service.date_number_no }}</td>
-                    <td style="background-color: {{ service.color or '' }}">{{ service.certificate_no }}</td>
-                    <td style="background-color: {{ service.color or '' }}">{{ service.track }}</td>
-                    <td style="background-color: {{ service.color or '' }}">{{ service.date_post }}</td>
-                    <td style="text-align: center;">
-                        <div style="display: flex; justify-content: center; align-items: center; gap: 5px;">
-                            <a href="{{ url_for('edit', id=service.id) }}" class="btn btn-sm btn-warning">Edit</a>
-                            <form method="POST" action="{{ url_for('delete', id=service.id) }}" style="display:inline;"
-                                onsubmit="return confirmDelete();">
-                                <button type="submit" class="btn btn-sm btn-danger">Delete</button>
-                            </form>
-                        </div>
-                    </td>
-                    <td>
-                        <select class="form-control color-select" data-id="{{ service.id }}">
-                            <option value="">Default</option>
-                            <option value="#eaf7ff" {% if service.color=='#eaf7ff' %}selected{% endif %}>Light Blue
-                            </option>
-                            <option value="#ffebeb" {% if service.color=='#ffebeb' %}selected{% endif %}>Light Red
-                            </option>
-                            <option value="#dff0d8" {% if service.color=='#dff0d8' %}selected{% endif %}>Light Green
-                            </option>
-                        </select>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-
-        <!-- Pagination Controls -->
-        <nav aria-label="Page navigation">
-            <ul class="pagination">
-                {% if page > 1 %}
-                <li class="page-item">
-                    <a class="page-link" href="{{ url_for('index', year=selected_year, page=page-1) }}"
-                        aria-label="Previous">
-                        <span aria-hidden="true">&laquo;</span>
-                    </a>
-                </li>
-                {% endif %}
-                {% for p in range(1, total_pages + 1) %}
-                <li class="page-item {% if p == page %}active{% endif %}">
-                    <a class="page-link" href="{{ url_for('index', year=selected_year, page=p) }}">{{ p }}</a>
-                </li>
-                {% endfor %}
-                {% if page < total_pages %} <li class="page-item">
-                    <a class="page-link" href="{{ url_for('index', year=selected_year, page=page+1) }}"
-                        aria-label="Next">
-                        <span aria-hidden="true">&raquo;</span>
-                    </a>
+            <!-- Pagination Controls -->
+            <nav aria-label="Page navigation">
+                <ul class="pagination">
+                    {% if page > 1 %}
+                    <li class="page-item">
+                        <a class="page-link" href="{{ url_for('index', year=selected_year, page=page-1) }}"
+                            aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
                     </li>
                     {% endif %}
-            </ul>
-        </nav>
+                    {% for p in range(1, total_pages + 1) %}
+                    <li class="page-item {% if p == page %}active{% endif %}">
+                        <a class="page-link" href="{{ url_for('index', year=selected_year, page=p) }}">{{ p }}</a>
+                    </li>
+                    {% endfor %}
+                    {% if page < total_pages %} <li class="page-item">
+                        <a class="page-link" href="{{ url_for('index', year=selected_year, page=page+1) }}"
+                            aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                        </li>
+                        {% endif %}
+                </ul>
+            </nav>
 
-        <h4>Итог выплат за выбранное время: {{ total_cost_1 }}</h4>
-        <h4>Итог сертификатов за выбранное время: {{ total_cost_2 }}</h4>
-        <h4>Итог отказов в выдаче за выбранное время: {{ total_cost_3 }}</h4>
-        <br>
-        <h2>Экспорт услуг в Excel</h2>
-        <form method="GET" action="{{ url_for('export_excel') }}" id="export-form">
-            <input type="hidden" name="year" value="{{ selected_year }}">
-            <button type="submit" class="btn btn-info">Экспорт в Excel</button>
-        </form>
-
-        <br>
-        <h2>Добавить новую запись</h2>
-        <form method="POST" action="{{ url_for('add') }}" id="add-service-form" class="form-group-neverov">
-            <div class="form-group">
-                <label for="name">ФИО заявителя</label>
-                <input type="text" class="form-control" id="name" name="name" maxlength="30" required>
-            </div>
-            <div class="form-group">
-                <label for="snils">СНИЛС (только числа)</label>
-                <input type="text" class="form-control" id="snils" name="snils" pattern="\d{11}" maxlength="11"
-                    required>
-            </div>
-            <div class="form-group">
-                <label for="location">Район</label>
-                <input type="text" class="form-control" id="location" name="location" maxlength="30" required>
-            </div>
-            <div class="form-group">
-                <label for="address_p">Населённый пункт</label>
-                <input type="text" class="form-control" id="address_p" name="address_p" maxlength="30" required>
-            </div>
-            <div class="form-group">
-                <label for="address">Адрес</label>
-                <input type="text" class="form-control" id="address" name="address" maxlength="30" required>
-            </div>
-            <div class="form-group">
-                <label for="benefit">Льгота</label>
-                <input type="text" class="form-control" id="benefit" name="benefit" maxlength="30" required>
-            </div>
-            <div class="form-group">
-                <label for="number">Серия и номер</label>
-                <input type="text" class="form-control" id="number" name="number" maxlength="30" required>
-            </div>
-            <div class="form-group">
-                <label for="year">Дата выдачи сертификата</label>
-                <input type="date" class="form-control" id="year" name="year" required>
-            </div>
-            <div class="form-group">
-                <label for="cost">Размер выплаты</label>
-                <input type="number" step="0.01" class="form-control" id="cost" name="cost" required>
-            </div>
-            <div class="form-group">
-                <label for="certificate">Сертификат</label>
-                <input type="text" class="form-control" id="certificate" name="certificate" pattern="\d{2}"
-                    minlength="1" maxlength="2" required>
-            </div>
-            <div class="form-group">
-                <label for="date_number_get">Дата и номер решения о выдаче</label>
-                <input type="date" class="form-control" id="date_number_get" name="date_number_get" maxlength="30"
-                    required>
-            </div>
-            <div class="form-group">
-                <label for="date_number_cancellation">Дата и № решения об аннулировании</label>
-                <input type="date" class="form-control" id="date_number_cancellation" name="date_number_cancellation"
-                    maxlength="30" required>
-            </div>
-            <div class="form-group">
-                <label for="date_number_no">Дата и № решения об отказе в выдаче</label>
-                <input type="text" class="form-control" id="date_number_no" name="date_number_no" maxlength="30" required>
-            </div>
-            <div class="form-group">
-                <label for="certificate_no">Отказ в выдаче</label>
-                <input type="text" class="form-control" id="certificate_no" name="certificate_no" pattern="\d{2}"
-                    minlength="1" maxlength="2" required>
-            </div>
-            <div class=" form-group">
-                <label for="reason">Причина отказа</label>
-                <input type="text" class="form-control" id="reason" name="reason" pattern="\d{2}" minlength="1" maxlength="2"
-                    required>
-            </div>
-            <div class="form-group">
-                <label for="track">ТРЕК</label>
-                <input type="text" class="form-control" id="track" name="track" maxlength="30" required>
-            </div>
-            <div class="form-group">
-                <label for="date_post">Дата отправки почтой</label>
-                <input type="date" class="form-control" id="date_post" name="date_post" maxlength="30" required>
-            </div>
+            <h4>Итог выплат за выбранное время: {{ total_cost_1 }}</h4>
+            <h4>Итог сертификатов за выбранное время: {{ total_cost_2 }}</h4>
+            <h4>Итог отказов в выдаче за выбранное время: {{ total_cost_3 }}</h4>
             <br>
-            <button type="submit" class="btn btn-success">Добавить запись</button>
-        </form>
+            <h2>Экспорт услуг в Excel</h2>
+            <br>
+            <form method="GET" action="{{ url_for('export_excel') }}" id="export-form">
+                <input type="hidden" name="year" value="{{ selected_year }}">
+                <button type="submit" class="btn btn-info">Экспорт в Excel</button>
+            </form>
+
+            <br>
+            <h2>Добавить новую запись</h2>
+            <form method="POST" action="{{ url_for('add') }}" id="add-service-form" class="form-group-neverov">
+                <div class="form-group">
+                    <label for="name">ФИО заявителя</label>
+                    <input type="text" class="form-control" id="name" name="name" maxlength="30" required>
+                </div>
+                <div class="form-group">
+                    <label for="snils">СНИЛС (только числа)</label>
+                    <input type="text" class="form-control" id="snils" name="snils" pattern="\d{11}" maxlength="11"
+                        required>
+                </div>
+                <div class="form-group">
+                    <label for="location">Район</label>
+                    <input type="text" class="form-control" id="location" name="location" maxlength="30" required>
+                </div>
+                <div class="form-group">
+                    <label for="address_p">Населённый пункт</label>
+                    <input type="text" class="form-control" id="address_p" name="address_p" maxlength="30" required>
+                </div>
+                <div class="form-group">
+                    <label for="address">Адрес</label>
+                    <input type="text" class="form-control" id="address" name="address" maxlength="30" required>
+                </div>
+                <div class="form-group">
+                    <label for="benefit">Льгота</label>
+                    <input type="text" class="form-control" id="benefit" name="benefit" maxlength="30" required>
+                </div>
+                <div class="form-group">
+                    <label for="number">Серия и номер</label>
+                    <input type="text" class="form-control" id="number" name="number" maxlength="30" required>
+                </div>
+                <div class="form-group">
+                    <label for="year">Дата выдачи сертификата</label>
+                    <input type="date" class="form-control" id="year" name="year" required>
+                </div>
+                <div class="form-group">
+                    <label for="cost">Размер выплаты</label>
+                    <input type="number" step="0.01" class="form-control" id="cost" name="cost" required>
+                </div>
+                <div class="form-group">
+                    <label for="certificate">Сертификат</label>
+                    <input type="text" class="form-control" id="certificate" name="certificate" pattern="\d{2}"
+                        minlength="1" maxlength="2" required>
+                </div>
+                <div class="form-group">
+                    <label for="date_number_get">Дата и номер решения о выдаче</label>
+                    <input type="date" class="form-control" id="date_number_get" name="date_number_get" maxlength="30"
+                        required>
+                </div>
+                <div class="form-group">
+                    <label for="date_number_cancellation">Дата и № решения об аннулировании</label>
+                    <input type="date" class="form-control" id="date_number_cancellation" name="date_number_cancellation"
+                        maxlength="30" required>
+                </div>
+                <div class="form-group">
+                    <label for="date_number_no">Дата и № решения об отказе в выдаче</label>
+                    <input type="text" class="form-control" id="date_number_no" name="date_number_no" maxlength="30" required>
+                </div>
+                <div class="form-group">
+                    <label for="certificate_no">Отказ в выдаче</label>
+                    <input type="text" class="form-control" id="certificate_no" name="certificate_no" pattern="\d{2}"
+                        minlength="1" maxlength="2" required>
+                </div>
+                <div class=" form-group">
+                    <label for="reason">Причина отказа</label>
+                    <input type="text" class="form-control" id="reason" name="reason" pattern="\d{2}" minlength="1" maxlength="2"
+                        required>
+                </div>
+                <div class="form-group">
+                    <label for="track">ТРЕК</label>
+                    <input type="text" class="form-control" id="track" name="track" maxlength="30" required>
+                </div>
+                <div class="form-group">
+                    <label for="date_post">Дата отправки почтой</label>
+                    <input type="date" class="form-control" id="date_post" name="date_post" maxlength="30" required>
+                </div>
+                <br>
+                <button type="submit" class="btn btn-success">Добавить запись</button>
+            </form>
+        </div>
 
     </div>
 
@@ -321,6 +327,12 @@
         // Обработчик нажатия на кнопку фильтрации
         document.getElementById('filter-form').addEventListener('submit', function () {
             window.scrollTo(0, 0);
+        });
+
+        document.addEventListener('DOMContentLoaded', function () {
+            if (!navigator.userAgent.includes('AppleWebKit')) {
+                document.querySelector('.wrapper').innerHTML = '<p>Sorry! Non webkit users.</p>';
+            }
         });
     </script>
 </body>

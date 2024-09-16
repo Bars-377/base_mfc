@@ -180,7 +180,7 @@ def update_color(id):
         'certificate': service.certificate,
         'date_number_get': service.date_number_get.strftime('%Y-%m-%d'),  # Преобразуем дату в строку
         'date_number_cancellation': service.date_number_cancellation.strftime('%Y-%m-%d'),  # Преобразуем дату в строку
-        'date_number_no': service.date_number_no
+        'date_number_no': service.date_number_no,
         'certificate_no': service.certificate_no,
         'reason': service.reason,
         'track': service.track,
@@ -307,9 +307,9 @@ def export_excel():
     } for service in services])
 
     # Расчет итогов
-    total_cost = df['Cost'].sum()
-    total_certificate = df['Certificate'].sum()
-    total_certificate_no = df['Certificate_no'].sum()
+    total_cost = df['Размер выплаты'].sum()
+    total_certificate = df['Сертификат'].sum()
+    total_certificate_no = df['Отказ в выдаче'].sum()
 
     # Создание строки с итогами
     totals_row = pd.DataFrame([{

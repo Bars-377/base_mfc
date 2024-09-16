@@ -6,7 +6,7 @@ body {
 
 /* Настройки для таблицы */
 table {
-/*    margin-top: 20px;
+    /* margin-top: 20px;
     /* Отступ сверху от элемента до таблицы */
     width: 100%;
     /* Задаем ширину таблицы на 100% от родительского контейнера */
@@ -22,12 +22,68 @@ table {
 
 /* Добавляем стили для формы добавления нового сервиса */
 .form-group-neverov {
-    max-width: 25%;         /* Убираем ограничение по ширине */
-    padding: 20px;          /* Добавляем отступы внутри формы */
+    max-width: 100%;
+    /* Убираем ограничение по ширине */
+    padding: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    /* Позволяет элементам переноситься на следующую строку, если не хватает места */
+    gap: 15px;
+    /* Расстояние между элементами */
+}
+
+.form-group-neverov .form-item {
+    display: flex;
+    flex-direction: column;
+    /* Расположение метки и поля ввода вертикально */
+    gap: 5px;
+    /* Расстояние между меткой и полем ввода */
 }
 
 th {
-    white-space: nowrap; /* Запрещает перенос текста */
-    text-overflow: ellipsis; /* Добавляет многоточие, если текст не помещается */
-    overflow: hidden; /* Скрывает переполняющий текст */
+    white-space: nowrap;
+    /* Запрещает перенос текста */
+    text-overflow: ellipsis;
+    /* Добавляет многоточие, если текст не помещается */
+    overflow: hidden;
+    /* Скрывает переполняющий текст */
+}
+
+.scroll-container {
+    width: 100%;
+    /* Или задайте фиксированную ширину */
+    overflow-x: auto;
+    /* Горизонтальная прокрутка */
+    white-space: nowrap;
+    /* Предотвращает перенос текста на новую строку */
+}
+
+.container-fluid {
+    width: 100%;
+    padding-left: 30px;
+    padding-right: 30px;
+    box-sizing: border-box;
+}
+
+.container-fluid-neverov {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+
+.scroll-container::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+    border-radius: 10px;
+    background-color: #F5F5F5;
+}
+
+.scroll-container::-webkit-scrollbar {
+    width: 12px;
+    background-color: #F5F5F5;
+}
+
+.scroll-container::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, .3);
+    background-color: #555;
 }
