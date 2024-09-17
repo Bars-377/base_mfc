@@ -100,6 +100,13 @@ def edit(id):
     # Отправляем данные на шаблон для редактирования
     return render_template('edit.html', service=service)
 
+# Определяем маршрут для страницы добавления услуги
+@app.route('/add_edit', methods=['GET'])
+def add_edit():
+
+    # Отправляем данные на шаблон для редактирования
+    return render_template('add.html')
+
 from datetime import datetime  # Импортируем datetime для работы с датами
 
 # Определяем маршрут для обновления услуги
@@ -147,7 +154,7 @@ def update(id):
 
     # Сохраняем изменения в базе данных
     db.session.commit()
-    flash('Service updated successfully!')  # Отображаем флэш-сообщение об успешном обновлении
+    flash('Данные успешно обновлены!')  # Отображаем флэш-сообщение об успешном обновлении
     return redirect(url_for('index'))  # Перенаправляем на главную страницу
 
 # Маршрут для обновления цвета
@@ -199,7 +206,7 @@ def delete(id):
     db.session.commit()  # Сохраняем изменения
 
     # Показываем флэш-сообщение об успешном удалении
-    flash('Service deleted successfully!')
+    flash('Данные успешно удалены!')
 
     # Перенаправляем на главную страницу
     return redirect(url_for('index'))
@@ -265,7 +272,7 @@ def add():
                         reason=reason, track=track, date_post=date_post, color=color)
     db.session.add(new_service)  # Добавляем новый объект в базу данных
     db.session.commit()  # Сохраняем изменения
-    flash('Service added successfully!')  # Отображаем флэш-сообщение об успешном добавлении
+    flash('Данные успешно добавлены!')  # Отображаем флэш-сообщение об успешном добавлении
     return redirect(url_for('index'))  # Перенаправляем на главную страницу
 
 import pandas as pd

@@ -82,7 +82,7 @@
             </div>
             <div class="form-group">
                 <label for="certificate">Сертификат</label>
-                <input type="text" class="form-control" id="certificate" name="certificate" value="{{ service.certificate }}" pattern="\d{2}" maxlength="2" required>
+                <input type="text" class="form-control" id="certificate" name="certificate" value="{{ service.certificate }}" pattern="\d{1,2}" maxlength="2" required>
                 <!-- Ограничение на 20 символов для имени услуги -->
             </div>
             <div class="form-group">
@@ -102,12 +102,12 @@
             </div>
             <div class="form-group">
                 <label for="certificate_no">Отказ в выдаче</label>
-                <input type="text" class="form-control" id="certificate_no" name="certificate_no" value="{{ service.certificate_no }}" pattern="\d{2}" maxlength="2 required>
+                <input type="text" class="form-control" id="certificate_no" name="certificate_no" value="{{ service.certificate_no }}" pattern="\d{1,2}" maxlength="2 required>
                 <!-- Ограничение на 20 символов для имени услуги -->
             </div>
             <div class="form-group">
                 <label for="reason">Причина отказа</label>
-                <input type="text" class="form-control" id="reason" name="reason" value="{{ service.track }}" pattern="\d{2}" maxlength="2" required>
+                <input type="text" class="form-control" id="reason" name="reason" value="{{ service.track }}" pattern="\d{1,2}" maxlength="2" required>
                 <!-- Ограничение на 20 символов для имени услуги -->
             </div>
             <div class="form-group">
@@ -123,9 +123,8 @@
             <br>
             <!-- Кнопка для отправки формы -->
             <button type="submit" class="btn btn-primary">Внести изменения</button>
-            <br>
             <!-- Ссылка для возврата на главную страницу -->
-            <a href="{{ url_for('index') }}" class="btn btn-primary mt-3">Вернуться назад</a>
+            <a href="{{ url_for('index') }}" class="btn btn-secondary mt-3">Вернуться назад</a>
         </form>
     </div>
 
