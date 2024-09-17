@@ -73,6 +73,7 @@ th {
     display: flex;
     align-items: center;
     flex-direction: column;
+    margin-bottom: 20px; /* Например, отступ в 20px */
 }
 
 .scroll-container::-webkit-scrollbar-track {

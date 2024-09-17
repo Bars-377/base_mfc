@@ -22,33 +22,31 @@ USE `mdtomskbot`;
 -- Дамп структуры для таблица mdtomskbot.services
 CREATE TABLE IF NOT EXISTS `services` (
   `id` bigint NOT NULL AUTO_INCREMENT,
-  `name` varchar(100) NOT NULL,
-  `snils` bigint NOT NULL DEFAULT '0',
-  `location` varchar(50) NOT NULL DEFAULT '0',
-  `address_p` varchar(50) NOT NULL DEFAULT '0',
-  `address` varchar(50) NOT NULL DEFAULT '0',
-  `benefit` varchar(50) NOT NULL DEFAULT '0',
-  `number` varchar(50) NOT NULL DEFAULT '0',
-  `year` date NOT NULL,
-  `cost` float NOT NULL,
-  `certificate` int NOT NULL DEFAULT '0',
-  `date_number_get` date NOT NULL,
-  `date_number_cancellation` date NOT NULL,
-  `date_number_no` varchar(50) NOT NULL DEFAULT '0',
-  `certificate_no` int NOT NULL DEFAULT '0',
-  `reason` int NOT NULL DEFAULT '0',
-  `track` varchar(50) NOT NULL DEFAULT '0',
-  `date_post` date NOT NULL,
-  `color` varchar(7) DEFAULT NULL,
+  `name` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `snils` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `location` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `address_p` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `address` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `benefit` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `number` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `year` date DEFAULT NULL,
+  `cost` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `certificate` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `date_number_get` varchar(50) NOT NULL DEFAULT '',
+  `date_number_cancellation` varchar(50) NOT NULL DEFAULT '',
+  `date_number_no` varchar(50) NOT NULL DEFAULT '',
+  `certificate_no` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `reason` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `track` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `date_post` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `color` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=32 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Дамп данных таблицы mdtomskbot.services: ~0 rows (приблизительно)
+-- Экспортируемые данные не выделены.
 
 /*!40103 SET TIME_ZONE=IFNULL(@OLD_TIME_ZONE, 'system') */;
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
 /*!40014 SET FOREIGN_KEY_CHECKS=IFNULL(@OLD_FOREIGN_KEY_CHECKS, 1) */;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40111 SET SQL_NOTES=IFNULL(@OLD_SQL_NOTES, 1) */;
-
-ALTER TABLE services MODIFY COLUMN benefit VARCHAR(255) NULL;

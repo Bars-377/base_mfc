@@ -21,6 +21,7 @@ db.init_app(app)  # Инициализируем объект SQLAlchemy с на
 def index():
     # Получаем параметры запроса
     year = request.args.get('year', None)  # Получаем параметр года из URL (если есть)
+    print('NEVEROV', year)
     keyword = request.args.get('keyword', None)  # Получаем параметр ключевого слова из URL (если есть)
     page = request.args.get('page', 1, type=int)  # Получаем параметр страницы из URL, по умолчанию 1
     per_page = 20  # Количество записей на странице
@@ -32,7 +33,12 @@ def index():
     # Фильтрация по году
     query = Service.query  # Начинаем запрос к модели Service
     if year:
-        query = query.filter(db.func.year(Service.year) == year)  # Фильтруем по выбранному году
+        if year == 'None':
+            year = None
+            query = query.filter(db.func.year(Service.year) == year)  # Фильтруем по выбранному году
+            year = 'None'
+        else:
+            query = query.filter(db.func.year(Service.year) == year)  # Фильтруем по выбранному году
 
     # Фильтрация по ключевому слову
     if keyword:
@@ -77,6 +83,17 @@ def index():
     total_services = query.count()  # Получаем общее количество записей
     total_pages = (total_services + per_page - 1) // per_page  # Вычисляем общее количество страниц
 
+    # Определите диапазон страниц для отображения
+    max_page_buttons = 5  # Количество кнопок, отображаемых в пагинации
+    start_page = max(1, page - max_page_buttons // 2)
+    end_page = min(total_pages, page + max_page_buttons // 2)
+
+    if end_page - start_page < max_page_buttons - 1:
+        if start_page > 1:
+            end_page = min(total_pages, end_page + (max_page_buttons - (end_page - start_page)))
+        else:
+            start_page = max(1, end_page - (max_page_buttons - (end_page - start_page)))
+
     # Отправляем данные на шаблон для отображения
     return render_template(
         'index.html',
@@ -88,6 +105,8 @@ def index():
         keyword=keyword,
         page=page,
         total_pages=total_pages,
+        start_page=start_page,
+        end_page=end_page,
         service_years=service_years
     )
 
@@ -104,7 +123,7 @@ def edit(id):
 @app.route('/add_edit', methods=['GET'])
 def add_edit():
 
-    # Отправляем данные на шаблон для редактирования
+    # Отправляем данные на шаблон для добавления
     return render_template('add.html')
 
 from datetime import datetime  # Импортируем datetime для работы с датами
@@ -143,13 +162,13 @@ def update(id):
     service.year = datetime.strptime(request.form['year'], '%Y-%m-%d').date()  # Преобразуем строку в дату
     service.cost = request.form['cost']
     service.certificate = request.form['certificate']
-    service.date_number_get = datetime.strptime(request.form['date_number_get'], '%Y-%m-%d').date()  # Преобразуем строку в дату
-    service.date_number_cancellation = datetime.strptime(request.form['date_number_cancellation'], '%Y-%m-%d').date()  # Преобразуем строку в дату
+    service.date_number_get = request.form['date_number_get']
+    service.date_number_cancellation = request.form['date_number_cancellation']
     service.date_number_no = request.form['date_number_no']
     service.certificate_no = request.form['certificate_no']
     service.reason = request.form['reason']
     service.track = request.form['track']
-    service.date_post = datetime.strptime(request.form['date_post'], '%Y-%m-%d').date()  # Преобразуем строку в дату
+    service.date_post = request.form['date_post']
     service.color = request.form.get('color')  # Получаем значение цвета
 
     # Сохраняем изменения в базе данных
@@ -182,16 +201,16 @@ def update_color(id):
         'address': service.address,
         'benefit': service.benefit,
         'number': service.number,
-        'year': service.year.strftime('%Y-%m-%d'),  # Преобразуем дату в строку
+        'year': service.year.strftime('%Y-%m-%d') if service.year else None,  # Преобразуем дату в строку
         'cost': service.cost,
         'certificate': service.certificate,
-        'date_number_get': service.date_number_get.strftime('%Y-%m-%d'),  # Преобразуем дату в строку
-        'date_number_cancellation': service.date_number_cancellation.strftime('%Y-%m-%d'),  # Преобразуем дату в строку
+        'date_number_get': service.date_number_get,
+        'date_number_cancellation': service.date_number_cancellation,
         'date_number_no': service.date_number_no,
         'certificate_no': service.certificate_no,
         'reason': service.reason,
         'track': service.track,
-        'date_post': service.date_post.strftime('%Y-%m-%d'),  # Преобразуем дату в строку
+        'date_post': service.date_post,
         'color': service.color  # Добавляем цвет в ответ
     })
 
@@ -253,13 +272,13 @@ def add():
     year = datetime.strptime(request.form['year'], '%Y-%m-%d').date()  # Преобразуем строку в дату
     cost = request.form['cost']
     certificate = request.form['certificate']
-    date_number_get = datetime.strptime(request.form['date_number_get'], '%Y-%m-%d').date()  # Преобразуем строку в дату
-    date_number_cancellation = datetime.strptime(request.form['date_number_cancellation'], '%Y-%m-%d').date()  # Преобразуем строку в дату
+    date_number_get = request.form['date_number_get']
+    date_number_cancellation = request.form['date_number_cancellation']
     date_number_no = request.form['date_number_no']
     certificate_no = request.form['certificate_no']
     reason = request.form['reason']
     track = request.form['track']
-    date_post = datetime.strptime(request.form['date_post'], '%Y-%m-%d').date()  # Преобразуем строку в дату
+    date_post = request.form['date_post']
     color = request.form.get('color')  # Получаем значение цвета
 
     # Создаем новый объект услуги
