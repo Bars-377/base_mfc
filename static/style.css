@@ -50,14 +50,6 @@ table {
     /* Расстояние между меткой и полем ввода */
 }
 
-/*
-th, td {
-    text-overflow: ellipsis;
-    overflow: hidden;
-    white-space: nowrap;
-}
-*/
-
 th, td {
     word-wrap: break-word; /* Позволяет переносу текста на новую строку */
     white-space: normal; /* Разрешает перенос текста */

@@ -21,7 +21,6 @@ db.init_app(app)  # Инициализируем объект SQLAlchemy с на
 def index():
     # Получаем параметры запроса
     year = request.args.get('year', None)  # Получаем параметр года из URL (если есть)
-    print('NEVEROV', year)
     keyword = request.args.get('keyword', None)  # Получаем параметр ключевого слова из URL (если есть)
     page = request.args.get('page', 1, type=int)  # Получаем параметр страницы из URL, по умолчанию 1
     per_page = 20  # Количество записей на странице
