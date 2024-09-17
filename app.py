@@ -319,18 +319,23 @@ def export_excel():
         'Адрес': service.address,
         'Льгота': service.benefit,
         'Серия и номер': service.number,
-        'Дата выдачи сертификата': service.year.strftime('%Y-%m-%d'),
+        'Дата выдачи сертификата': service.year.strftime('%Y-%m-%d') if service.year else None,
         'Размер выплаты': service.cost,
         'Сертификат': service.certificate,
-        'Дата и номер решения о выдаче': service.date_number_get.strftime('%Y-%m-%d'),
-        'Дата и № решения об аннулировании': service.date_number_cancellation.strftime('%Y-%m-%d'),
+        'Дата и номер решения о выдаче': service.date_number_get,
+        'Дата и № решения об аннулировании': service.date_number_cancellation,
         'Дата и № решения об отказе в выдаче': service.date_number_no,
         'Отказ в выдаче': service.certificate_no,
         'Причина отказа': service.reason,
         'ТРЕК': service.track,
-        'Дата отправки почтой': service.date_post.strftime('%Y-%m-%d'),
+        'Дата отправки почтой': service.date_post,
         'Color': getattr(service, 'color', '')
     } for service in services])
+
+    # Приводим колонки к числовому типу данных
+    df['Размер выплаты'] = pd.to_numeric(df['Размер выплаты'], errors='coerce')
+    df['Сертификат'] = pd.to_numeric(df['Сертификат'], errors='coerce')
+    df['Отказ в выдаче'] = pd.to_numeric(df['Отказ в выдаче'], errors='coerce')
 
     # Расчет итогов
     total_cost = df['Размер выплаты'].sum()
