@@ -56,65 +56,64 @@
                 <table class="table table-bordered">
                     <thead>
                         <tr>
-                            <th>№ п/п</th>
-                            <th>ФИО заявителя</th>
-                            <th>СНИЛС</th>
-                            <th>Район</th>
-                            <th>Населённый пункт</th>
-                            <th>Адрес</th>
-                            <th>Льгота</th>
-                            <th>Серия и номер</th>
-                            <th>Дата выдачи сертификата</th>
-                            <th>Размер выплаты</th>
-                            <th>Сертификат</th>
-                            <th>Дата и номер решения о выдаче</th>
-                            <th>Дата и № решения об аннулировании</th>
-                            <th>Дата и № решения об отказе в выдаче</th>
-                            <th>Отказ в выдаче</th>
-                            <th>ТРЕК</th>
-                            <th>Дата отправки почтой</th>
-                            <th>Управление</th>
-                            <th>Выбор цвета</th>
+                            <th class="fixed-width">№ п/п</th>
+                            <th class="stretch-width">ФИО заявителя</th>
+                            <th class="stretch-width">СНИЛС</th>
+                            <th class="fixed-width">Район</th>
+                            <th class="stretch-width">Населённый пункт</th>
+                            <th class="fixed-width">Адрес</th>
+                            <th class="fixed-width">Льгота</th>
+                            <th class="stretch-width">Серия и номер</th>
+                            <th class="fixed-width">Дата выдачи сертификата</th>
+                            <th class="stretch-width">Размер выплаты</th>
+                            <th class="stretch-width">Сертификат</th>
+                            <th class="fixed-width">Дата и номер решения о выдаче</th>
+                            <th class="fixed-width">Дата и № решения об аннулировании</th>
+                            <th class="fixed-width">Дата и № решения об отказе в выдаче</th>
+                            <th class="stretch-width">Отказ в выдаче</th>
+                            <th class="stretch-width">ТРЕК</th>
+                            <th class="fixed-width">Дата отправки почтой</th>
+                            <th class="fixed-width">Управление</th>
+                            <th class="fixed-width">Выбор цвета</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for service in services %}
                         <tr class="service-row" data-id="{{ service.id }}">
-                            <td style="background-color: {{ service.color or '' }}">{{ service.id }}</td>
-                            <td style="background-color: {{ service.color or '' }}">{{ service.name }}</td>
-                            <td style="background-color: {{ service.color or '' }}">{{ service.snils }}</td>
-                            <td style="background-color: {{ service.color or '' }}">{{ service.location }}</td>
-                            <td style="background-color: {{ service.color or '' }}">{{ service.address_p }}</td>
-                            <td style="background-color: {{ service.color or '' }}">{{ service.address }}</td>
-                            <td style="background-color: {{ service.color or '' }}">{{ service.benefit }}</td>
-                            <td style="background-color: {{ service.color or '' }}">{{ service.number }}</td>
-                            <td style="background-color: {{ service.color or '' }}">{{ service.year }}</td>
-                            <td style="background-color: {{ service.color or '' }}">{{ service.cost }}</td>
-                            <td style="background-color: {{ service.color or '' }}">{{ service.certificate }}</td>
-                            <td style="background-color: {{ service.color or '' }}">{{ service.date_number_get }}</td>
-                            <td style="background-color: {{ service.color or '' }}">{{ service.date_number_cancellation }}</td>
-                            <td style="background-color: {{ service.color or '' }}">{{ service.date_number_no }}</td>
-                            <td style="background-color: {{ service.color or '' }}">{{ service.certificate_no }}</td>
-                            <td style="background-color: {{ service.color or '' }}">{{ service.track }}</td>
-                            <td style="background-color: {{ service.color or '' }}">{{ service.date_post }}</td>
-                            <td style="text-align: center;">
+                            <!-- Аналогично добавьте классы для td -->
+                            <td class="fixed-width">{{ service.id }}</td>
+                            <td class="stretch-width">{{ service.name }}</td>
+                            <td class="stretch-width">{{ service.snils }}</td>
+                            <td class="fixed-width">{{ service.location }}</td>
+                            <td class="stretch-width">{{ service.address_p }}</td>
+                            <td class="fixed-width">{{ service.address }}</td>
+                            <td class="fixed-width">{{ service.benefit }}</td>
+                            <td class="stretch-width">{{ service.number }}</td>
+                            <td class="fixed-width">{{ service.year }}</td>
+                            <td class="stretch-width">{{ service.cost }}</td>
+                            <td class="stretch-width">{{ service.certificate }}</td>
+                            <td class="fixed-width">{{ service.date_number_get }}</td>
+                            <td class="fixed-width">{{ service.date_number_cancellation }}</td>
+                            <td class="fixed-width">{{ service.date_number_no }}</td>
+                            <td class="stretch-width">{{ service.certificate_no }}</td>
+                            <td class="stretch-width">{{ service.track }}</td>
+                            <td class="fixed-width">{{ service.date_post }}</td>
+                            <td class="stretch-width">
+                                <!-- Управление -->
                                 <div style="display: flex; justify-content: center; align-items: center; gap: 5px;">
                                     <a href="{{ url_for('edit', id=service.id) }}" class="btn btn-sm btn-warning">Edit</a>
-                                    <form method="POST" action="{{ url_for('delete', id=service.id) }}" style="display:inline;"
-                                        onsubmit="return confirmDelete();">
+                                    <form method="POST" action="{{ url_for('delete', id=service.id) }}" style="display:inline;" onsubmit="return confirmDelete();">
                                         <button type="submit" class="btn btn-sm btn-danger">Delete</button>
                                     </form>
                                 </div>
                             </td>
-                            <td>
+                            <td class="stretch-width">
+                                <!-- Выбор цвета -->
                                 <select class="form-control color-select" data-id="{{ service.id }}">
                                     <option value="">Default</option>
-                                    <option value="#eaf7ff" {% if service.color=='#eaf7ff' %}selected{% endif %}>Light Blue
-                                    </option>
-                                    <option value="#ffebeb" {% if service.color=='#ffebeb' %}selected{% endif %}>Light Red
-                                    </option>
-                                    <option value="#dff0d8" {% if service.color=='#dff0d8' %}selected{% endif %}>Light Green
-                                    </option>
+                                    <option value="#eaf7ff" {% if service.color=='#eaf7ff' %}selected{% endif %}>Light Blue</option>
+                                    <option value="#ffebeb" {% if service.color=='#ffebeb' %}selected{% endif %}>Light Red</option>
+                                    <option value="#dff0d8" {% if service.color=='#dff0d8' %}selected{% endif %}>Light Green</option>
                                 </select>
                             </td>
                         </tr>
