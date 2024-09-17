@@ -1,0 +1,137 @@
+import pandas as pd
+import mysql.connector
+
+# Установите соединение с базой данных
+conn = mysql.connector.connect(
+    host='localhost',
+    user='root',        # Замените на ваше имя пользователя
+    password='enigma1418',    # Замените на ваш пароль
+    database='mdtomskbot'
+)
+cursor = conn.cursor()
+
+try:
+    # Загрузите данные из Excel
+    file_path = 'C:/Users/neverov/Desktop/gaz.xlsx'
+    sheet_name = 'РЕЕСТР'  # Замените на имя вашего листа
+    df = pd.read_excel(file_path, sheet_name=sheet_name, header=2)
+
+    def extract_number(value, default="0.0"):
+        import re
+        """Извлекает первое число из строки, если оно есть."""
+        match = re.search(r"[-+]?\d*[,\.]\d+|\d+", str(value))
+        if match:
+            return match.group(0).replace(',', '.')  # Заменяем запятую на точку для поддержки формата float
+        return default
+
+    def safe_date_conversion(value):
+        from dateutil import parser
+        if pd.isna(value):
+            return None  # Возвращаем None для недопустимых значений
+        try:
+            # Попробуйте распарсить дату
+            parsed_date = parser.parse(str(value), dayfirst=True)
+            return parsed_date.strftime('%Y-%m-%d')
+        except (ValueError, TypeError):
+            return None # Возвращаем None, если не удалось распарсить дату
+
+    # Функции для преобразования данных
+    def safe_conversion(value):
+        if pd.isna(value):
+            return ''
+        return str(value)  # Преобразуем в строку, если значение не NaN
+
+    def safe_float_conversion(value):
+        if pd.isna(value):
+            return "0.0"
+        try:
+            number_str = extract_number(float(value))
+            return f"{number_str}"
+        except ValueError:
+            return "0.0"
+
+    def safe_int_conversion(value):
+        if pd.isna(value):
+            return "0"
+        try:
+            number_str = extract_number(int(value))
+            return f"{number_str}"
+        except ValueError:
+            return "0"
+
+    # Заполните NaN значения в DataFrame и обработайте данные
+    df['ФИО заявителя'] = df['ФИО заявителя'].apply(safe_conversion)
+    df['СНИЛС'] = df['СНИЛС'].apply(safe_conversion)
+    df['Район'] = df['Район'].apply(safe_conversion)
+    df['Адрес нп'] = df['Адрес нп'].apply(safe_conversion)
+    df['Адрес'] = df['Адрес'].apply(safe_conversion)
+    df['Льгота'] = df['Льгота'].apply(safe_conversion)
+    df['Серия и № сертификата'] = df['Серия и № сертификата'].apply(safe_conversion)
+    df['Дата выдачи сертификата'] = df['Дата выдачи сертификата'].apply(safe_date_conversion)
+    df['Размер выплаты'] = df['Размер выплаты'].apply(safe_float_conversion)
+    df['Сертификат'] = df['Сертификат'].apply(safe_int_conversion)
+    df['Дата и № решения о выдаче сертификата'] = df['Дата и № решения о выдаче сертификата'].apply(safe_conversion)
+    df['Дата и № решения об аннулировании сертификата'] = df['Дата и № решения об аннулировании сертификата'].apply(safe_conversion)
+    df['Дата и № решения об отказе в выдаче сертификата'] = df['Дата и № решения об отказе в выдаче сертификата'].apply(safe_conversion)
+    df['Отказ в выдаче сертификата'] = df['Отказ в выдаче сертификата'].apply(safe_int_conversion)
+    df['Основная причина отказа (пункт)'] = df['Основная причина отказа (пункт)'].apply(safe_conversion)
+    df['ТРЕК'] = df['ТРЕК'].apply(safe_conversion)
+    df['Дата отправки почтой'] = df['Дата отправки почтой'].apply(safe_conversion)
+
+    # Определите SQL-запрос для вставки данных
+    insert_query = """
+    INSERT INTO services (
+        name, snils, location, address_p, address, benefit, number, year, cost,
+        certificate, date_number_get, date_number_cancellation, date_number_no,
+        certificate_no, reason, track, date_post
+    ) VALUES (
+        %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s
+    )
+    """
+
+    # Подготовьте данные для вставки
+    data_to_insert = []
+    for _, row in df.iterrows():
+        if pd.notna(row.get('ФИО заявителя')) and row.get('ФИО заявителя').strip():
+            data_row = (
+                safe_conversion(row.get('ФИО заявителя')),
+                safe_conversion(row.get('СНИЛС')),
+                safe_conversion(row.get('Район')),
+                safe_conversion(row.get('Адрес нп')),
+                safe_conversion(row.get('Адрес')),
+                safe_conversion(row.get('Льгота')),
+                safe_conversion(row.get('Серия и № сертификата')),
+                safe_date_conversion(row.get('Дата выдачи сертификата')),
+                safe_float_conversion(row.get('Размер выплаты')),
+                safe_int_conversion(row.get('Сертификат')),
+                safe_conversion(row.get('Дата и № решения о выдаче сертификата')),
+                safe_conversion(row.get('Дата и № решения об аннулировании сертификата')),
+                safe_conversion(row.get('Дата и № решения об отказе в выдаче сертификата')),
+                safe_int_conversion(row.get('Отказ в выдаче сертификата')),
+                safe_conversion(row.get('Основная причина отказа (пункт)')),
+                safe_conversion(row.get('ТРЕК')),
+                safe_conversion(row.get('Дата отправки почтой'))
+            )
+
+            data_to_insert.append(data_row)
+
+    if data_to_insert:
+        # Вставьте данные в базу данных
+        cursor.executemany(insert_query, data_to_insert)
+        conn.commit()
+        print('Данные загружены')
+    else:
+        print('Данные НЕ загружены')
+
+except Exception as e:
+    # Вывод подробной информации об ошибке
+    print(f"Поймано исключение: {type(e).__name__}")
+    print(f"Сообщение об ошибке: {str(e)}")
+    import traceback
+    print("Трассировка стека (stack trace):")
+    traceback.print_exc()
+
+finally:
+    # Закройте соединение
+    cursor.close()
+    conn.close()
