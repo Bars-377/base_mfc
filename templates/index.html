@@ -193,6 +193,9 @@
     <script src="{{ url_for('static', filename='js/jquery-3.5.1.slim.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
     <script>
+        window.onload = function() {
+            window.scrollTo(0, 0);
+        };
         // Функция сброса фильтров и прокрутки
         function resetFilters() {
             document.getElementById('year').value = '';
@@ -266,8 +269,11 @@
         });
 
         // Обработчик нажатия на кнопку фильтрации
-        document.getElementById('filter-form').addEventListener('submit', function () {
+        document.getElementById('filter-form').addEventListener('submit', function (event) {
             window.scrollTo(0, 0);
+            // Обрезаем пробелы с двух сторон поля ввода
+            var keywordInput = document.getElementById('keyword');
+            keywordInput.value = keywordInput.value.trim();
         });
 
         document.addEventListener('DOMContentLoaded', function () {
