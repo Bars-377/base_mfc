@@ -36,6 +36,29 @@
                         value="{{ request.args.get('keyword', '') }}">
                 </div>
                 <div class="form-group form-item">
+                    <label for="column">Выберите столбец:</label>
+                    <select name="column" id="column" class="form-control">
+                        <option value="">Выберите столбец</option>
+                        <option value="name" {% if selected_column == 'name' %}selected{% endif %}>ФИО заявителя</option>
+                        <option value="snils" {% if selected_column == 'snils' %}selected{% endif %}>СНИЛС</option>
+                        <option value="location" {% if selected_column == 'location' %}selected{% endif %}>Район</option>
+                        <option value="address_p" {% if selected_column == 'address_p' %}selected{% endif %}>Населённый пункт</option>
+                        <option value="address" {% if selected_column == 'address' %}selected{% endif %}>Адрес</option>
+                        <option value="benefit" {% if selected_column == 'benefit' %}selected{% endif %}>Льгота</option>
+                        <option value="number" {% if selected_column == 'number' %}selected{% endif %}>Серия и номер</option>
+                        <option value="year" {% if selected_column == 'year' %}selected{% endif %}>Дата выдачи сертификата</option>
+                        <option value="cost" {% if selected_column == 'cost' %}selected{% endif %}>Размер выплаты</option>
+                        <option value="certificate" {% if selected_column == 'certificate' %}selected{% endif %}>Сертификат</option>
+                        <option value="date_number_get" {% if selected_column == 'date_number_get' %}selected{% endif %}>Дата и номер решения о выдаче</option>
+                        <option value="date_number_cancellation" {% if selected_column == 'date_number_cancellation' %}selected{% endif %}>Дата и № решения об аннулировании</option>
+                        <option value="date_number_no" {% if selected_column == 'date_number_no' %}selected{% endif %}>Дата и № решения об отказе в выдаче</option>
+                        <option value="certificate_no" {% if selected_column == 'certificate_no' %}selected{% endif %}>Отказ в выдаче</option>
+                        <option value="reason" {% if selected_column == 'reason' %}selected{% endif %}>Основная причина отказа</option>
+                        <option value="track" {% if selected_column == 'track' %}selected{% endif %}>ТРЕК</option>
+                        <option value="date_post" {% if selected_column == 'date_post' %}selected{% endif %}>Дата отправки почтой</option>
+                    </select>
+                </div>
+                <div class="form-group form-item">
                     <label for="year">Выберите год:</label>
                     <select name="year" id="year" class="form-control">
                         <option value="">Выберите год</option>
@@ -71,6 +94,7 @@
                             <th class="fixed-width">Дата и № решения об аннулировании</th>
                             <th class="fixed-width">Дата и № решения об отказе в выдаче</th>
                             <th class="stretch-width">Отказ в выдаче</th>
+                            <th class="stretch-width">Основная причина отказа</th>
                             <th class="stretch-width">ТРЕК</th>
                             <th class="fixed-width">Дата отправки почтой</th>
                             <th class="fixed-width">Управление</th>
@@ -96,6 +120,7 @@
                             <td class="fixed-width" style="background-color: {{ service.color or '' }}">{{ service.date_number_cancellation }}</td>
                             <td class="fixed-width" style="background-color: {{ service.color or '' }}">{{ service.date_number_no }}</td>
                             <td class="stretch-width" style="background-color: {{ service.color or '' }}">{{ service.certificate_no }}</td>
+                            <td class="stretch-width" style="background-color: {{ service.color or '' }}">{{ service.reason }}</td>
                             <td class="stretch-width" style="background-color: {{ service.color or '' }}">{{ service.track }}</td>
                             <td class="fixed-width" style="background-color: {{ service.color or '' }}">{{ service.date_post }}</td>
                             <td class="stretch-width">
@@ -200,6 +225,7 @@
         function resetFilters() {
             document.getElementById('year').value = '';
             document.getElementById('keyword').value = '';
+            document.getElementById('column').value = '';
             document.getElementById('filter-form').submit();
             window.scrollTo(0, 0);
         }
