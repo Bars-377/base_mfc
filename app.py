@@ -32,9 +32,10 @@ def index():
         year = None
 
     if year:
-        if year != 'None':
-            # year = int(year)
-            query = query.filter(db.func.year(Service.year) == year)
+        # if year != 'None':
+        # year = int(year)
+        print("APPAPAPAPAPAP")
+        query = query.filter(db.func.year(Service.year) == (year))
 
     if keyword:
         if selected_column and hasattr(Service, selected_column):
@@ -46,12 +47,14 @@ def index():
             query = query.filter(db.or_(*filters))
 
     """ДОДЕЛАТЬ"""
-    # query = query.order_by(Service.id_id.asc(), Service.year.asc())
+    query = query.order_by(Service.year.asc())
 
-    if year:
-        query = query.order_by(Service.id_id.asc(), Service.year.asc())
-    else:
-        query = query.order_by(Service.id_id.asc())
+    # if year:
+    #     print('POPAL_1')
+    #     query = query.order_by(Service.id_id.asc(), Service.year.asc())
+    # else:
+    #     print('POPAL_2')
+    #     query = query.order_by(Service.id_id.asc())
 
     total_cost_1 = db.session.query(db.func.sum(Service.cost)).scalar() or 0
     total_cost_2 = db.session.query(db.func.sum(Service.certificate)).scalar() or 0
