@@ -8,6 +8,7 @@ class Service(db.Model):
 
     # Определяем поля таблицы
     id = db.Column(db.BigInteger, primary_key=True)  # Поле для уникального идентификатора записи (первичный ключ)
+    id_id = db.Column(db.String(500), nullable=False)
     name = db.Column(db.String(500), nullable=False)  # Название услуги, обязательное поле, максимум 100 символов
     snils = db.Column(db.String(500), nullable=False)
     location = db.Column(db.String(500), nullable=False)
@@ -29,12 +30,13 @@ class Service(db.Model):
     color = db.Column(db.String(500), nullable=False)  # Дополнительное поле для хранения цвета (HEX код), длина 7 символов (включая #), может быть пустым
 
     # Конструктор класса для создания новых объектов
-    def __init__(self, name, snils, location,
+    def __init__(self, id_id, name, snils, location,
                 address_p, address, benefit, number,
                 year, cost, certificate, date_number_get,
                 date_number_cancellation, date_number_no,
                 certificate_no, reason, track, date_post, id=None, color=None):
         self.id = id
+        self.id_id = id_id
         self.name = name  # Устанавливаем название услуги
         self.snils = snils
         self.location = location

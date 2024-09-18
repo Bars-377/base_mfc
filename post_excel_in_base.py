@@ -60,8 +60,9 @@ try:
             return "0"
 
     # Заполните NaN значения в DataFrame и обработайте данные
+    df['№ п/п'] = df['№ п/п'].apply(safe_conversion)
     df['ФИО заявителя'] = df['ФИО заявителя'].apply(safe_conversion)
-    df['СНИЛС'] = df['СНИЛС'].apply(safe_conversion)
+    df['СНИЛС'] = df['СНИЛС'].apply(safe_int_conversion)
     df['Район'] = df['Район'].apply(safe_conversion)
     df['Адрес нп'] = df['Адрес нп'].apply(safe_conversion)
     df['Адрес'] = df['Адрес'].apply(safe_conversion)
@@ -81,11 +82,11 @@ try:
     # Определите SQL-запрос для вставки данных
     insert_query = """
     INSERT INTO services (
-        name, snils, location, address_p, address, benefit, number, year, cost,
+        id_id, name, snils, location, address_p, address, benefit, number, year, cost,
         certificate, date_number_get, date_number_cancellation, date_number_no,
         certificate_no, reason, track, date_post
     ) VALUES (
-        %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s
+        %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s
     )
     """
 
@@ -94,8 +95,9 @@ try:
     for _, row in df.iterrows():
         if pd.notna(row.get('ФИО заявителя')) and row.get('ФИО заявителя').strip():
             data_row = (
+                safe_conversion(row.get('№ п/п')),
                 safe_conversion(row.get('ФИО заявителя')),
-                safe_conversion(row.get('СНИЛС')),
+                safe_int_conversion(row.get('СНИЛС')),
                 safe_conversion(row.get('Район')),
                 safe_conversion(row.get('Адрес нп')),
                 safe_conversion(row.get('Адрес')),

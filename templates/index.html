@@ -39,6 +39,7 @@
                     <label for="column">Выберите столбец:</label>
                     <select name="column" id="column" class="form-control">
                         <option value="">Выберите столбец</option>
+                        <option value="id_id" {% if selected_column == 'id_id' %}selected{% endif %}>№ п/п</option>
                         <option value="name" {% if selected_column == 'name' %}selected{% endif %}>ФИО заявителя</option>
                         <option value="snils" {% if selected_column == 'snils' %}selected{% endif %}>СНИЛС</option>
                         <option value="location" {% if selected_column == 'location' %}selected{% endif %}>Район</option>
@@ -61,7 +62,7 @@
                 <div class="form-group form-item">
                     <label for="year">Выберите год:</label>
                     <select name="year" id="year" class="form-control">
-                        <option value="">Выберите год</option>
+                        <option value="No">Выберите год</option>
                         {% for year in service_years %}
                         <option value="{{ year }}" {% if year==selected_year %}selected{% endif %}>
                             {{ year }}
@@ -84,7 +85,7 @@
                             <th class="stretch-width">СНИЛС</th>
                             <th class="fixed-width">Район</th>
                             <th class="stretch-width">Населённый пункт</th>
-                            <th class="fixed-width">Адрес</th>
+                            <th class="stretch-width">Адрес</th>
                             <th class="fixed-width">Льгота</th>
                             <th class="stretch-width">Серия и номер</th>
                             <th class="fixed-width">Дата выдачи сертификата</th>
@@ -105,7 +106,7 @@
                         {% for service in services %}
                         <tr class="service-row" data-id="{{ service.id }}">
                             <!-- Аналогично добавьте классы для td -->
-                            <td class="fixed-width" style="background-color: {{ service.color or '' }}">{{ service.id }}</td>
+                            <td class="fixed-width" style="background-color: {{ service.color or '' }}">{{ service.id_id }}</td>
                             <td class="stretch-width" style="background-color: {{ service.color or '' }}">{{ service.name }}</td>
                             <td class="stretch-width" style="background-color: {{ service.color or '' }}">{{ service.snils }}</td>
                             <td class="fixed-width" style="background-color: {{ service.color or '' }}">{{ service.location }}</td>
@@ -221,6 +222,7 @@
         window.onload = function() {
             window.scrollTo(0, 0);
         };
+
         // Функция сброса фильтров и прокрутки
         function resetFilters() {
             document.getElementById('year').value = '';
@@ -307,6 +309,26 @@
                 document.querySelector('.wrapper').innerHTML = '<p>Sorry! Non webkit users.</p>';
             }
         });
+
+        // ДОДЕЛАТЬ, НЕ РАБОТАЕТ
+        // document.addEventListener('DOMContentLoaded', function() {
+        //    const yearSelect = document.getElementById('year');
+        //
+        //    if (yearSelect) {
+        //        console.log('DOM fully loaded and parsed');
+        //
+        //        if (!localStorage.getItem('hasVisited')) {
+        //            console.log('First visit detected');
+        //            yearSelect.value = ''; // Устанавливаем значение по умолчанию
+        //            localStorage.setItem('hasVisited', 'true');
+        //        } else {
+        //            console.log('Returning visit detected');
+        //        }
+        //    } else {
+        //        console.log('Element #year not found');
+        //    }
+        //});
+
     </script>
 </body>
 

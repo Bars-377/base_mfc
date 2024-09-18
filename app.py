@@ -25,12 +25,16 @@ def index():
 
     query = Service.query
 
+    print(year)
+    print(type(year))
+
+    if year == 'No':
+        year = None
+
     if year:
-        if year == 'None':
-            year = None
-        else:
-            year = int(year)
-        query = query.filter(db.func.year(Service.year) == year)
+        if year != 'None':
+            # year = int(year)
+            query = query.filter(db.func.year(Service.year) == year)
 
     if keyword:
         if selected_column and hasattr(Service, selected_column):
@@ -41,7 +45,13 @@ def index():
             filters = [getattr(Service, col).like(f'%{keyword}%') for col in columns]
             query = query.filter(db.or_(*filters))
 
-    query = query.order_by(Service.year.asc())
+    """ДОДЕЛАТЬ"""
+    # query = query.order_by(Service.id_id.asc(), Service.year.asc())
+
+    if year:
+        query = query.order_by(Service.id_id.asc(), Service.year.asc())
+    else:
+        query = query.order_by(Service.id_id.asc())
 
     total_cost_1 = db.session.query(db.func.sum(Service.cost)).scalar() or 0
     total_cost_2 = db.session.query(db.func.sum(Service.certificate)).scalar() or 0
@@ -90,6 +100,7 @@ def add_edit():
 @app.route('/edit/<int:id>', methods=['POST'])
 def update(id):
     service = Service.query.get_or_404(id)
+    service.id_id = request.form['id_id']
     service.name = request.form['name']
     service.snils = request.form['snils']
     service.location = request.form['location']
@@ -140,6 +151,7 @@ def delete(id):
 
 @app.route('/add', methods=['POST'])
 def add():
+    id_id = request.form['id_id']
     name = request.form['name']
     snils = request.form['snils']
     location = request.form['location']
@@ -159,7 +171,7 @@ def add():
     date_post = request.form['date_post']
     color = request.form.get('color')
 
-    new_service = Service(name=name, snils=snils, location=location,
+    new_service = Service(id_id=id_id, name=name, snils=snils, location=location,
                         address_p=address_p, address=address, benefit=benefit,
                         number=number, year=year, cost=cost,
                         certificate=certificate, date_number_get=date_number_get,
@@ -182,6 +194,7 @@ def export_excel():
     services = query.all()
 
     df = pd.DataFrame([{
+        '№ п/п': service.id_id,
         'ФИО заявителя': service.name,
         'СНИЛС': service.snils,
         'Район': service.location,
@@ -206,7 +219,6 @@ def export_excel():
     with pd.ExcelWriter(output, engine='openpyxl') as writer:
         df.to_excel(writer, index=False, sheet_name='Services')
 
-        workbook = writer.book
         worksheet = writer.sheets['Services']
 
         header_fill = PatternFill(start_color='FFFF00', end_color='FFFF00', fill_type='solid')
@@ -221,12 +233,13 @@ def export_excel():
                                     bottom=Side(border_style='thin'))
 
     output.seek(0)
-    return send_file(output, attachment_filename="services.xlsx", as_attachment=True)
+    return send_file(output, download_name="services.xlsx", as_attachment=True)
 
+"""Nginx"""
 from waitress import serve
-
 if __name__ == '__main__':
     serve(app, host='172.18.88.41', port=8000)
 
+"""Standart"""
 # if __name__ == '__main__':
 #     app.run(host='0.0.0.0', port=5000, debug=True)
