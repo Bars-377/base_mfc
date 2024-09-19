@@ -76,7 +76,7 @@
             </div>
             <div class="form-group">
                 <label for="year">Дата выдачи сертификата</label>
-                <input type="date" class="form-control" id="year" name="year" value="{{ service.year }}" required>
+                <input type="date" class="form-control" id="year" name="year" value="{{ service.year }}" maxlength="10" required>
                 <!-- Тип поля date автоматически предоставляет календарный вид для выбора даты -->
             </div>
             <div class="form-group">
@@ -92,12 +92,12 @@
             </div>
             <div class="form-group">
                 <label for="date_number_get">Дата и номер решения о выдаче</label>
-                <input type="date" class="form-control" id="date_number_get" name="date_number_get" value="{{ service.date_number_get }}" required>
+                <input type="date" class="form-control" id="date_number_get" name="date_number_get" value="{{ service.date_number_get }}" maxlength="10" required>
                 <!-- Тип поля date автоматически предоставляет календарный вид для выбора даты -->
             </div>
             <div class="form-group">
                 <label for="date_number_cancellation">Дата и № решения об аннулировании</label>
-                <input type="date" class="form-control" id="date_number_cancellation" name="date_number_cancellation" value="{{ service.date_number_cancellation }}" required>
+                <input type="date" class="form-control" id="date_number_cancellation" name="date_number_cancellation" value="{{ service.date_number_cancellation }}" maxlength="10" required>
                 <!-- Тип поля date автоматически предоставляет календарный вид для выбора даты -->
             </div>
             <div class="form-group">
@@ -122,7 +122,7 @@
             </div>
             <div class="form-group">
                 <label for="date_post">Дата отправки почтой</label>
-                <input type="date" class="form-control" id="date_post" name="date_post" value="{{ service.date_post }}" required>
+                <input type="date" class="form-control" id="date_post" name="date_post" value="{{ service.date_post }}" maxlength="10" required>
                 <!-- Тип поля date автоматически предоставляет календарный вид для выбора даты -->
             </div>
             <br>

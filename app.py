@@ -42,19 +42,9 @@ def index():
             filters = [getattr(Service, col).like(f'%{keyword}%') for col in columns]
             query = query.filter(db.or_(*filters))
 
-    # """ДОДЕЛАТЬ"""
-    # query = query.order_by(int(Service.id_id).asc(), Service.year.asc())
-
     """Сортировка в cast(Service.id_id, Integer).asc() идёт с преобразованием в Integer"""
     from sqlalchemy import cast, Integer
     query = query.order_by(cast(Service.id_id, Integer).asc(), Service.year.asc())
-
-    # if year:
-    #     print('POPAL_1')
-    #     query = query.order_by(Service.id_id.asc(), Service.year.asc())
-    # else:
-    #     print('POPAL_2')
-    #     query = query.order_by(Service.id_id.asc())
 
     total_cost_1 = db.session.query(db.func.sum(Service.cost)).scalar() or 0
     total_cost_2 = db.session.query(db.func.sum(Service.certificate)).scalar() or 0
@@ -189,9 +179,6 @@ def add():
 @app.route('/export-excel', methods=['GET'])
 def export_excel():
     year = request.args.get('year', None)
-
-    print(year)
-    print(type(year))
 
     # Получаем данные для выбранного года
     query = Service.query
