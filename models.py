@@ -1,4 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy
+from werkzeug.security import generate_password_hash, check_password_hash
 
 # Инициализируем объект SQLAlchemy
 db = SQLAlchemy()
@@ -56,3 +57,39 @@ class Service(db.Model):
         # self.description = description  # Устанавливаем описание услуги
         self.date_post = date_post
         self.color = color  # Устанавливаем цвет (если задан), может быть None (отсутствовать)
+
+from flask_login import UserMixin
+
+class User(db.Model, UserMixin):
+    __tablename__ = 'users'  # Явно указываем имя таблицы
+
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(500), unique=True, nullable=False)
+    password = db.Column(db.String(500), nullable=False)
+
+    def set_password(self, password):
+        """Сохраняем хешированный пароль"""
+        self.password = generate_password_hash(password)
+
+    def check_password(self, password):
+        """Проверка пароля"""
+        return check_password_hash(self.password, password)
+
+    def get_id(self):
+        """Возвращает идентификатор пользователя"""
+        return str(self.id)
+
+    @property
+    def is_active(self):
+        """Возвращает True, если пользователь активен"""
+        return True
+
+    @property
+    def is_authenticated(self):
+        """Возвращает True, если пользователь аутентифицирован"""
+        return True
+
+    @property
+    def is_anonymous(self):
+        """Возвращает False, так как анонимный пользователь не поддерживается"""
+        return False

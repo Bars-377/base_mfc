@@ -1,10 +1,10 @@
-from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, send_file
+from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
 from models import db, Service, User
 from datetime import datetime
 import pandas as pd
 from io import BytesIO
+from flask import send_file
 from openpyxl.styles import PatternFill, Border, Side
-from flask_login import LoginManager, login_user, logout_user, login_required
 
 app = Flask(__name__)
 app.secret_key = 'supersecretkey'
@@ -12,19 +12,18 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:enigma1418@localho
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db.init_app(app)
 
+from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
+
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
-
-@login_manager.user_loader
-def load_user(user_id):
-    return User.query.get_or_404(int(user_id))
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
+        # Логика регистрации пользователя, например, создание нового пользователя
         new_user = User(username=username)
         new_user.set_password(password)  # Предполагаем, что метод set_password уже реализован
         db.session.add(new_user)
@@ -32,6 +31,17 @@ def register():
         flash('Registration successful!')
         return redirect(url_for('login'))
     return render_template('register.html')
+
+from sqlalchemy.orm import sessionmaker
+
+# Создание sessionmaker
+Session = sessionmaker(bind=db.engine)
+
+@login_manager.user_loader
+def load_user(user_id):
+    # Получаем текущую сессию
+    session = Session()
+    return session.get(User, int(user_id))
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -229,6 +239,7 @@ def add():
 def export_excel():
     year = request.args.get('year', None)
 
+    # Получаем данные для выбранного года
     query = Service.query
 
     if year == 'None':  # Если year == 'None', фильтруем записи, у которых год == NULL
@@ -238,6 +249,7 @@ def export_excel():
 
     services = query.all()
 
+    # Создаем DataFrame из данных
     df = pd.DataFrame([{
         '№ п/п': service.id_id,
         'ФИО заявителя': service.name,
@@ -247,7 +259,7 @@ def export_excel():
         'Адрес': service.address,
         'Льгота': service.benefit,
         'Серия и номер': service.number,
-        'Дата выдачи сертификата': service.year.strftime('%Y-%m-%d') if service.year else None,
+        'Дата выдачи сертификата': service.year.strftime('%d.%m.%Y') if service.year else None,
         'Размер выплаты': service.cost,
         'Сертификат': service.certificate,
         'Дата и номер решения о выдаче': service.date_number_get,

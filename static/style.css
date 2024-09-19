@@ -25,9 +25,9 @@ table {
 }
 
 /* Для колонки "Адрес" */
-td:nth-child(6), th:nth-child(6) {
-    white-space: normal;
-}
+/*td:nth-child(6), th:nth-child(6) { */
+/*    white-space: normal; */
+/*} */
 
 /* Стили для строк таблицы с классом service-row */
 .table .service-row {

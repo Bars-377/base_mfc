@@ -75,7 +75,7 @@
                 <!-- Ограничение на 20 символов для имени услуги -->
             </div>
             <div class="form-group">
-                <label for="number">Серия и номер</label>
+                <label for="number">Номер</label>
                 <input type="text" class="form-control" id="number" name="number" value="{{ service.number }}"
                     maxlength="30" required title="Максимальное количество значений 30">
                 <!-- Ограничение на 20 символов для имени услуги -->
@@ -83,7 +83,7 @@
             <div class="form-group">
                 <label for="year">Дата выдачи сертификата</label>
                 <input type="text" class="form-control" id="year" name="year" value="{{ service.year }}" required
-                    pattern="\d{4}-\d{2}-\d{2}" title="Введите дату в формате ГГГГ-ММ-ДД">
+                    title="Введите дату в формате ДД.ММ.ГГГГ" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this)">
                 <!-- Тип поля date автоматически предоставляет календарный вид для выбора даты -->
             </div>
             <div class="form-group">
@@ -103,14 +103,14 @@
             <div class="form-group">
                 <label for="date_number_get">Дата и номер решения о выдаче</label>
                 <input type="text" class="form-control" id="date_number_get" name="date_number_get"
-                    value="{{ service.date_number_get }}" required pattern="\d{4}-\d{2}-\d{2}"
+                    value="{{ service.date_number_get }}" pattern="\d{4}-\d{2}-\d{2}"
                     title="Введите дату в формате ГГГГ-ММ-ДД">
                 <!-- Тип поля date автоматически предоставляет календарный вид для выбора даты -->
             </div>
             <div class="form-group">
                 <label for="date_number_cancellation">Дата и № решения об аннулировании</label>
                 <input type="text" class="form-control" id="date_number_cancellation" name="date_number_cancellation"
-                    value="{{ service.date_number_cancellation }}" required pattern="\d{4}-\d{2}-\d{2}"
+                    value="{{ service.date_number_cancellation }}" pattern="\d{4}-\d{2}-\d{2}"
                     title="Введите дату в формате ГГГГ-ММ-ДД">
                 <!-- Тип поля date автоматически предоставляет календарный вид для выбора даты -->
             </div>
@@ -130,20 +130,19 @@
             </div>
             <div class="form-group">
                 <label for="reason">Причина отказа</label>
-                <input type="text" class="form-control" id="reason" name="reason" value="{{ service.reason }}"
-                    pattern="\d{1,2}" maxlength="2" required title="Максимальное значение 99">
+                <input type="text" class="form-control" id="reason" name="reason" value="{{ service.reason }}" maxlength="30" required title="Максимальное количество значений 30">
                 <!-- Ограничение на 20 символов для имени услуги -->
             </div>
             <div class="form-group">
                 <label for="track">ТРЕК</label>
                 <input type="text" class="form-control" id="track" name="track" value="{{ service.track }}"
-                    maxlength="30" required title="Максимальное количество значений 30">
+                    maxlength="30" title="Максимальное количество значений 30">
                 <!-- Ограничение на 20 символов для имени услуги -->
             </div>
             <div class="form-group">
                 <label for="date_post">Дата отправки почтой</label>
                 <input type="text" class="form-control" id="date_post" name="date_post" value="{{ service.date_post }}"
-                    required pattern="\d{4}-\d{2}-\d{2}" title="Введите дату в формате ГГГГ-ММ-ДД">
+                    title="Введите дату в формате ДД.ММ.ГГГГ" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this)">
                 <!-- Тип поля date автоматически предоставляет календарный вид для выбора даты -->
             </div>
             <br>
@@ -158,6 +157,20 @@
     <script src="{{ url_for('static', filename='js/jquery-3.5.1.slim.min.js') }}"></script>
     <!-- Подключаем JavaScript для Bootstrap из статической папки -->
     <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
+
+    <script>
+        function formatDate(input) {
+            let value = input.value.replace(/\D/g, '');  // Убираем все нецифровые символы
+            if (value.length >= 5) {
+                input.value = value.substring(0, 2) + '.' + value.substring(2, 4) + (value.length > 4 ? '.' + value.substring(4, 8) : '');
+            } else if (value.length >= 3) {
+                input.value = value.substring(0, 2) + '.' + value.substring(2, 4);
+            } else {
+                input.value = value;
+            }
+        }
+    </script>
+
 </body>
 
 </html>

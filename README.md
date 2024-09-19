@@ -33,12 +33,12 @@
 
 Создаёт requirements.txt:
 
-python -m pip freeze > requirements.txt
+      python -m pip freeze > requirements.txt
 
 Установить requirements.txt:
 
-python -m pip install -r requirements.txt
+      python -m pip install -r requirements.txt
 
-   powershell
+   PowerShell
 
    python -m pip freeze | ForEach-Object { python -m pip uninstall -y $_ }
