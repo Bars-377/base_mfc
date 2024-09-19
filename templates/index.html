@@ -136,7 +136,7 @@
                             <td class="stretch-width">
                                 <!-- Выбор цвета -->
                                 <select class="form-control color-select" data-id="{{ service.id }}">
-                                    <option value="">Default</option>
+                                    <option value="#ffffff">Default</option>
                                     <option value="#eaf7ff" {% if service.color=='#eaf7ff' %}selected{% endif %}>Light Blue</option>
                                     <option value="#ffebeb" {% if service.color=='#ffebeb' %}selected{% endif %}>Light Red</option>
                                     <option value="#dff0d8" {% if service.color=='#dff0d8' %}selected{% endif %}>Light Green</option>
@@ -257,6 +257,7 @@
                             });
                         }
                     } else {
+                        console.log('rowId:', rowId, 'color:', color);
                         alert('Не удалось обновить цвет');
                     }
                 })

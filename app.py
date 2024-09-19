@@ -238,11 +238,11 @@ def export_excel():
     output.seek(0)
     return send_file(output, download_name="services.xlsx", as_attachment=True)
 
-"""Nginx"""
-from waitress import serve
-if __name__ == '__main__':
-    serve(app, host='172.18.88.41', port=8000)
+# """Nginx"""
+# from waitress import serve
+# if __name__ == '__main__':
+#     serve(app, host='172.18.88.41', port=8000)
 
 """Standart"""
-# if __name__ == '__main__':
-#     app.run(host='0.0.0.0', port=5000, debug=True)
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5000, debug=True)
