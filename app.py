@@ -190,59 +190,131 @@ def add():
 def export_excel():
     year = request.args.get('year', None)
 
+    print(year)
+    print(type(year))
+
+    # Получаем данные для выбранного года
     query = Service.query
-    if year and year.isdigit():
-        query = query.filter(db.func.year(Service.year) == int(year))
+
+    if year == 'None':  # Если year == 'None', фильтруем записи, у которых год == NULL
+        query = query.filter(Service.year.is_(None))
+    elif year:
+        query = query.filter(db.func.year(Service.year) == year)
 
     services = query.all()
 
+    # Создаем DataFrame из данных
     df = pd.DataFrame([{
         '№ п/п': service.id_id,
         'ФИО заявителя': service.name,
         'СНИЛС': service.snils,
         'Район': service.location,
-        'Адрес заявителя': service.address_p,
+        'Населённый пункт': service.address_p,
         'Адрес': service.address,
-        'Льготы': service.benefit,
-        'Номер договора': service.number,
-        'Дата документа': service.year,
-        'Стоимость': service.cost,
+        'Льгота': service.benefit,
+        'Серия и номер': service.number,
+        'Дата выдачи сертификата': service.year.strftime('%Y-%m-%d') if service.year else None,
+        'Размер выплаты': service.cost,
         'Сертификат': service.certificate,
-        'Дата получения': service.date_number_get,
-        'Дата аннулирования': service.date_number_cancellation,
-        'Дата неопределённости': service.date_number_no,
-        'Сертификат (неопределённость)': service.certificate_no,
-        'Причина аннулирования': service.reason,
-        'Трек': service.track,
-        'Дата поста': service.date_post,
-        'Цвет': service.color
+        'Дата и номер решения о выдаче': service.date_number_get,
+        'Дата и № решения об аннулировании': service.date_number_cancellation,
+        'Дата и № решения об отказе в выдаче': service.date_number_no,
+        'Отказ в выдаче': service.certificate_no,
+        'Причина отказа': service.reason,
+        'ТРЕК': service.track,
+        'Дата отправки почтой': service.date_post,
+        'Color': getattr(service, 'color', '')
     } for service in services])
 
+    # Приводим колонки к числовому типу данных
+    df['Размер выплаты'] = pd.to_numeric(df['Размер выплаты'], errors='coerce')
+    df['Сертификат'] = pd.to_numeric(df['Сертификат'], errors='coerce')
+    df['Отказ в выдаче'] = pd.to_numeric(df['Отказ в выдаче'], errors='coerce')
+
+    # Расчет итогов
+    total_cost = df['Размер выплаты'].sum()
+    total_certificate = df['Сертификат'].sum()
+    total_certificate_no = df['Отказ в выдаче'].sum()
+
+    # Создание строки с итогами
+    totals_row = pd.DataFrame([{
+        '№ п/п': '',
+        'ФИО заявителя': '',
+        'СНИЛС': '',
+        'Район': '',
+        'Населённый пункт': '',
+        'Адрес': '',
+        'Льгота': '',
+        'Серия и номер': '',
+        'Дата выдачи сертификата': '',
+        'Размер выплаты': total_cost,
+        'Сертификат': total_certificate,
+        'Дата и номер решения о выдаче': '',
+        'Дата и № решения об аннулировании': '',
+        'Дата и № решения об отказе в выдаче': '',
+        'Отказ в выдаче': total_certificate_no,
+        'Причина отказа': '',
+        'ТРЕК': '',
+        'Дата отправки почтой': '',
+        'Color': ''
+    }])
+
+    # Добавление строки с итогами в DataFrame
+    df = pd.concat([df, totals_row], ignore_index=True)
+
+    # Создаем файл Excel
     output = BytesIO()
     with pd.ExcelWriter(output, engine='openpyxl') as writer:
         df.to_excel(writer, index=False, sheet_name='Services')
 
+        # Настройка стиля
         worksheet = writer.sheets['Services']
 
-        header_fill = PatternFill(start_color='FFFF00', end_color='FFFF00', fill_type='solid')
-        for cell in worksheet[1]:
-            cell.fill = header_fill
+        # Определяем стиль для границ
+        border_style = Border(left=Side(style='thin'),
+                            right=Side(style='thin'),
+                            top=Side(style='thin'),
+                            bottom=Side(style='thin'))
 
-        for row in worksheet.iter_rows(min_row=2, max_col=len(df.columns)):
-            for cell in row:
-                cell.border = Border(left=Side(border_style='thin'),
-                                    right=Side(border_style='thin'),
-                                    top=Side(border_style='thin'),
-                                    bottom=Side(border_style='thin'))
+        # Определяем стиль для заливки желтым цветом
+        yellow_fill = PatternFill(start_color='FFFF00', end_color='FFFF00', fill_type='solid')
+
+        # Применяем границы ко всем ячейкам и цвет к ячейкам, где он задан
+        for row_num in range(2, worksheet.max_row + 1):  # Пропускаем заголовки
+            for col_num in range(1, worksheet.max_column + 1):
+                cell = worksheet.cell(row=row_num, column=col_num)
+                cell.border = border_style
+
+                # Применяем цвет только к ячейкам данных
+                color = df.iloc[row_num - 2]['Color']  # Сопоставление индексов DataFrame
+                if color:
+                    cell.fill = PatternFill(start_color=color.replace('#', ''), end_color=color.replace('#', ''), fill_type="solid")
+
+        # Применяем границы к заголовкам
+        for col_num in range(1, worksheet.max_column + 1):
+            cell = worksheet.cell(row=1, column=col_num)
+            cell.border = border_style
+
+        # Применяем желтый цвет к строке с итогами
+        totals_row_num = worksheet.max_row
+        for col_num in range(1, worksheet.max_column + 1):
+            cell = worksheet.cell(row=totals_row_num, column=col_num)
+            cell.fill = yellow_fill
+            cell.border = border_style
+
+        # Удаляем столбец Color из Excel-файла
+        worksheet.delete_cols(df.columns.get_loc("Color") + 1)
 
     output.seek(0)
-    return send_file(output, download_name="services.xlsx", as_attachment=True)
 
-# """Nginx"""
-# from waitress import serve
-# if __name__ == '__main__':
-#     serve(app, host='172.18.88.41', port=8000)
+    # Отправляем файл пользователю
+    return send_file(output, as_attachment=True, download_name='services.xlsx', mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
 
-"""Standart"""
+"""Nginx"""
+from waitress import serve
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    serve(app, threads=10, host='172.18.11.103', port=8000)
+
+# """Standart"""
+# if __name__ == '__main__':
+#     app.run(host='0.0.0.0', port=5000, debug=True)

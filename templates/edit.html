@@ -35,7 +35,7 @@
             <!-- Поле для ввода названия услуги -->
             <div class="form-group">
                 <label for="id_id">№ п/п</label>
-                <input type="text" class="form-control" id="id_id" name="id_id" value="{{ service.id_id }}" pattern="\d{11}" maxlength="11" required>
+                <input type="text" class="form-control" id="id_id" name="id_id" value="{{ service.id_id }}" pattern="\d{1,11}" maxlength="11" required>
                 <!-- Ограничение на 20 символов для имени услуги -->
             </div>
             <div class="form-group">
