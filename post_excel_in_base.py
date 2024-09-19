@@ -54,7 +54,7 @@ try:
         if pd.isna(value):
             return "0"
         try:
-            number_str = extract_number(int(value))
+            number_str = extract_number(value)
             return f"{number_str}"
         except ValueError:
             return "0"

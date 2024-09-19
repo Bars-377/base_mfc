@@ -25,17 +25,13 @@ def index():
 
     query = Service.query
 
-    print(year)
-    print(type(year))
-
     if year == 'No':
         year = None
 
-    if year:
-        # if year != 'None':
-        # year = int(year)
-        print("APPAPAPAPAPAP")
-        query = query.filter(db.func.year(Service.year) == (year))
+    if year == 'None':  # Если year == 'None', фильтруем записи, у которых год == NULL
+        query = query.filter(Service.year.is_(None))
+    elif year:
+        query = query.filter(db.func.year(Service.year) == year)
 
     if keyword:
         if selected_column and hasattr(Service, selected_column):
@@ -46,8 +42,12 @@ def index():
             filters = [getattr(Service, col).like(f'%{keyword}%') for col in columns]
             query = query.filter(db.or_(*filters))
 
-    """ДОДЕЛАТЬ"""
-    query = query.order_by(Service.year.asc())
+    # """ДОДЕЛАТЬ"""
+    # query = query.order_by(int(Service.id_id).asc(), Service.year.asc())
+
+    """Сортировка в cast(Service.id_id, Integer).asc() идёт с преобразованием в Integer"""
+    from sqlalchemy import cast, Integer
+    query = query.order_by(cast(Service.id_id, Integer).asc(), Service.year.asc())
 
     # if year:
     #     print('POPAL_1')
