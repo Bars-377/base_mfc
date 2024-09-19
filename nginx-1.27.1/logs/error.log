@@ -45,3 +45,13 @@
 2024/09/19 15:36:40 [notice] 6184#2824: signal process started
 2024/09/19 15:36:40 [notice] 8876#11840: signal process started
 2024/09/19 15:36:40 [error] 8876#11840: CreateFile() "C:\Users\neverov\Desktop\base_mfc\nginx-1.27.1/logs/nginx.pid" failed (2: The system cannot find the file specified)
+2024/09/19 16:15:38 [notice] 3432#12920: signal process started
+2024/09/19 16:15:38 [error] 3432#12920: CreateFile() "C:\Users\neverov\Desktop\base_mfc\nginx-1.27.1/logs/nginx.pid" failed (2: The system cannot find the file specified)
+2024/09/19 16:15:39 [notice] 11700#14856: signal process started
+2024/09/19 16:15:39 [error] 11700#14856: CreateFile() "C:\Users\neverov\Desktop\base_mfc\nginx-1.27.1/logs/nginx.pid" failed (2: The system cannot find the file specified)
+2024/09/19 16:15:39 [notice] 2128#14364: signal process started
+2024/09/19 16:15:39 [error] 2128#14364: CreateFile() "C:\Users\neverov\Desktop\base_mfc\nginx-1.27.1/logs/nginx.pid" failed (2: The system cannot find the file specified)
+2024/09/19 16:15:40 [notice] 14048#9044: signal process started
+2024/09/19 16:15:40 [error] 14048#9044: CreateFile() "C:\Users\neverov\Desktop\base_mfc\nginx-1.27.1/logs/nginx.pid" failed (2: The system cannot find the file specified)
+2024/09/19 16:15:41 [notice] 15128#8912: signal process started
+2024/09/19 16:15:41 [error] 15128#8912: CreateFile() "C:\Users\neverov\Desktop\base_mfc\nginx-1.27.1/logs/nginx.pid" failed (2: The system cannot find the file specified)

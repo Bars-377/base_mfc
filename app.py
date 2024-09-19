@@ -297,11 +297,11 @@ def export_excel():
     # Отправляем файл пользователю
     return send_file(output, as_attachment=True, download_name='services.xlsx', mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
 
-"""Nginx"""
-from waitress import serve
-if __name__ == '__main__':
-    serve(app, threads=10, host='172.18.11.103', port=8000)
-
-# """Standart"""
+# """Nginx"""
+# from waitress import serve
 # if __name__ == '__main__':
-#     app.run(host='0.0.0.0', port=5000, debug=True)
+#     serve(app, threads=10, host='172.18.11.103', port=8000)
+
+"""Standart"""
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5000, debug=True)
