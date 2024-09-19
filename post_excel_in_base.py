@@ -3,7 +3,7 @@ import mysql.connector
 
 # Установите соединение с базой данных
 conn = mysql.connector.connect(
-    host='localhost',
+    host='172.18.11.103',
     user='root',        # Замените на ваше имя пользователя
     password='enigma1418',    # Замените на ваш пароль
     database='mdtomskbot'
@@ -12,7 +12,7 @@ cursor = conn.cursor()
 
 try:
     # Загрузите данные из Excel
-    file_path = 'C:/Users/neverov/Desktop/gaz_2.xlsx'
+    file_path = 'C:/Users/neverov/Desktop/gaz_1.xlsx'
     sheet_name = 'РЕЕСТР'  # Замените на имя вашего листа
     df = pd.read_excel(file_path, sheet_name=sheet_name, header=2)
 
