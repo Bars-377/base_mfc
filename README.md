@@ -13,7 +13,7 @@
 
 1. Запустить виртуальное окружение:
 
-         venv\Scripts\activate
+         .\venv\Scripts\activate
 
 1. Запустить nginx
 
