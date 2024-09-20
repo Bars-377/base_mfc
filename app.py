@@ -35,18 +35,18 @@ def logout():
     logout_user()
     return redirect(url_for('index'))
 
-# @app.route('/register', methods=['GET', 'POST'])
-# def register():
-#     if request.method == 'POST':
-#         username = request.form['username']
-#         password = request.form['password']
-#         new_user = User(username=username)
-#         new_user.set_password(password)  # Предполагаем, что метод set_password уже реализован
-#         db.session.add(new_user)
-#         db.session.commit()
-#         flash('Registration successful!')
-#         return redirect(url_for('login'))
-#     return render_template('register.html')
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+        new_user = User(username=username)
+        new_user.set_password(password)  # Предполагаем, что метод set_password уже реализован
+        db.session.add(new_user)
+        db.session.commit()
+        flash('Registration successful!', 'success')
+        return redirect(url_for('login'))
+    return render_template('register.html')
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -168,7 +168,7 @@ def update(id):
     service.color = request.form.get('color')
 
     db.session.commit()
-    flash('Данные успешно обновлены!')
+    flash('Данные успешно обновлены!', 'success')
     return redirect(url_for('index'))
 
 @app.route('/update-color/<int:id>', methods=['POST'])
@@ -195,7 +195,7 @@ def delete(id):
     service = Service.query.get_or_404(id)
     db.session.delete(service)
     db.session.commit()
-    flash('Данные успешно удалены!')
+    flash('Данные успешно удалены!', 'success')
     return redirect(url_for('index'))
 
 @app.route('/add', methods=['POST'])
@@ -230,7 +230,7 @@ def add():
                         reason=reason, track=track, date_post=date_post, color=color)
     db.session.add(new_service)
     db.session.commit()
-    flash('Данные успешно добавлены!')
+    flash('Данные успешно добавлены!', 'success')
     return redirect(url_for('index'))
 
 @app.route('/export-excel', methods=['GET'])
