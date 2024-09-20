@@ -1,65 +1,162 @@
-/* Устанавливаем цвет фона для всего тела страницы */
+/* Основные стили страницы */
 body {
+    font-family: Arial, sans-serif;
     background-color: #f8f9fa;
-    /* Светло-серый цвет фона */
+    margin: 0;
+    padding: 0;
 }
 
 h1 {
-    margin-top: 20px;
+    text-align: center;
+    margin-top: 15px; /* задает отступ сверху */
+    color: #333;
 }
 
-/* Настройки для таблицы */
-table {
+/* Контейнер для страницы */
+.container-fluid-up {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+/* Контейнер для страницы */
+.container-fluid-down {
+    padding: 15px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Контейнер для страницы */
+.container-fluid {
+    padding-top: 15px;
+}
+
+/* Стиль для сообщения об успешной операции */
+.alert-success {
+    color: #155724;
+    background-color: #d4edda;
+    border-color: #c3e6cb;
+    border-radius: 4px;
+    padding: 15px;
+}
+
+/*.form-item { */
+/*    margin-bottom: 15px; */
+/*    flex: 1 1 200px; /* Элементы занимают равное пространство и минимальная ширина 200px */
+/*} */
+
+/* Стили формы */
+.form-group {
+    margin: 20px 0;
+    display: flex;
+    align-items: flex-end; /* Вертикальное выравнивание по низу */
+    flex-wrap: wrap; /* Перенос элементов на новую строку при недостаточном месте */
+    gap: 15px; /* Расстояние между элементами */
+}
+
+.form-item {
+    flex: 1 1 100%; /* Элементы занимают 100% ширины контейнера, заставляя их переноситься на новую строку */
+    justify-content: center; /* Центрирование содержимого внутри элемента */
+    display: flex;
+}
+
+/* Стили формы */
+.form-group-index {
+    margin: 20px 0;
+    display: flex;
+    align-items: flex-end; /* Вертикальное выравнивание по низу */
+    gap: 15px; /* Расстояние между элементами */
+}
+
+.form-item button {
+    margin: 5px; /* Увеличьте значение для большего расстояния */
+}
+
+.form-control {
+    border-radius: 4px;
+    border: 1px solid #ced4da;
+    padding: 10px;
+    width: 200px; /* Устанавливаем ширину на 100% */
+    box-sizing: border-box; /* Учитываем отступы и границы в общей ширине */
+}
+
+.form-control-year {
+    border-radius: 4px;
+    border: 1px solid #ced4da;
+    padding: 10px;
+    width: 125px; /* Устанавливаем ширину на 100% */
+    box-sizing: border-box; /* Учитываем отступы и границы в общей ширине */
+}
+
+/* Кнопки */
+.btn-primary {
+    background-color: #007bff;
+    border: none;
+}
+
+.btn-secondary {
+    background-color: #6c757d;
+    border: none;
+}
+
+.btn-danger {
+    background-color: #dc3545;
+    border: none;
+}
+
+.btn-warning {
+    background-color: #ffc107;
+    border: none;
+}
+
+.btn-info {
+    background-color: #17a2b8;
+    border: none;
+}
+
+.btn {
+    color: #fff;
+    padding: 8px 12px;
+    border-radius: 4px;
+}
+
+.btn:hover {
+    opacity: 0.9;
+}
+
+/* Таблица */
+.table {
     width: 100%;
-    min-width: 600px;
+    margin-bottom: 20px;
+    border-collapse: collapse;
 }
 
-/* Фиксированные ширины для некоторых столбцов */
+.table-bordered {
+    border: 1px solid #dee2e6;
+}
+
+.table th,
+.table td {
+    border: 1px solid #dee2e6;
+    padding: 10px;
+    text-align: left;
+}
+
+.table th {
+    background-color: #f1f1f1;
+}
+
 .fixed-width {
-    width: 100px; /* Пример: вы можете настроить это значение */
-    white-space: nowrap;
+    width: 120px;
 }
 
 .stretch-width {
     width: auto;
 }
 
-/* Для колонки "Адрес" */
-/*td:nth-child(6), th:nth-child(6) { */
-/*    white-space: normal; */
-/*} */
-
-/* Стили для строк таблицы с классом service-row */
-.table .service-row {
-    background-color: #ffffff;
-    /* Цвет фона строки по умолчанию - белый */
-}
-
-/* Добавляем стили для формы добавления нового сервиса */
-.form-group-neverov {
-    max-width: 100%;
-    /* Убираем ограничение по ширине */
-    padding: 20px;
-    display: flex;
-    flex-wrap: wrap;
-    /* Позволяет элементам переноситься на следующую строку, если не хватает места */
-    gap: 15px;
-    /* Расстояние между элементами */
-}
-
-.form-group-neverov .form-item {
-    display: flex;
-    flex-direction: column;
-    /* Расположение метки и поля ввода вертикально */
-    gap: 5px;
-    /* Расстояние между меткой и полем ввода */
-}
-
-th, td {
-    word-wrap: break-word; /* Позволяет переносу текста на новую строку */
-    white-space: normal; /* Разрешает перенос текста */
-}
-
+/* Прокрутка */
 .scroll-container {
     width: 100%;
     /* Или задайте фиксированную ширину */
@@ -67,20 +164,6 @@ th, td {
     /* Горизонтальная прокрутка */
     white-space: nowrap;
     /* Предотвращает перенос текста на новую строку */
-}
-
-.container-fluid {
-    width: 100%;
-    padding-left: 30px;
-    padding-right: 30px;
-    box-sizing: border-box;
-}
-
-.container-fluid-neverov {
-    display: flex;
-    align-items: center;
-    flex-direction: column;
-    margin-bottom: 20px; /* Например, отступ в 20px */
 }
 
 .scroll-container::-webkit-scrollbar-track {
@@ -98,4 +181,62 @@ th, td {
     border-radius: 10px;
     -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, .3);
     background-color: #4F83CC;
+}
+
+/* Цветовые схемы для строк */
+.color-select {
+    width: 100px;
+}
+
+.service-row {
+    transition: background-color 0.3s ease;
+}
+
+.service-row td {
+    transition: background-color 0.3s ease;
+}
+
+/* Пагинация */
+.pagination {
+    display: flex;
+    justify-content: center;
+    list-style: none;
+    padding: 0;
+}
+
+.pagination .page-item {
+    margin: 0 5px;
+}
+
+.pagination .page-link {
+    color: #007bff;
+    text-decoration: none;
+    border-radius: 4px;
+    padding: 6px 12px;
+    border: 1px solid #dee2e6;
+}
+
+.pagination .page-link:hover {
+    background-color: #e9ecef;
+}
+
+.pagination .active .page-link {
+    background-color: #007bff;
+    color: white;
+    border-color: #007bff;
+}
+
+/* Управление и цвета */
+.select-color {
+    width: 100px;
+    padding: 5px;
+}
+
+.center-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    text-align: center;
+    margin-bottom: 20px;
 }

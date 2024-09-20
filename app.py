@@ -20,18 +20,24 @@ login_manager.login_view = 'login'
 def load_user(user_id):
     return User.query.get_or_404(int(user_id))
 
-@app.route('/register', methods=['GET', 'POST'])
-def register():
-    if request.method == 'POST':
-        username = request.form['username']
-        password = request.form['password']
-        new_user = User(username=username)
-        new_user.set_password(password)  # Предполагаем, что метод set_password уже реализован
-        db.session.add(new_user)
-        db.session.commit()
-        flash('Registration successful!')
-        return redirect(url_for('login'))
-    return render_template('register.html')
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    return redirect(url_for('index'))
+
+# @app.route('/register', methods=['GET', 'POST'])
+# def register():
+#     if request.method == 'POST':
+#         username = request.form['username']
+#         password = request.form['password']
+#         new_user = User(username=username)
+#         new_user.set_password(password)  # Предполагаем, что метод set_password уже реализован
+#         db.session.add(new_user)
+#         db.session.commit()
+#         flash('Registration successful!')
+#         return redirect(url_for('login'))
+#     return render_template('register.html')
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -45,13 +51,6 @@ def login():
             return redirect(url_for('index'))
         flash('Invalid username or password')
     return render_template('login.html')
-
-@app.route('/logout')
-@login_required
-def logout():
-    logout_user()
-    flash('You have been logged out.')
-    return redirect(url_for('index'))
 
 @app.route('/')
 @login_required
@@ -227,6 +226,8 @@ def add():
 @app.route('/export-excel', methods=['GET'])
 @login_required
 def export_excel():
+    flash('Пожалуйста, подождите!')
+
     year = request.args.get('year', None)
 
     query = Service.query

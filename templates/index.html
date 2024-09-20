@@ -16,65 +16,80 @@
 
 <body>
     <div class="container-fluid">
-        <div class="container-fluid-neverov">
+    
+        <div class="center-content">
+            <div class="container-fluid-up">
 
-            <h1>Газификация</h1>
+                <h1>Газификация</h1>
 
-            <!-- Flash Messages -->
-            {% with messages = get_flashed_messages() %}
-            {% if messages %}
-            <div class="alert alert-success mt-3">
-                {{ messages[0] }}
+                <!-- Flash Messages -->
+                {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                <div class="alert alert-success mt-3">
+                    {{ messages[0] }}
+                </div>
+                {% endif %}
+                {% endwith %}
+
+                <!-- Выход из профиля -->
+                <div class="d-flex justify-content-between align-items-center">
+                    <div></div>
+                    <a href="{{ url_for('logout') }}" class="btn btn-danger">Выход из аккаунта</a>
+                </div>
+
+                <form method="GET" action="/" id="filter-form" class="form-group-index">
+                    <div class="form-item">
+                        <label for="keyword">Поиск по ключевому слову:</label>
+                    </div>
+                    <div class="form-item">
+                        <input type="text" class="form-control" id="keyword" name="keyword" placeholder="Ключевое слово"
+                            value="{{ request.args.get('keyword', '') }}">
+                    </div>
+                    <div class="form-item">
+                        <label for="column">Выберите столбец:</label>
+                    </div>
+                    <div class="form-item">
+                        <select name="column" id="column" class="form-control">
+                            <option value="">Столбец</option>
+                            <option value="id_id" {% if selected_column == 'id_id' %}selected{% endif %}>№ п/п</option>
+                            <option value="name" {% if selected_column == 'name' %}selected{% endif %}>ФИО заявителя</option>
+                            <option value="snils" {% if selected_column == 'snils' %}selected{% endif %}>СНИЛС</option>
+                            <option value="location" {% if selected_column == 'location' %}selected{% endif %}>Район</option>
+                            <option value="address_p" {% if selected_column == 'address_p' %}selected{% endif %}>Населённый пункт</option>
+                            <option value="address" {% if selected_column == 'address' %}selected{% endif %}>Адрес</option>
+                            <option value="benefit" {% if selected_column == 'benefit' %}selected{% endif %}>Льгота</option>
+                            <option value="number" {% if selected_column == 'number' %}selected{% endif %}>Серия и номер</option>
+                            <option value="year" {% if selected_column == 'year' %}selected{% endif %}>Дата выдачи сертификата</option>
+                            <option value="cost" {% if selected_column == 'cost' %}selected{% endif %}>Размер выплаты</option>
+                            <option value="certificate" {% if selected_column == 'certificate' %}selected{% endif %}>Сертификат</option>
+                            <option value="date_number_get" {% if selected_column == 'date_number_get' %}selected{% endif %}>Дата и номер решения о выдаче</option>
+                            <option value="date_number_cancellation" {% if selected_column == 'date_number_cancellation' %}selected{% endif %}>Дата и № решения об аннулировании</option>
+                            <option value="date_number_no" {% if selected_column == 'date_number_no' %}selected{% endif %}>Дата и № решения об отказе в выдаче</option>
+                            <option value="certificate_no" {% if selected_column == 'certificate_no' %}selected{% endif %}>Отказ в выдаче</option>
+                            <option value="reason" {% if selected_column == 'reason' %}selected{% endif %}>Основная причина отказа</option>
+                            <option value="track" {% if selected_column == 'track' %}selected{% endif %}>ТРЕК</option>
+                            <option value="date_post" {% if selected_column == 'date_post' %}selected{% endif %}>Дата отправки почтой</option>
+                        </select>
+                    </div>
+                    <div class="form-item">
+                        <label for="year">Выберите год:</label>
+                    </div>
+                    <div class="form-item">
+                        <select name="year" id="year" class="form-control-year">
+                            <option value="No">Год</option>
+                            {% for year in service_years %}
+                            <option value="{{ year }}" {% if year==selected_year %}selected{% endif %}>
+                                {{ year }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-item">
+                        <button type="submit" class="btn btn-primary">Фильтровать по году</button>
+                        <button type="button" class="btn btn-secondary" id="reset-filters">Сбросить всё</button>
+                    </div>
+                </form>
             </div>
-            {% endif %}
-            {% endwith %}
-
-            <form method="GET" action="/" id="filter-form" class="form-group-neverov">
-                <div class="form-group form-item">
-                    <label for="keyword">Поиск по ключевому слову:</label>
-                    <input type="text" class="form-control" id="keyword" name="keyword" placeholder="Введите ключевое слово"
-                        value="{{ request.args.get('keyword', '') }}">
-                </div>
-                <div class="form-group form-item">
-                    <label for="column">Выберите столбец:</label>
-                    <select name="column" id="column" class="form-control">
-                        <option value="">Выберите столбец</option>
-                        <option value="id_id" {% if selected_column == 'id_id' %}selected{% endif %}>№ п/п</option>
-                        <option value="name" {% if selected_column == 'name' %}selected{% endif %}>ФИО заявителя</option>
-                        <option value="snils" {% if selected_column == 'snils' %}selected{% endif %}>СНИЛС</option>
-                        <option value="location" {% if selected_column == 'location' %}selected{% endif %}>Район</option>
-                        <option value="address_p" {% if selected_column == 'address_p' %}selected{% endif %}>Населённый пункт</option>
-                        <option value="address" {% if selected_column == 'address' %}selected{% endif %}>Адрес</option>
-                        <option value="benefit" {% if selected_column == 'benefit' %}selected{% endif %}>Льгота</option>
-                        <option value="number" {% if selected_column == 'number' %}selected{% endif %}>Серия и номер</option>
-                        <option value="year" {% if selected_column == 'year' %}selected{% endif %}>Дата выдачи сертификата</option>
-                        <option value="cost" {% if selected_column == 'cost' %}selected{% endif %}>Размер выплаты</option>
-                        <option value="certificate" {% if selected_column == 'certificate' %}selected{% endif %}>Сертификат</option>
-                        <option value="date_number_get" {% if selected_column == 'date_number_get' %}selected{% endif %}>Дата и номер решения о выдаче</option>
-                        <option value="date_number_cancellation" {% if selected_column == 'date_number_cancellation' %}selected{% endif %}>Дата и № решения об аннулировании</option>
-                        <option value="date_number_no" {% if selected_column == 'date_number_no' %}selected{% endif %}>Дата и № решения об отказе в выдаче</option>
-                        <option value="certificate_no" {% if selected_column == 'certificate_no' %}selected{% endif %}>Отказ в выдаче</option>
-                        <option value="reason" {% if selected_column == 'reason' %}selected{% endif %}>Основная причина отказа</option>
-                        <option value="track" {% if selected_column == 'track' %}selected{% endif %}>ТРЕК</option>
-                        <option value="date_post" {% if selected_column == 'date_post' %}selected{% endif %}>Дата отправки почтой</option>
-                    </select>
-                </div>
-                <div class="form-group form-item">
-                    <label for="year">Выберите год:</label>
-                    <select name="year" id="year" class="form-control">
-                        <option value="No">Выберите год</option>
-                        {% for year in service_years %}
-                        <option value="{{ year }}" {% if year==selected_year %}selected{% endif %}>
-                            {{ year }}
-                        </option>
-                        {% endfor %}
-                    </select>
-                </div>
-                <div class="form-item">
-                    <button type="submit" class="btn btn-primary">Фильтровать по году</button>
-                    <button type="button" class="btn btn-secondary" id="reset-filters">Сбросить всё</button>
-                </div>
-            </form>
 
             <div class="scroll-container">
                 <table class="table table-bordered">
@@ -148,6 +163,7 @@
                 </table>
             </div>
         </div>
+
         <div style="display: flex; justify-content: flex-end;">
             <!-- Pagination Controls -->
             <nav aria-label="Page navigation">
@@ -199,19 +215,22 @@
                 </ul>
             </nav>
         </div>
-        <div class="container-fluid-neverov">
-            <h4>Итог выплат за выбранное время: {{ total_cost_1 }}</h4>
-            <h4>Итог сертификатов за выбранное время: {{ total_cost_2 }}</h4>
-            <h4>Итог отказов в выдаче за выбранное время: {{ total_cost_3 }}</h4>
-            <br>
-            <a href="{{ url_for('add_edit') }}" class="btn btn-warning">Добавить данные</a>
-            <br>
-            <h2>Экспорт услуг в Excel</h2>
-            <br>
-            <form method="GET" action="{{ url_for('export_excel') }}" id="export-form">
-                <input type="hidden" name="year" value="{{ selected_year }}">
-                <button type="submit" class="btn btn-info">Экспорт в Excel</button>
-            </form>
+
+        <div class="center-content">
+            <div class="container-fluid-down">
+                <h4>Итог выплат за выбранное время: {{ total_cost_1 }}</h4>
+                <h4>Итог сертификатов за выбранное время: {{ total_cost_2 }}</h4>
+                <h4>Итог отказов в выдаче за выбранное время: {{ total_cost_3 }}</h4>
+                <br>
+                <a href="{{ url_for('add_edit') }}" class="btn btn-warning">Добавить данные</a>
+                <br>
+                <h1>Экспорт услуг в Excel</h1>
+                <br>
+                <form method="GET" action="{{ url_for('export_excel') }}" id="export-form">
+                    <input type="hidden" name="year" value="{{ selected_year }}">
+                    <button type="submit" class="btn btn-info">Экспорт в Excel</button>
+                </form>
+            </div>
         </div>
 
     </div>
