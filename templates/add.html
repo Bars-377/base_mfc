@@ -12,90 +12,92 @@
 </head>
 
 <body>
-    <div class="container container-fluid-neverov">
+    <div class="container-fluid-neverov">
         <h1 class="mt-5">Добавление новой записи</h1>
 
-        <!-- Блок для флэш-сообщений -->
-        {% with messages = get_flashed_messages() %}
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages(with_categories=True) %}
         {% if messages %}
-        <div class="alert alert-success mt-3">
-            {{ messages[0] }}
-        </div>
+            {% for category, message in messages %}
+            <div class="alert alert-{{ category }} mt-3">
+                {{ message }}
+            </div>
+            {% endfor %}
         {% endif %}
         {% endwith %}
 
         <!-- Форма для добавления новой услуги -->
-        <form method="POST" action="{{ url_for('add') }}" class="form-group-neverov">
+        <form method="POST" action="{{ url_for('add') }}" class="form-group">
             <!-- Пример изменения отступов в форме с помощью классов -->
-            <div class="form-group mb-3">
+            <div class="form-item">
                 <label for="id_id">№ п/п</label>
                 <input type="text" class="form-control" id="id_id" name="id_id" pattern="\d{1,11}" maxlength="11" required>
             </div>
-            <div class="form-group mb-3">
+            <div class="form-item">
                 <label for="name">ФИО заявителя</label>
                 <input type="text" class="form-control" id="name" name="name" maxlength="30" required>
             </div>
-            <div class="form-group mb-3">
+            <div class="form-item">
                 <label for="snils">СНИЛС (только числа)</label>
                 <input type="text" class="form-control" id="snils" name="snils" pattern="\d{11}" maxlength="11" required>
             </div>
-            <div class="form-group mb-3">
+            <div class="form-item">
                 <label for="location">Район</label>
                 <input type="text" class="form-control" id="location" name="location" maxlength="30" required>
             </div>
-            <div class="form-group mb-3">
+            <div class="form-item">
                 <label for="address_p">Населённый пункт</label>
                 <input type="text" class="form-control" id="address_p" name="address_p" maxlength="30" required>
             </div>
-            <div class="form-group mb-3">
+            <div class="form-item">
                 <label for="address">Адрес</label>
                 <input type="text" class="form-control" id="address" name="address" maxlength="30" required>
             </div>
-            <div class="form-group mb-3">
+            <div class="form-item">
                 <label for="benefit">Льгота</label>
                 <input type="text" class="form-control" id="benefit" name="benefit" maxlength="30">
             </div>
-            <div class="form-group mb-3">
+            <div class="form-item">
                 <label for="number">Номер</label>
                 <input type="text" class="form-control" id="number" name="number" maxlength="30" required>
             </div>
-            <div class="form-group mb-3">
+            <div class="form-item">
                 <label for="year">Дата выдачи сертификата</label>
                 <input type="text" class="form-control" id="year" name="year" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this)" required>
             </div>
-            <div class="form-group mb-3">
+            <div class="form-item">
                 <label for="cost">Размер выплаты</label>
                 <input type="number" step="0.01" class="form-control" id="cost" name="cost" min="0" max="99999999.99" required>
             </div>
-            <div class="form-group mb-3">
+            <div class="form-item">
                 <label for="certificate">Сертификат</label>
                 <input type="text" class="form-control" id="certificate" name="certificate" pattern="\d{1,2}" maxlength="2" required>
             </div>
-            <div class="form-group mb-3">
+            <div class="form-item">
                 <label for="date_number_get">Дата и номер решения о выдаче</label>
                 <input type="text" class="form-control" id="date_number_get" name="date_number_get" pattern="\d{4}-\d{2}-\d{2}">
             </div>
-            <div class="form-group mb-3">
+            <div class="form-item">
                 <label for="date_number_cancellation">Дата и № решения об аннулировании</label>
                 <input type="text" class="form-control" id="date_number_cancellation" name="date_number_cancellation" pattern="\d{4}-\d{2}-\d{2}">
             </div>
-            <div class="form-group mb-3">
+            <div class="form-item">
                 <label for="date_number_no">Дата и № решения об отказе в выдаче</label>
                 <input type="text" class="form-control" id="date_number_no" name="date_number_no" maxlength="30" required>
             </div>
-            <div class="form-group mb-3">
+            <div class="form-item">
                 <label for="certificate_no">Отказ в выдаче</label>
                 <input type="text" class="form-control" id="certificate_no" name="certificate_no" pattern="\d{1,2}" maxlength="2" required>
             </div>
-            <div class="form-group mb-3">
+            <div class="form-item">
                 <label for="reason">Причина отказа</label>
                 <input type="text" class="form-control" id="reason" name="reason" maxlength="30" required>
             </div>
-            <div class="form-group mb-3">
+            <div class="form-item">
                 <label for="track">ТРЕК</label>
                 <input type="text" class="form-control" id="track" name="track" maxlength="30">
             </div>
-            <div class="form-group mb-3">
+            <div class="form-item">
                 <label for="date_post">Дата отправки почтой</label>
                 <input type="text" class="form-control" id="date_post" name="date_post" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this)">
             </div>

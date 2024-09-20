@@ -8,128 +8,24 @@ body {
 
 h1 {
     text-align: center;
-    margin-top: 15px; /* задает отступ сверху */
     color: #333;
 }
 
 /* Контейнер для страницы */
-.container-fluid-up {
-    background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    margin-bottom: 20px;
-}
-
-/* Контейнер для страницы */
-.container-fluid-down {
+.container-fluid-neverov {
     padding: 15px;
     background-color: #fff;
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
-
-/* Контейнер для страницы */
-.container-fluid {
-    padding-top: 15px;
-}
-
-/* Стиль для сообщения об успешной операции */
-.alert-success {
-    color: #155724;
-    background-color: #d4edda;
-    border-color: #c3e6cb;
-    border-radius: 4px;
-    padding: 15px;
-}
-
-/*.form-item { */
-/*    margin-bottom: 15px; */
-/*    flex: 1 1 200px; /* Элементы занимают равное пространство и минимальная ширина 200px */
-/*} */
-
-/* Стили формы */
-.form-group {
-    margin: 20px 0;
-    display: flex;
-    align-items: flex-end; /* Вертикальное выравнивание по низу */
-    flex-wrap: wrap; /* Перенос элементов на новую строку при недостаточном месте */
-    gap: 15px; /* Расстояние между элементами */
-}
-
-.form-item {
-    flex: 1 1 100%; /* Элементы занимают 100% ширины контейнера, заставляя их переноситься на новую строку */
-    justify-content: center; /* Центрирование содержимого внутри элемента */
-    display: flex;
-}
-
-/* Стили формы */
-.form-group-index {
-    margin: 20px 0;
-    display: flex;
-    align-items: flex-end; /* Вертикальное выравнивание по низу */
-    gap: 15px; /* Расстояние между элементами */
-}
-
-.form-item button {
-    margin: 5px; /* Увеличьте значение для большего расстояния */
-}
-
-.form-control {
-    border-radius: 4px;
-    border: 1px solid #ced4da;
-    padding: 10px;
-    width: 200px; /* Устанавливаем ширину на 100% */
-    box-sizing: border-box; /* Учитываем отступы и границы в общей ширине */
-}
-
-.form-control-year {
-    border-radius: 4px;
-    border: 1px solid #ced4da;
-    padding: 10px;
-    width: 125px; /* Устанавливаем ширину на 100% */
-    box-sizing: border-box; /* Учитываем отступы и границы в общей ширине */
-}
-
-/* Кнопки */
-.btn-primary {
-    background-color: #007bff;
-    border: none;
-}
-
-.btn-secondary {
-    background-color: #6c757d;
-    border: none;
-}
-
-.btn-danger {
-    background-color: #dc3545;
-    border: none;
-}
-
-.btn-warning {
-    background-color: #ffc107;
-    border: none;
-}
-
-.btn-info {
-    background-color: #17a2b8;
-    border: none;
-}
-
-.btn {
-    color: #fff;
-    padding: 8px 12px;
-    border-radius: 4px;
-}
-
-.btn:hover {
-    opacity: 0.9;
+    margin-top: 15px; /* Внешний отступ сверху */
+    margin-bottom: 15px; /* Внешний отступ снизу */
+    margin-left: 15px; /* Внешний отступ сверху */
+    margin-right: 15px; /* Внешний отступ снизу */
 }
 
 /* Таблица */
 .table {
     width: 100%;
-    margin-bottom: 20px;
     border-collapse: collapse;
 }
 
@@ -146,14 +42,6 @@ h1 {
 
 .table th {
     background-color: #f1f1f1;
-}
-
-.fixed-width {
-    width: 120px;
-}
-
-.stretch-width {
-    width: auto;
 }
 
 /* Прокрутка */
@@ -183,17 +71,50 @@ h1 {
     background-color: #4F83CC;
 }
 
-/* Цветовые схемы для строк */
-.color-select {
-    width: 100px;
+/* Стили формы */
+.form-group {
+    margin: 20px;
+    align-items: flex-end; /* Вертикальное выравнивание по низу */
+    gap: 15px; /* Расстояние между элементами */
+    display: flex;
+    justify-content: center; /* Центрирование содержимого внутри элемента */
+    flex-wrap: wrap; /* Позволяет элементам переноситься на новую строку */
 }
 
-.service-row {
-    transition: background-color 0.3s ease;
+.form-item {
+    /* flex: 1 1 100%; /* Элементы занимают 100% ширины контейнера, заставляя их переноситься на новую строку */
+    justify-content: center; /* Центрирование содержимого внутри элемента */
 }
 
-.service-row td {
-    transition: background-color 0.3s ease;
+.form-item {
+    /* flex: 1 1 100%; /* Элементы занимают 100% ширины контейнера, заставляя их переноситься на новую строку */
+    justify-content: center; /* Центрирование содержимого внутри элемента */
+}
+
+.form-item-neverov {
+    /* flex: 1 1 100%; /* Элементы занимают 100% ширины контейнера, заставляя их переноситься на новую строку */
+    justify-content: center; /* Центрирование содержимого внутри элемента */
+}
+
+.form-item button {
+    margin: 5px; /* Увеличьте значение для большего расстояния */
+}
+
+.form-control {
+    border-radius: 4px;
+    border: 1px solid #ced4da;
+    padding: 10px;
+    width: 200px; /* Устанавливаем ширину на 100% */
+    box-sizing: border-box; /* Учитываем отступы и границы в общей ширине */
+    margin-bottom: 15px;
+}
+
+.form-control-year {
+    width: 125px; /* Устанавливаем ширину на 100% */
+}
+
+.center-content {
+    text-align: center;
 }
 
 /* Пагинация */
@@ -202,6 +123,7 @@ h1 {
     justify-content: center;
     list-style: none;
     padding: 0;
+    padding-top: 15px;
 }
 
 .pagination .page-item {
@@ -226,17 +148,77 @@ h1 {
     border-color: #007bff;
 }
 
-/* Управление и цвета */
-.select-color {
+/* Цветовые схемы для строк */
+.color-select {
     width: 100px;
-    padding: 5px;
 }
 
-.center-content {
+.service-row {
+    transition: background-color 0.3s ease;
+}
+
+.service-row td {
+    transition: background-color 0.3s ease;
+}
+
+.fixed-width {
+    width: 120px;
+}
+
+.stretch-width {
+    width: auto;
+}
+
+/* Стиль для сообщения об успешной операции */
+.alert-success {
+    color: #155724;
+    background-color: #d4edda;
+    border-color: #c3e6cb;
+    border-radius: 4px;
+    padding: 15px;
+}
+
+/* Кнопки */
+.btn-primary {
+    background-color: #007bff;
+    border: none;
+}
+
+.btn-secondary {
+    background-color: #6c757d;
+    border: none;
+}
+
+.btn-danger {
+    background-color: #dc3545;
+    border: none;
+    margin-top: 15px;
+}
+
+.btn-warning {
+    background-color: #ffc107;
+    border: none;
+}
+
+.btn-info {
+    background-color: #17a2b8;
+    border: none;
+}
+
+.btn {
+    color: #fff;
+    padding: 8px 12px;
+    border-radius: 4px;
+    margin-bottom: 20px;
+}
+
+.btn:hover {
+    opacity: 0.9;
+}
+
+.center-content-login {
     display: flex;
     justify-content: center;
     align-items: center;
-    flex-direction: column;
-    text-align: center;
-    margin-bottom: 20px;
+    min-height: 100vh; /* Задает минимальную высоту для центрирования по вертикали */
 }

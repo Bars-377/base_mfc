@@ -7,7 +7,12 @@ from openpyxl.styles import PatternFill, Border, Side
 from flask_login import LoginManager, login_user, logout_user, login_required
 
 app = Flask(__name__)
-app.secret_key = 'supersecretkey'
+
+import os
+app.secret_key = os.urandom(24)  # Генерирует случайный ключ длиной 24 байта
+
+# app.secret_key = 'supersecretkey'
+
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:enigma1418@localhost/mdtomskbot'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db.init_app(app)
@@ -15,6 +20,10 @@ db.init_app(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
+
+# Изменим сообщение о необходимости входа
+login_manager.login_message = 'Для доступа к этой странице, пожалуйста, войдите в систему.'
+login_manager.login_message_category = 'info'  # Можно задать категорию, например, 'info', 'warning', 'danger'
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -47,9 +56,10 @@ def login():
         user = User.query.filter_by(username=username).first()
         if user and user.check_password(password):
             login_user(user)
-            flash('Login successful!')
-            return redirect(url_for('index'))
-        flash('Invalid username or password')
+            flash('Вход успешен!', 'success')
+            next_page = request.args.get('next')
+            return redirect(next_page or url_for('index'))
+        flash('Неверное имя пользователя или пароль!', 'danger')
     return render_template('login.html')
 
 @app.route('/')
@@ -226,8 +236,6 @@ def add():
 @app.route('/export-excel', methods=['GET'])
 @login_required
 def export_excel():
-    flash('Пожалуйста, подождите!')
-
     year = request.args.get('year', None)
 
     query = Service.query
@@ -342,16 +350,18 @@ def export_excel():
 
     output.seek(0)
 
+    response = send_file(output, as_attachment=True, download_name='services.xlsx', mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+
     # Отправляем файл пользователю
-    return send_file(output, as_attachment=True, download_name='services.xlsx', mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    return response
 
-# """Nginx"""
-# from waitress import serve
-# if __name__ == '__main__':
-#     print('Flask для Nginx запущен!')
-#     serve(app, threads=10, host='172.18.11.103', port=8000)
-
-"""Standart"""
+"""Nginx"""
+from waitress import serve
 if __name__ == '__main__':
-    print('Flask запущен')
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    print('Flask для Nginx запущен!')
+    serve(app, threads=10, host='172.18.11.103', port=8000)
+
+# """Standart"""
+# if __name__ == '__main__':
+#     print('Flask запущен')
+#     app.run(host='0.0.0.0', port=5000, debug=True)

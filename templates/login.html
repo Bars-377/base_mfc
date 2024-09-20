@@ -12,28 +12,34 @@
 </head>
 
 <body>
-    <div class="container-fluid">
-        <div class="container-fluid-up">
-            <div class="center-content">
-                <h1>Вход в систему</h1>
-                <form method="POST" class="form-group">
-                    <div class="form-item">
-                        <label for="username">Имя пользователя:</label>
-                    </div>
-                    <div class="form-item">
-                        <input type="text" class="form-control" name="username" required>
-                    </div>
-                    <div class="form-item">
-                        <label for="password">Пароль:</label>
-                    </div>
-                    <div class="form-item">
-                        <input type="password" class="form-control" name="password" required>
-                    </div>
-                    <div class="form-item">
-                        <input type="submit" class="btn btn-primary" value="Войти">
-                    </div>
-                </form>
-            </div>
+    <div class="center-content-login">
+        <div class="container-fluid-neverov">
+            <h1>Вход в систему</h1>
+
+            <!-- Flash Messages -->
+            {% with messages = get_flashed_messages(with_categories=True) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                <div class="alert alert-{{ category }} mt-3">
+                    {{ message }}
+                </div>
+                {% endfor %}
+            {% endif %}
+            {% endwith %}
+
+            <form method="POST" class="form-group">
+                <div class="form-item-login">
+                    <label for="username">Имя пользователя:</label>
+                    <input type="text" class="form-control" name="username" required>
+                </div>
+                <div class="form-item-login">
+                    <label for="password">Пароль:</label>
+                    <input type="password" class="form-control" name="password" required>
+                </div>
+                <div class="form-item-login">
+                    <input type="submit" class="btn btn-primary" value="Войти">
+                </div>
+            </form>
         </div>
     </div>
 </body>
