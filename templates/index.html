@@ -16,7 +16,7 @@
 
 <body>
 
-    
+
     <div class="center-content">
         <div class="container-fluid-neverov">
 
@@ -25,11 +25,11 @@
             <!-- Flash Messages -->
             {% with messages = get_flashed_messages(with_categories=True) %}
             {% if messages %}
-                {% for category, message in messages %}
-                <div class="alert alert-{{ category }} mt-3">
-                    {{ message }}
-                </div>
-                {% endfor %}
+            {% for category, message in messages %}
+            <div class="alert alert-{{ category }} mt-3">
+                {{ message }}
+            </div>
+            {% endfor %}
             {% endif %}
             {% endwith %}
 
@@ -48,24 +48,34 @@
                     <label for="column">Выберите столбец:</label>
                     <select name="column" id="column" class="form-control">
                         <option value="">Столбец</option>
-                        <option value="id_id" {% if selected_column == 'id_id' %}selected{% endif %}>№ п/п</option>
-                        <option value="name" {% if selected_column == 'name' %}selected{% endif %}>ФИО заявителя</option>
-                        <option value="snils" {% if selected_column == 'snils' %}selected{% endif %}>СНИЛС</option>
-                        <option value="location" {% if selected_column == 'location' %}selected{% endif %}>Район</option>
-                        <option value="address_p" {% if selected_column == 'address_p' %}selected{% endif %}>Населённый пункт</option>
-                        <option value="address" {% if selected_column == 'address' %}selected{% endif %}>Адрес</option>
-                        <option value="benefit" {% if selected_column == 'benefit' %}selected{% endif %}>Льгота</option>
-                        <option value="number" {% if selected_column == 'number' %}selected{% endif %}>Серия и номер</option>
-                        <option value="year" {% if selected_column == 'year' %}selected{% endif %}>Дата выдачи сертификата</option>
-                        <option value="cost" {% if selected_column == 'cost' %}selected{% endif %}>Размер выплаты</option>
-                        <option value="certificate" {% if selected_column == 'certificate' %}selected{% endif %}>Сертификат</option>
-                        <option value="date_number_get" {% if selected_column == 'date_number_get' %}selected{% endif %}>Дата и номер решения о выдаче</option>
-                        <option value="date_number_cancellation" {% if selected_column == 'date_number_cancellation' %}selected{% endif %}>Дата и № решения об аннулировании</option>
-                        <option value="date_number_no" {% if selected_column == 'date_number_no' %}selected{% endif %}>Дата и № решения об отказе в выдаче</option>
-                        <option value="certificate_no" {% if selected_column == 'certificate_no' %}selected{% endif %}>Отказ в выдаче</option>
-                        <option value="reason" {% if selected_column == 'reason' %}selected{% endif %}>Основная причина отказа</option>
-                        <option value="track" {% if selected_column == 'track' %}selected{% endif %}>ТРЕК</option>
-                        <option value="date_post" {% if selected_column == 'date_post' %}selected{% endif %}>Дата отправки почтой</option>
+                        <option value="id_id" {% if selected_column=='id_id' %}selected{% endif %}>№ п/п</option>
+                        <option value="name" {% if selected_column=='name' %}selected{% endif %}>ФИО заявителя</option>
+                        <option value="snils" {% if selected_column=='snils' %}selected{% endif %}>СНИЛС</option>
+                        <option value="location" {% if selected_column=='location' %}selected{% endif %}>Район</option>
+                        <option value="address_p" {% if selected_column=='address_p' %}selected{% endif %}>Населённый
+                            пункт</option>
+                        <option value="address" {% if selected_column=='address' %}selected{% endif %}>Адрес</option>
+                        <option value="benefit" {% if selected_column=='benefit' %}selected{% endif %}>Льгота</option>
+                        <option value="number" {% if selected_column=='number' %}selected{% endif %}>Серия и номер
+                        </option>
+                        <option value="year" {% if selected_column=='year' %}selected{% endif %}>Дата выдачи сертификата
+                        </option>
+                        <option value="cost" {% if selected_column=='cost' %}selected{% endif %}>Размер выплаты</option>
+                        <option value="certificate" {% if selected_column=='certificate' %}selected{% endif %}>
+                            Сертификат</option>
+                        <option value="date_number_get" {% if selected_column=='date_number_get' %}selected{% endif %}>
+                            Дата и номер решения о выдаче</option>
+                        <option value="date_number_cancellation" {% if selected_column=='date_number_cancellation'
+                            %}selected{% endif %}>Дата и № решения об аннулировании</option>
+                        <option value="date_number_no" {% if selected_column=='date_number_no' %}selected{% endif %}>
+                            Дата и № решения об отказе в выдаче</option>
+                        <option value="certificate_no" {% if selected_column=='certificate_no' %}selected{% endif %}>
+                            Отказ в выдаче</option>
+                        <option value="reason" {% if selected_column=='reason' %}selected{% endif %}>Основная причина
+                            отказа</option>
+                        <option value="track" {% if selected_column=='track' %}selected{% endif %}>ТРЕК</option>
+                        <option value="date_post" {% if selected_column=='date_post' %}selected{% endif %}>Дата отправки
+                            почтой</option>
                     </select>
                 </div>
                 <div class="form-item">
@@ -117,29 +127,49 @@
                         {% for service in services %}
                         <tr class="service-row" data-id="{{ service.id }}">
                             <!-- Аналогично добавьте классы для td -->
-                            <td class="fixed-width" style="background-color: {{ service.color or '' }}">{{ service.id_id }}</td>
-                            <td class="stretch-width" style="background-color: {{ service.color or '' }}">{{ service.name }}</td>
-                            <td class="stretch-width" style="background-color: {{ service.color or '' }}">{{ service.snils }}</td>
-                            <td class="fixed-width" style="background-color: {{ service.color or '' }}">{{ service.location }}</td>
-                            <td class="stretch-width" style="background-color: {{ service.color or '' }}">{{ service.address_p }}</td>
-                            <td class="fixed-width" style="background-color: {{ service.color or '' }}">{{ service.address }}</td>
-                            <td class="fixed-width" style="background-color: {{ service.color or '' }}">{{ service.benefit }}</td>
-                            <td class="stretch-width" style="background-color: {{ service.color or '' }}">{{ service.number }}</td>
-                            <td class="fixed-width" style="background-color: {{ service.color or '' }}">{{ service.year }}</td>
-                            <td class="stretch-width" style="background-color: {{ service.color or '' }}">{{ service.cost }}</td>
-                            <td class="stretch-width" style="background-color: {{ service.color or '' }}">{{ service.certificate }}</td>
-                            <td class="fixed-width" style="background-color: {{ service.color or '' }}">{{ service.date_number_get }}</td>
-                            <td class="fixed-width" style="background-color: {{ service.color or '' }}">{{ service.date_number_cancellation }}</td>
-                            <td class="fixed-width" style="background-color: {{ service.color or '' }}">{{ service.date_number_no }}</td>
-                            <td class="stretch-width" style="background-color: {{ service.color or '' }}">{{ service.certificate_no }}</td>
-                            <td class="stretch-width" style="background-color: {{ service.color or '' }}">{{ service.reason }}</td>
-                            <td class="stretch-width" style="background-color: {{ service.color or '' }}">{{ service.track }}</td>
-                            <td class="fixed-width" style="background-color: {{ service.color or '' }}">{{ service.date_post }}</td>
+                            <td class="fixed-width" style="background-color: {{ service.color or '' }}">{{ service.id_id
+                                }}</td>
+                            <td class="stretch-width" style="background-color: {{ service.color or '' }}">{{
+                                service.name }}</td>
+                            <td class="stretch-width" style="background-color: {{ service.color or '' }}">{{
+                                service.snils }}</td>
+                            <td class="fixed-width" style="background-color: {{ service.color or '' }}">{{
+                                service.location }}</td>
+                            <td class="stretch-width" style="background-color: {{ service.color or '' }}">{{
+                                service.address_p }}</td>
+                            <td class="fixed-width" style="background-color: {{ service.color or '' }}">{{
+                                service.address }}</td>
+                            <td class="fixed-width" style="background-color: {{ service.color or '' }}">{{
+                                service.benefit }}</td>
+                            <td class="stretch-width" style="background-color: {{ service.color or '' }}">{{
+                                service.number }}</td>
+                            <td class="fixed-width" style="background-color: {{ service.color or '' }}">{{ service.year
+                                }}</td>
+                            <td class="stretch-width" style="background-color: {{ service.color or '' }}">{{
+                                service.cost }}</td>
+                            <td class="stretch-width" style="background-color: {{ service.color or '' }}">{{
+                                service.certificate }}</td>
+                            <td class="fixed-width" style="background-color: {{ service.color or '' }}">{{
+                                service.date_number_get }}</td>
+                            <td class="fixed-width" style="background-color: {{ service.color or '' }}">{{
+                                service.date_number_cancellation }}</td>
+                            <td class="fixed-width" style="background-color: {{ service.color or '' }}">{{
+                                service.date_number_no }}</td>
+                            <td class="stretch-width" style="background-color: {{ service.color or '' }}">{{
+                                service.certificate_no }}</td>
+                            <td class="stretch-width" style="background-color: {{ service.color or '' }}">{{
+                                service.reason }}</td>
+                            <td class="stretch-width" style="background-color: {{ service.color or '' }}">{{
+                                service.track }}</td>
+                            <td class="fixed-width" style="background-color: {{ service.color or '' }}">{{
+                                service.date_post }}</td>
                             <td class="stretch-width">
                                 <!-- Управление -->
                                 <div style="display: flex; justify-content: center; align-items: center; gap: 5px;">
-                                    <a href="{{ url_for('edit', id=service.id) }}" class="btn btn-sm btn-warning">Edit</a>
-                                    <form method="POST" action="{{ url_for('delete', id=service.id) }}" style="display:inline;" onsubmit="return confirmDelete();">
+                                    <a href="{{ url_for('edit', id=service.id) }}"
+                                        class="btn btn-sm btn-warning">Edit</a>
+                                    <form method="POST" action="{{ url_for('delete', id=service.id) }}"
+                                        style="display:inline;" onsubmit="return confirmDelete();">
                                         <button type="submit" class="btn btn-sm btn-danger">Delete</button>
                                     </form>
                                 </div>
@@ -148,9 +178,12 @@
                                 <!-- Выбор цвета -->
                                 <select class="form-control color-select" data-id="{{ service.id }}">
                                     <option value="#ffffff">Default</option>
-                                    <option value="#eaf7ff" {% if service.color=='#eaf7ff' %}selected{% endif %}>Light Blue</option>
-                                    <option value="#ffebeb" {% if service.color=='#ffebeb' %}selected{% endif %}>Light Red</option>
-                                    <option value="#dff0d8" {% if service.color=='#dff0d8' %}selected{% endif %}>Light Green</option>
+                                    <option value="#eaf7ff" {% if service.color=='#eaf7ff' %}selected{% endif %}>Light
+                                        Blue</option>
+                                    <option value="#ffebeb" {% if service.color=='#ffebeb' %}selected{% endif %}>Light
+                                        Red</option>
+                                    <option value="#dff0d8" {% if service.color=='#dff0d8' %}selected{% endif %}>Light
+                                        Green</option>
                                 </select>
                             </td>
                         </tr>
@@ -167,7 +200,8 @@
                     <ul class="pagination">
                         {% if page > 1 %}
                         <li class="page-item">
-                            <a class="page-link" href="{{ url_for('index', year=selected_year, keyword=keyword, page=page-1) }}"
+                            <a class="page-link"
+                                href="{{ url_for('index', year=selected_year, keyword=keyword, page=page-1) }}"
                                 aria-label="Previous">
                                 <span aria-hidden="true">&laquo;</span>
                             </a>
@@ -177,7 +211,8 @@
                         <!-- Show "Previous" button if not on the first page group -->
                         {% if start_page > 1 %}
                         <li class="page-item">
-                            <a class="page-link" href="{{ url_for('index', year=selected_year, keyword=keyword, page=1) }}">1</a>
+                            <a class="page-link"
+                                href="{{ url_for('index', year=selected_year, keyword=keyword, page=1) }}">1</a>
                         </li>
                         {% if start_page > 2 %}
                         <li class="page-item disabled"><span class="page-link">...</span></li>
@@ -187,28 +222,30 @@
                         <!-- Show a few pages around the current page -->
                         {% for p in range(start_page, end_page + 1) %}
                         <li class="page-item {% if p == page %}active{% endif %}">
-                            <a class="page-link" href="{{ url_for('index', year=selected_year, keyword=keyword, page=p) }}">{{ p }}</a>
+                            <a class="page-link"
+                                href="{{ url_for('index', year=selected_year, keyword=keyword, page=p) }}">{{ p }}</a>
                         </li>
                         {% endfor %}
 
                         <!-- Show "Next" button if not on the last page group -->
-                        {% if end_page < total_pages %}
-                        {% if end_page < total_pages - 1 %}
-                        <li class="page-item disabled"><span class="page-link">...</span></li>
-                        {% endif %}
-                        <li class="page-item">
-                            <a class="page-link" href="{{ url_for('index', year=selected_year, keyword=keyword, page=total_pages) }}">{{ total_pages }}</a>
-                        </li>
-                        {% endif %}
+                        {% if end_page < total_pages %} {% if end_page < total_pages - 1 %} <li
+                            class="page-item disabled"><span class="page-link">...</span></li>
+                            {% endif %}
+                            <li class="page-item">
+                                <a class="page-link"
+                                    href="{{ url_for('index', year=selected_year, keyword=keyword, page=total_pages) }}">{{
+                                    total_pages }}</a>
+                            </li>
+                            {% endif %}
 
-                        {% if page < total_pages %}
-                        <li class="page-item">
-                            <a class="page-link" href="{{ url_for('index', year=selected_year, keyword=keyword, page=page+1) }}"
-                                aria-label="Next">
-                                <span aria-hidden="true">&raquo;</span>
-                            </a>
-                        </li>
-                        {% endif %}
+                            {% if page < total_pages %} <li class="page-item">
+                                <a class="page-link"
+                                    href="{{ url_for('index', year=selected_year, keyword=keyword, page=page+1) }}"
+                                    aria-label="Next">
+                                    <span aria-hidden="true">&raquo;</span>
+                                </a>
+                                </li>
+                                {% endif %}
                     </ul>
                 </nav>
             </div>
@@ -224,7 +261,8 @@
             <h1>Экспорт услуг в Excel</h1>
             <br>
 
-            <form method="GET" action="{{ url_for('export_excel') }}" id="export-form" onsubmit="showFlashMessage(event)">
+            <form method="GET" action="{{ url_for('export_excel') }}" id="export-form"
+                onsubmit="showFlashMessage(event)">
                 <input type="hidden" name="year" value="{{ selected_year }}">
                 <div class="alert alert-success" id="flash-message" style="display: none;"></div>
                 <button type="submit" class="btn btn-info" id="export-button">Экспорт в Excel</button>
@@ -245,7 +283,7 @@
 
         }
 
-        document.getElementById('export-button').onclick = function(event) {
+        document.getElementById('export-button').onclick = function (event) {
 
             // Отображаем сообщение сразу после нажатия на кнопку
             document.getElementById('flash-message').innerText = 'Пожалуйста, подождите, идёт загрузка!';
@@ -261,27 +299,27 @@
                 },
                 body: null
             })
-            .then(response => {
-                if (response.ok) {
-                    return response.blob();  // Получаем файл
-                }
-                throw new Error('Ошибка загрузки файла');
-            })
-            .then(blob => {
-                // Создаем объект URL для файла
-                const url = window.URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.style.display = 'none';
-                a.href = url;
-                a.download = 'services.xlsx';  // Имя файла
-                document.body.appendChild(a);
-                a.click();  // Имитируем клик для загрузки файла
-                window.URL.revokeObjectURL(url);  // Освобождаем объект URL
-            })
-            .catch(error => console.error(error));
+                .then(response => {
+                    if (response.ok) {
+                        return response.blob();  // Получаем файл
+                    }
+                    throw new Error('Ошибка загрузки файла');
+                })
+                .then(blob => {
+                    // Создаем объект URL для файла
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.style.display = 'none';
+                    a.href = url;
+                    a.download = 'services.xlsx';  // Имя файла
+                    document.body.appendChild(a);
+                    a.click();  // Имитируем клик для загрузки файла
+                    window.URL.revokeObjectURL(url);  // Освобождаем объект URL
+                })
+                .catch(error => console.error(error));
         };
 
-        window.onload = function() {
+        window.onload = function () {
             window.scrollTo(0, 0);
         };
 
@@ -373,24 +411,38 @@
             }
         });
 
-        // ДОДЕЛАТЬ, НЕ РАБОТАЕТ
-        // document.addEventListener('DOMContentLoaded', function() {
-        //    const yearSelect = document.getElementById('year');
-        //
-        //    if (yearSelect) {
-        //        console.log('DOM fully loaded and parsed');
-        //
-        //        if (!localStorage.getItem('hasVisited')) {
-        //            console.log('First visit detected');
-        //            yearSelect.value = ''; // Устанавливаем значение по умолчанию
-        //            localStorage.setItem('hasVisited', 'true');
-        //        } else {
-        //            console.log('Returning visit detected');
-        //        }
-        //    } else {
-        //        console.log('Element #year not found');
-        //    }
-        //});
+        // Прокрутка таблицы при нажатии левой кнопки мыши
+        document.addEventListener('DOMContentLoaded', function () {
+            const scrollContainer = document.querySelector('.scroll-container');
+            let isMouseDown = false;
+            let startX;
+            let scrollLeft;
+
+            scrollContainer.addEventListener('mousedown', (e) => {
+                isMouseDown = true;
+                startX = e.pageX - scrollContainer.offsetLeft;
+                scrollLeft = scrollContainer.scrollLeft;
+                scrollContainer.style.cursor = 'grabbing';
+            });
+
+            scrollContainer.addEventListener('mouseleave', () => {
+                isMouseDown = false;
+                scrollContainer.style.cursor = 'default';
+            });
+
+            document.addEventListener('mouseup', () => {
+                isMouseDown = false;
+                scrollContainer.style.cursor = 'default';
+            });
+
+            scrollContainer.addEventListener('mousemove', (e) => {
+                if (!isMouseDown) return;
+                e.preventDefault();
+                const x = e.pageX - scrollContainer.offsetLeft;
+                const walk = (x - startX) * 2; // Скорость прокрутки
+                scrollContainer.scrollLeft = scrollLeft - walk;
+            });
+        });
 
     </script>
 </body>

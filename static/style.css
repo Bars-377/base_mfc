@@ -17,10 +17,14 @@ h1 {
     background-color: #fff;
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    margin-top: 15px; /* Внешний отступ сверху */
-    margin-bottom: 15px; /* Внешний отступ снизу */
-    margin-left: 15px; /* Внешний отступ сверху */
-    margin-right: 15px; /* Внешний отступ снизу */
+    margin-top: 15px;
+    /* Внешний отступ сверху */
+    margin-bottom: 15px;
+    /* Внешний отступ снизу */
+    margin-left: 15px;
+    /* Внешний отступ сверху */
+    margin-right: 15px;
+    /* Внешний отступ снизу */
 }
 
 /* Таблица */
@@ -74,43 +78,54 @@ h1 {
 /* Стили формы */
 .form-group {
     margin: 20px;
-    align-items: flex-end; /* Вертикальное выравнивание по низу */
-    gap: 15px; /* Расстояние между элементами */
+    align-items: flex-end;
+    /* Вертикальное выравнивание по низу */
+    gap: 15px;
+    /* Расстояние между элементами */
     display: flex;
-    justify-content: center; /* Центрирование содержимого внутри элемента */
-    flex-wrap: wrap; /* Позволяет элементам переноситься на новую строку */
+    justify-content: center;
+    /* Центрирование содержимого внутри элемента */
+    flex-wrap: wrap;
+    /* Позволяет элементам переноситься на новую строку */
 }
 
 .form-item {
     /* flex: 1 1 100%; /* Элементы занимают 100% ширины контейнера, заставляя их переноситься на новую строку */
-    justify-content: center; /* Центрирование содержимого внутри элемента */
+    justify-content: center;
+    /* Центрирование содержимого внутри элемента */
 }
 
 .form-item {
     /* flex: 1 1 100%; /* Элементы занимают 100% ширины контейнера, заставляя их переноситься на новую строку */
-    justify-content: center; /* Центрирование содержимого внутри элемента */
+    justify-content: center;
+    /* Центрирование содержимого внутри элемента */
 }
 
 .form-item-neverov {
     /* flex: 1 1 100%; /* Элементы занимают 100% ширины контейнера, заставляя их переноситься на новую строку */
-    justify-content: center; /* Центрирование содержимого внутри элемента */
+    justify-content: center;
+    /* Центрирование содержимого внутри элемента */
 }
 
 .form-item button {
-    margin: 5px; /* Увеличьте значение для большего расстояния */
+    margin: 5px;
+    /* Увеличьте значение для большего расстояния */
 }
 
 .form-control {
     border-radius: 4px;
     border: 1px solid #ced4da;
     padding: 10px;
-    width: 200px; /* Устанавливаем ширину на 100% */
-    box-sizing: border-box; /* Учитываем отступы и границы в общей ширине */
+    width: 200px;
+    /* Устанавливаем ширину на 100% */
+    box-sizing: border-box;
+    /* Учитываем отступы и границы в общей ширине */
     margin-bottom: 15px;
 }
 
 .form-control-year {
-    width: 125px; /* Устанавливаем ширину на 100% */
+    width: 125px;
+    /* Устанавливаем ширину на 100% */
 }
 
 .center-content {
@@ -192,7 +207,6 @@ h1 {
 .btn-danger {
     background-color: #dc3545;
     border: none;
-    margin-top: 15px;
 }
 
 .btn-warning {
@@ -220,5 +234,6 @@ h1 {
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 100vh; /* Задает минимальную высоту для центрирования по вертикали */
+    min-height: 100vh;
+    /* Задает минимальную высоту для центрирования по вертикали */
 }
