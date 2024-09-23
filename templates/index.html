@@ -337,10 +337,13 @@
 
         // Функция обновления цвета строки
         function updateColor(rowId, color) {
+            const csrfToken = document.querySelector('input[name="csrf_token"]').value;
+
             fetch(`/update-color/${rowId}`, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrfToken // Замените csrfToken на фактический токен
                 },
                 body: JSON.stringify({ color: color })
             })

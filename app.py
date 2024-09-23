@@ -381,13 +381,13 @@ def export_excel():
     # Отправляем файл пользователю
     return response
 
-"""Nginx"""
-from waitress import serve
-if __name__ == '__main__':
-    print('Flask для Nginx запущен!')
-    serve(app, threads=10, host='172.18.11.103', port=8000)
-
-# """Standart"""
+# """Nginx"""
+# from waitress import serve
 # if __name__ == '__main__':
-#     print('Flask запущен')
-#     app.run(host='0.0.0.0', port=5000, debug=True)
+#     print('Flask для Nginx запущен!')
+#     serve(app, threads=10, host='172.18.11.103', port=8000)
+
+"""Standart"""
+if __name__ == '__main__':
+    print('Flask запущен')
+    app.run(host='0.0.0.0', port=5000, debug=True)
