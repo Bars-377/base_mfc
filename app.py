@@ -5,11 +5,13 @@ import pandas as pd
 from io import BytesIO
 from openpyxl.styles import PatternFill, Border, Side
 from flask_login import LoginManager, login_user, logout_user, login_required
+from flask_wtf.csrf import CSRFProtect
 
 app = Flask(__name__)
 
 import os
 app.secret_key = os.urandom(24)  # Генерирует случайный ключ длиной 24 байта
+csrf_token = CSRFProtect(app)
 
 # app.secret_key = 'supersecretkey'
 
@@ -155,7 +157,11 @@ def update(id):
     service.address = request.form['address']
     service.benefit = request.form['benefit']
     service.number = request.form['number']
-    service.year = datetime.strptime(request.form['year'], '%d.%m.%Y').date()
+    try:
+        service.year = datetime.strptime(request.form['year'], '%d.%m.%Y').date()
+    except ValueError:
+        flash('Вы ввели неверный формат Даты выдачи сертификата. Ожидаемый формат: ДД.ММ.ГГГГ.')
+        return redirect(url_for('index'))
     service.cost = request.form['cost']
     service.certificate = request.form['certificate']
     service.date_number_get = request.form['date_number_get']
@@ -164,7 +170,12 @@ def update(id):
     service.certificate_no = request.form['certificate_no']
     service.reason = request.form['reason']
     service.track = request.form['track']
-    service.date_post = request.form['date_post']
+    try:
+        service.date_post = datetime.strptime(request.form['date_post'], '%d.%m.%Y').date()
+    except ValueError:
+        flash('Вы ввели неверный формат Даты отправки почтой. Ожидаемый формат: ДД.ММ.ГГГГ.')
+        return redirect(url_for('index'))
+    service.comment = request.form['comment']
     service.color = request.form.get('color')
 
     db.session.commit()
@@ -201,7 +212,7 @@ def delete(id):
 @app.route('/add', methods=['POST'])
 @login_required
 def add():
-    id_id = request.form['id_id']
+    # id_id = request.foыrm['id_id']
     name = request.form['name']
     snils = request.form['snils']
     location = request.form['location']
@@ -209,7 +220,11 @@ def add():
     address = request.form['address']
     benefit = request.form['benefit']
     number = request.form['number']
-    year = datetime.strptime(request.form['year'], '%d.%m.%Y').date()
+    try:
+        year = datetime.strptime(request.form['year'], '%d.%m.%Y').date()
+    except ValueError:
+        flash('Вы ввели неверный формат Даты выдачи сертификата. Ожидаемый формат: ДД.ММ.ГГГГ.')
+        return redirect(url_for('index'))
     cost = request.form['cost']
     certificate = request.form['certificate']
     date_number_get = request.form['date_number_get']
@@ -218,8 +233,17 @@ def add():
     certificate_no = request.form['certificate_no']
     reason = request.form['reason']
     track = request.form['track']
-    date_post = request.form['date_post']
+    try:
+        date_post = datetime.strptime(request.form['date_post'], '%d.%m.%Y').date()
+    except ValueError:
+        flash('Вы ввели неверный формат Даты отправки почтой. Ожидаемый формат: ДД.ММ.ГГГГ.')
+        return redirect(url_for('index'))
+    comment = request.form['comment']
     color = request.form.get('color')
+
+    from sqlalchemy import cast, Integer
+    latest_service = Service.query.order_by(cast(Service.id_id, Integer).desc()).first()
+    id_id = (int(latest_service.id_id) + 1) if latest_service else 1  # Преобразуем в int, если услуга найдена
 
     new_service = Service(id_id=id_id, name=name, snils=snils, location=location,
                         address_p=address_p, address=address, benefit=benefit,
@@ -227,7 +251,7 @@ def add():
                         certificate=certificate, date_number_get=date_number_get,
                         date_number_cancellation=date_number_cancellation,
                         date_number_no=date_number_no, certificate_no=certificate_no,
-                        reason=reason, track=track, date_post=date_post, color=color)
+                        reason=reason, track=track, date_post=date_post, comment=comment, color=color)
     db.session.add(new_service)
     db.session.commit()
     flash('Данные успешно добавлены!', 'success')
@@ -266,6 +290,7 @@ def export_excel():
         'Причина отказа': service.reason,
         'ТРЕК': service.track,
         'Дата отправки почтой': service.date_post,
+        'Комментарий': service.comment,
         'Color': getattr(service, 'color', '')
     } for service in services])
 
@@ -299,6 +324,7 @@ def export_excel():
         'Причина отказа': '',
         'ТРЕК': '',
         'Дата отправки почтой': '',
+        'Комментарий': '',
         'Color': ''
     }])
 
@@ -355,13 +381,13 @@ def export_excel():
     # Отправляем файл пользователю
     return response
 
-# """Nginx"""
-# from waitress import serve
-# if __name__ == '__main__':
-#     print('Flask для Nginx запущен!')
-#     serve(app, threads=10, host='172.18.11.103', port=8000)
-
-"""Standart"""
+"""Nginx"""
+from waitress import serve
 if __name__ == '__main__':
-    print('Flask запущен')
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    print('Flask для Nginx запущен!')
+    serve(app, threads=10, host='172.18.11.103', port=8000)
+
+# """Standart"""
+# if __name__ == '__main__':
+#     print('Flask запущен')
+#     app.run(host='0.0.0.0', port=5000, debug=True)

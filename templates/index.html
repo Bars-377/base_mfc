@@ -119,6 +119,7 @@
                             <th class="stretch-width">Основная причина отказа</th>
                             <th class="stretch-width">ТРЕК</th>
                             <th class="fixed-width">Дата отправки почтой</th>
+                            <th class="fixed-width">Комментарий</th>
                             <th class="fixed-width">Управление</th>
                             <th class="fixed-width">Выбор цвета</th>
                         </tr>
@@ -163,14 +164,16 @@
                                 service.track }}</td>
                             <td class="fixed-width" style="background-color: {{ service.color or '' }}">{{
                                 service.date_post }}</td>
+                            <td class="fixed-width" style="background-color: {{ service.color or '' }}">{{
+                                service.comment }}</td>
                             <td class="stretch-width">
                                 <!-- Управление -->
                                 <div style="display: flex; justify-content: center; align-items: center; gap: 5px;">
                                     <a href="{{ url_for('edit', id=service.id) }}"
                                         class="btn btn-sm btn-warning">Edit</a>
-                                    <form method="POST" action="{{ url_for('delete', id=service.id) }}"
-                                        style="display:inline;" onsubmit="return confirmDelete();">
-                                        <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                                    <form class="delete-form" data-id="{{ service.id }}" style="display:inline;">
+                                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">  <!-- Скрытое поле для токена -->
+                                        <button type="button" class="btn btn-sm btn-danger delete-button">Delete</button>
                                     </form>
                                 </div>
                             </td>
@@ -444,6 +447,38 @@
             });
         });
 
+        document.addEventListener('DOMContentLoaded', function () {
+            const deleteButtons = document.querySelectorAll('.delete-button');
+
+            deleteButtons.forEach(button => {
+                button.addEventListener('click', function () {
+                    const form = this.closest('.delete-form');
+                    const serviceId = form.getAttribute('data-id');
+
+                    if (confirmDelete()) {
+                        fetch(`/delete/${serviceId}`, {  // Убедитесь, что здесь правильный путь
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRFToken': form.querySelector('input[name="csrf_token"]').value  // CSRF токен
+                            },
+                            body: JSON.stringify({ id: serviceId })  // Отправка данных, если необходимо
+                        })
+                        .then(response => {
+                            if (response.ok) {
+                                const row = document.querySelector(`.service-row[data-id="${serviceId}"]`);
+                                if (row) {
+                                    row.remove();
+                                }
+                            } else {
+                                alert('Ошибка удаления');
+                            }
+                        })
+                        .catch(error => console.error('Ошибка:', error));
+                    }
+                });
+            });
+        });
     </script>
 </body>
 

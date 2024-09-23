@@ -26,8 +26,8 @@ class Service(db.Model):
     certificate_no = db.Column(db.String(500), nullable=False)
     reason = db.Column(db.String(500), nullable=False)
     track = db.Column(db.String(500), nullable=False)
-    # description = db.Column(db.String(200), nullable=False)  # Описание услуги, обязательное поле, максимум 200 символов
     date_post = db.Column(db.String(500), nullable=False)  # Год предоставления услуги, обязательное поле, тип данных - дата
+    comment = db.Column(db.String(200), nullable=False)  # Описание услуги, обязательное поле, максимум 200 символов
     color = db.Column(db.String(500), nullable=False)  # Дополнительное поле для хранения цвета (HEX код), длина 7 символов (включая #), может быть пустым
 
     # Конструктор класса для создания новых объектов
@@ -35,7 +35,7 @@ class Service(db.Model):
                 address_p, address, benefit, number,
                 year, cost, certificate, date_number_get,
                 date_number_cancellation, date_number_no,
-                certificate_no, reason, track, date_post, id=None, color=None):
+                certificate_no, reason, track, date_post, comment, id=None, color=None):
         self.id = id
         self.id_id = id_id
         self.name = name  # Устанавливаем название услуги
@@ -54,8 +54,8 @@ class Service(db.Model):
         self.certificate_no = certificate_no
         self.reason = reason
         self.track = track
-        # self.description = description  # Устанавливаем описание услуги
         self.date_post = date_post
+        self.comment = comment
         self.color = color  # Устанавливаем цвет (если задан), может быть None (отсутствовать)
 
 from flask_login import UserMixin
