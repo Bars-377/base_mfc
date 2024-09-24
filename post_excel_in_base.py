@@ -12,7 +12,7 @@ cursor = conn.cursor()
 
 try:
     # Загрузите данные из Excel
-    file_path = 'C:/Users/neverov/Desktop/gaz_1.xlsx'
+    file_path = 'C:/Users/neverov/Desktop/gaz_2.xlsx'
     sheet_name = 'РЕЕСТР'  # Замените на имя вашего листа
     df = pd.read_excel(file_path, sheet_name=sheet_name, header=2)
 
@@ -24,16 +24,16 @@ try:
             return match.group(0).replace(',', '.')  # Заменяем запятую на точку для поддержки формата float
         return default
 
-    def safe_date_conversion(value):
-        from dateutil import parser
-        if pd.isna(value):
-            return None  # Возвращаем None для недопустимых значений
-        try:
-            # Попробуйте распарсить дату
-            parsed_date = parser.parse(str(value), dayfirst=True)
-            return parsed_date.strftime('%Y-%m-%d')
-        except (ValueError, TypeError):
-            return None # Возвращаем None, если не удалось распарсить дату
+    # def safe_date_conversion(value):
+    #     from dateutil import parser
+    #     if pd.isna(value):
+    #         return None  # Возвращаем None для недопустимых значений
+    #     try:
+    #         # Попробуйте распарсить дату
+    #         parsed_date = parser.parse(str(value), dayfirst=True)
+    #         return parsed_date.strftime('%Y-%m-%d')
+    #     except (ValueError, TypeError):
+    #         return None # Возвращаем None, если не удалось распарсить дату
 
     # Функции для преобразования данных
     def safe_conversion(value):
@@ -68,7 +68,7 @@ try:
     df['Адрес'] = df['Адрес'].apply(safe_conversion)
     df['Льгота'] = df['Льгота'].apply(safe_conversion)
     df['Серия и № сертификата'] = df['Серия и № сертификата'].apply(safe_conversion)
-    df['Дата выдачи сертификата'] = df['Дата выдачи сертификата'].apply(safe_date_conversion)
+    df['Дата выдачи сертификата'] = df['Дата выдачи сертификата'].apply(safe_conversion)
     df['Размер выплаты'] = df['Размер выплаты'].apply(safe_float_conversion)
     df['Сертификат'] = df['Сертификат'].apply(safe_int_conversion)
     df['Дата и № решения о выдаче сертификата'] = df['Дата и № решения о выдаче сертификата'].apply(safe_conversion)
@@ -84,9 +84,9 @@ try:
     INSERT INTO services (
         id_id, name, snils, location, address_p, address, benefit, number, year, cost,
         certificate, date_number_get, date_number_cancellation, date_number_no,
-        certificate_no, reason, track, date_post
+        certificate_no, reason, track, date_post, comment
     ) VALUES (
-        %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s
+        %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s
     )
     """
 
@@ -103,7 +103,7 @@ try:
                 safe_conversion(row.get('Адрес')),
                 safe_conversion(row.get('Льгота')),
                 safe_conversion(row.get('Серия и № сертификата')),
-                safe_date_conversion(row.get('Дата выдачи сертификата')),
+                safe_conversion(row.get('Дата выдачи сертификата')),
                 safe_float_conversion(row.get('Размер выплаты')),
                 safe_int_conversion(row.get('Сертификат')),
                 safe_conversion(row.get('Дата и № решения о выдаче сертификата')),
@@ -112,7 +112,8 @@ try:
                 safe_int_conversion(row.get('Отказ в выдаче сертификата')),
                 safe_conversion(row.get('Основная причина отказа (пункт)')),
                 safe_conversion(row.get('ТРЕК')),
-                safe_conversion(row.get('Дата отправки почтой'))
+                safe_conversion(row.get('Дата отправки почтой')),
+                ""  # Пустая строка для поля 'comment'
             )
 
             data_to_insert.append(data_row)
