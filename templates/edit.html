@@ -72,50 +72,50 @@
             <div class="form-item">
                 <label for="number">Номер</label>
                 <input type="text" class="form-control form-control-neverov" id="number" name="number" value="{{ service.number }}"
-                    maxlength="30" required title="Максимальное количество значений 30">
+                    maxlength="30" title="Максимальное количество значений 30">
             </div>
             <div class="form-item">
                 <label for="year">Дата выдачи сертификата</label>
-                <input type="text" class="form-control form-control-neverov" id="year" name="year" value="{{ service.year }}" required
+                <input type="text" class="form-control form-control-neverov" id="year" name="year" value="{{ service.year }}"
                     title="Введите дату в формате ДД.ММ.ГГГГ" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this)">
             </div>
             <div class="form-item">
                 <label for="cost">Размер выплаты</label>
                 <input type="number" step="0.01" class="form-control form-control-neverov" id="cost" name="cost" value="{{ service.cost }}"
-                    min="0" max="99999999.99" required title="Максимальное значение 99999999.99">
+                    min="0" max="99999999.99" title="Максимальное значение 99999999.99">
             </div>
             <div class="form-item">
                 <label for="certificate">Сертификат</label>
                 <input type="text" class="form-control form-control-neverov" id="certificate" name="certificate"
-                    value="{{ service.certificate }}" pattern="\d{1,2}" maxlength="2" required
+                    value="{{ service.certificate }}" pattern="\d{1,2}" maxlength="2"
                     title="Максимальное значение 99">
             </div>
             <div class="form-item">
                 <label for="date_number_get">Дата и номер решения о выдаче</label>
                 <input type="text" class="form-control form-control-neverov" id="date_number_get" name="date_number_get"
-                    value="{{ service.date_number_get }}" maxlength="30" required
+                    value="{{ service.date_number_get }}" maxlength="30"
                     title="Максимальное количество значений 30">
             </div>
             <div class="form-item">
                 <label for="date_number_cancellation">Дата и № решения об аннулировании</label>
                 <input type="text" class="form-control form-control-neverov" id="date_number_cancellation" name="date_number_cancellation"
-                    value="{{ service.date_number_cancellation }}" maxlength="30" required
+                    value="{{ service.date_number_cancellation }}" maxlength="30"
                     title="Максимальное количество значений 30">
             </div>
             <div class="form-item">
                 <label for="date_number_no">Дата и № решения об отказе в выдаче</label>
                 <input type="text" class="form-control form-control-neverov" id="date_number_no" name="date_number_no"
-                    value="{{ service.date_number_no }}" maxlength="30" required
+                    value="{{ service.date_number_no }}" maxlength="30"
                     title="Максимальное количество значений 30">
             </div>
             <div class="form-item">
                 <label for="certificate_no">Отказ в выдаче</label>
                 <input type="text" class="form-control form-control-neverov" id="certificate_no" name="certificate_no"
-                    value="{{ service.certificate_no }}" pattern="\d{1,2}" maxlength="2" required title="Максимальное значение 99">
+                    value="{{ service.certificate_no }}" pattern="\d{1,2}" maxlength="2" title="Максимальное значение 99">
             </div>
             <div class="form-item">
                 <label for="reason">Причина отказа</label>
-                <input type="text" class="form-control form-control-neverov" id="reason" name="reason" value="{{ service.reason }}" maxlength="30" required title="Максимальное количество значений 30">
+                <input type="text" class="form-control form-control-neverov" id="reason" name="reason" value="{{ service.reason }}" maxlength="30" title="Максимальное количество значений 30">
             </div>
             <div class="form-item">
                 <label for="track">ТРЕК</label>
