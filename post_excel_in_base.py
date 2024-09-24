@@ -12,7 +12,7 @@ cursor = conn.cursor()
 
 try:
     # Загрузите данные из Excel
-    file_path = 'C:/Users/neverov/Desktop/gaz_2.xlsx'
+    file_path = 'C:/Users/neverov/Desktop/gaz_1.xlsx'
     sheet_name = 'РЕЕСТР'  # Замените на имя вашего листа
     df = pd.read_excel(file_path, sheet_name=sheet_name, header=2)
 

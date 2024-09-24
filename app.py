@@ -158,10 +158,14 @@ def update(id):
     service.number = request.form['number']
 
     service.year = request.form['year']
-    day = int(str(service.year).split('.')[0])
-    month = int(str(service.year).split('.')[1])
-    if not (1 <= day <= 30 and 1 <= month <= 12):
-        flash('Вы ввели неверный формат Даты выдачи сертификата. Ожидаемый формат: ДД.ММ.ГГГГ.')
+    try:
+        day = int(str(service.year).split('.')[0])
+        month = int(str(service.year).split('.')[1])
+        if not (1 <= day <= 30 and 1 <= month <= 12):
+            flash('Вы ввели неверный формат Даты выдачи сертификата. Ожидаемый формат: ДД.ММ.ГГГГ.', 'danger')
+            return redirect(url_for('index'))
+    except ValueError:
+        flash('Вы ввели неверный формат Даты выдачи сертификата. Ожидаемый формат: ДД.ММ.ГГГГ.', 'danger')
         return redirect(url_for('index'))
 
     service.cost = request.form['cost']
@@ -174,10 +178,14 @@ def update(id):
     service.track = request.form['track']
 
     service.date_post = request.form['date_post']
-    day = int(str(service.date_post).split('.')[0])
-    month = int(str(service.date_post).split('.')[1])
-    if not (1 <= day <= 30 and 1 <= month <= 12):
-        flash('Вы ввели неверный формат Даты отправки почтой. Ожидаемый формат: ДД.ММ.ГГГГ.')
+    try:
+        day = int(str(service.date_post).split('.')[0])
+        month = int(str(service.date_post).split('.')[1])
+        if not (1 <= day <= 30 and 1 <= month <= 12):
+            flash('Вы ввели неверный формат Даты отправки почтой. Ожидаемый формат: ДД.ММ.ГГГГ.', 'danger')
+            return redirect(url_for('index'))
+    except ValueError:
+        flash('Вы ввели неверный формат Даты выдачи сертификата. Ожидаемый формат: ДД.ММ.ГГГГ.', 'danger')
         return redirect(url_for('index'))
 
     service.comment = request.form['comment']
@@ -227,10 +235,14 @@ def add():
     number = request.form['number']
 
     year = request.form['year']
-    day = int(str(year).split('.')[0])
-    month = int(str(year).split('.')[1])
-    if not (1 <= day <= 30 and 1 <= month <= 12):
-        flash('Вы ввели неверный формат Даты выдачи сертификата. Ожидаемый формат: ДД.ММ.ГГГГ.')
+    try:
+        day = int(str(year).split('.')[0])
+        month = int(str(year).split('.')[1])
+        if not (1 <= day <= 30 and 1 <= month <= 12):
+            flash('Вы ввели неверный формат Даты выдачи сертификата. Ожидаемый формат: ДД.ММ.ГГГГ.', 'danger')
+            return redirect(url_for('index'))
+    except ValueError:
+        flash('Вы ввели неверный формат Даты выдачи сертификата. Ожидаемый формат: ДД.ММ.ГГГГ.', 'danger')
         return redirect(url_for('index'))
 
     cost = request.form['cost']
@@ -243,10 +255,14 @@ def add():
     track = request.form['track']
 
     date_post = request.form['date_post']
-    day = int(str(date_post).split('.')[0])
-    month = int(str(date_post).split('.')[1])
-    if not (1 <= day <= 30 and 1 <= month <= 12):
-        flash('Вы ввели неверный формат Даты отправки почтой. Ожидаемый формат: ДД.ММ.ГГГГ.')
+    try:
+        day = int(str(date_post).split('.')[0])
+        month = int(str(date_post).split('.')[1])
+        if not (1 <= day <= 30 and 1 <= month <= 12):
+            flash('Вы ввели неверный формат Даты отправки почтой. Ожидаемый формат: ДД.ММ.ГГГГ.', 'danger')
+            return redirect(url_for('index'))
+    except ValueError:
+        flash('Вы ввели неверный формат Даты выдачи сертификата. Ожидаемый формат: ДД.ММ.ГГГГ.', 'danger')
         return redirect(url_for('index'))
 
     comment = request.form['comment']
