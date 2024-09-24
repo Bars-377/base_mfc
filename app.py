@@ -159,11 +159,12 @@ def update(id):
 
     service.year = request.form['year']
     try:
-        day = int(str(service.year).split('.')[0])
-        month = int(str(service.year).split('.')[1])
-        if not (1 <= day <= 30 and 1 <= month <= 12):
-            flash('Вы ввели неверный формат Даты выдачи сертификата. Ожидаемый формат: ДД.ММ.ГГГГ.', 'danger')
-            return redirect(url_for('index'))
+        if service.year:
+            day = int(str(service.year).split('.')[0])
+            month = int(str(service.year).split('.')[1])
+            if not (1 <= day <= 30 and 1 <= month <= 12):
+                flash('Вы ввели неверный формат Даты выдачи сертификата. Ожидаемый формат: ДД.ММ.ГГГГ.', 'danger')
+                return redirect(url_for('index'))
     except ValueError:
         flash('Вы ввели неверный формат Даты выдачи сертификата. Ожидаемый формат: ДД.ММ.ГГГГ.', 'danger')
         return redirect(url_for('index'))
@@ -179,11 +180,12 @@ def update(id):
 
     service.date_post = request.form['date_post']
     try:
-        day = int(str(service.date_post).split('.')[0])
-        month = int(str(service.date_post).split('.')[1])
-        if not (1 <= day <= 30 and 1 <= month <= 12):
-            flash('Вы ввели неверный формат Даты отправки почтой. Ожидаемый формат: ДД.ММ.ГГГГ.', 'danger')
-            return redirect(url_for('index'))
+        if service.date_post:
+            day = int(str(service.date_post).split('.')[0])
+            month = int(str(service.date_post).split('.')[1])
+            if not (1 <= day <= 30 and 1 <= month <= 12):
+                flash('Вы ввели неверный формат Даты отправки почтой. Ожидаемый формат: ДД.ММ.ГГГГ.', 'danger')
+                return redirect(url_for('index'))
     except ValueError:
         flash('Вы ввели неверный формат Даты выдачи сертификата. Ожидаемый формат: ДД.ММ.ГГГГ.', 'danger')
         return redirect(url_for('index'))
@@ -236,11 +238,12 @@ def add():
 
     year = request.form['year']
     try:
-        day = int(str(year).split('.')[0])
-        month = int(str(year).split('.')[1])
-        if not (1 <= day <= 30 and 1 <= month <= 12):
-            flash('Вы ввели неверный формат Даты выдачи сертификата. Ожидаемый формат: ДД.ММ.ГГГГ.', 'danger')
-            return redirect(url_for('index'))
+        if year:
+            day = int(str(year).split('.')[0])
+            month = int(str(year).split('.')[1])
+            if not (1 <= day <= 30 and 1 <= month <= 12):
+                flash('Вы ввели неверный формат Даты выдачи сертификата. Ожидаемый формат: ДД.ММ.ГГГГ.', 'danger')
+                return redirect(url_for('index'))
     except ValueError:
         flash('Вы ввели неверный формат Даты выдачи сертификата. Ожидаемый формат: ДД.ММ.ГГГГ.', 'danger')
         return redirect(url_for('index'))
@@ -256,11 +259,12 @@ def add():
 
     date_post = request.form['date_post']
     try:
-        day = int(str(date_post).split('.')[0])
-        month = int(str(date_post).split('.')[1])
-        if not (1 <= day <= 30 and 1 <= month <= 12):
-            flash('Вы ввели неверный формат Даты отправки почтой. Ожидаемый формат: ДД.ММ.ГГГГ.', 'danger')
-            return redirect(url_for('index'))
+        if date_post:
+            day = int(str(date_post).split('.')[0])
+            month = int(str(date_post).split('.')[1])
+            if not (1 <= day <= 30 and 1 <= month <= 12):
+                flash('Вы ввели неверный формат Даты отправки почтой. Ожидаемый формат: ДД.ММ.ГГГГ.', 'danger')
+                return redirect(url_for('index'))
     except ValueError:
         flash('Вы ввели неверный формат Даты выдачи сертификата. Ожидаемый формат: ДД.ММ.ГГГГ.', 'danger')
         return redirect(url_for('index'))
