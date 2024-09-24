@@ -1,6 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, send_file
 from models import db, Service, User
-from datetime import datetime
 import pandas as pd
 from io import BytesIO
 from openpyxl.styles import PatternFill, Border, Side
@@ -157,11 +156,14 @@ def update(id):
     service.address = request.form['address']
     service.benefit = request.form['benefit']
     service.number = request.form['number']
-    try:
-        service.year = datetime.strptime(request.form['year'], '%d.%m.%Y').date()
-    except ValueError:
+
+    service.year = request.form['year']
+    day = int(str(service.year).split('.')[0])
+    month = int(str(service.year).split('.')[1])
+    if not (1 <= day <= 30 and 1 <= month <= 12):
         flash('Вы ввели неверный формат Даты выдачи сертификата. Ожидаемый формат: ДД.ММ.ГГГГ.')
         return redirect(url_for('index'))
+
     service.cost = request.form['cost']
     service.certificate = request.form['certificate']
     service.date_number_get = request.form['date_number_get']
@@ -170,11 +172,14 @@ def update(id):
     service.certificate_no = request.form['certificate_no']
     service.reason = request.form['reason']
     service.track = request.form['track']
-    try:
-        service.date_post = datetime.strptime(request.form['date_post'], '%d.%m.%Y').date()
-    except ValueError:
+
+    service.date_post = request.form['date_post']
+    day = int(str(service.date_post).split('.')[0])
+    month = int(str(service.date_post).split('.')[1])
+    if not (1 <= day <= 30 and 1 <= month <= 12):
         flash('Вы ввели неверный формат Даты отправки почтой. Ожидаемый формат: ДД.ММ.ГГГГ.')
         return redirect(url_for('index'))
+
     service.comment = request.form['comment']
     service.color = request.form.get('color')
 
@@ -220,11 +225,14 @@ def add():
     address = request.form['address']
     benefit = request.form['benefit']
     number = request.form['number']
-    try:
-        year = datetime.strptime(request.form['year'], '%d.%m.%Y').date()
-    except ValueError:
+
+    year = request.form['year']
+    day = int(str(year).split('.')[0])
+    month = int(str(year).split('.')[1])
+    if not (1 <= day <= 30 and 1 <= month <= 12):
         flash('Вы ввели неверный формат Даты выдачи сертификата. Ожидаемый формат: ДД.ММ.ГГГГ.')
         return redirect(url_for('index'))
+
     cost = request.form['cost']
     certificate = request.form['certificate']
     date_number_get = request.form['date_number_get']
@@ -233,11 +241,14 @@ def add():
     certificate_no = request.form['certificate_no']
     reason = request.form['reason']
     track = request.form['track']
-    try:
-        date_post = datetime.strptime(request.form['date_post'], '%d.%m.%Y').date()
-    except ValueError:
+
+    date_post = request.form['date_post']
+    day = int(str(date_post).split('.')[0])
+    month = int(str(date_post).split('.')[1])
+    if not (1 <= day <= 30 and 1 <= month <= 12):
         flash('Вы ввели неверный формат Даты отправки почтой. Ожидаемый формат: ДД.ММ.ГГГГ.')
         return redirect(url_for('index'))
+
     comment = request.form['comment']
     color = request.form.get('color')
 
@@ -381,13 +392,13 @@ def export_excel():
     # Отправляем файл пользователю
     return response
 
-# """Nginx"""
-# from waitress import serve
-# if __name__ == '__main__':
-#     print('Flask для Nginx запущен!')
-#     serve(app, threads=10, host='172.18.11.103', port=8000)
-
-"""Standart"""
+"""Nginx"""
+from waitress import serve
 if __name__ == '__main__':
-    print('Flask запущен')
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    print('Flask для Nginx запущен!')
+    serve(app, threads=10, host='172.18.11.103', port=8000)
+
+# """Standart"""
+# if __name__ == '__main__':
+#     print('Flask запущен')
+#     app.run(host='0.0.0.0', port=5000, debug=True)
