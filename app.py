@@ -336,12 +336,19 @@ def add():
 def export_excel():
     year = request.args.get('year', None)
 
+    print(year)
+
     query = Service.query
 
     if year == 'None':  # Если year == 'None', фильтруем записи, у которых год == NULL
+        print('NEVEROV_1', year)
         query = query.filter(Service.year.is_(None))
     elif year:
+        print('NEVEROV_2', year)
         query = query.filter(db.func.year(Service.year) == year)
+
+    print('PAPAPAPAP')
+    print(year)
 
     services = query.all()
 
@@ -455,13 +462,13 @@ def export_excel():
     # Отправляем файл пользователю
     return response
 
-"""Nginx"""
-from waitress import serve
-if __name__ == '__main__':
-    print('Flask для Nginx запущен!')
-    serve(app, threads=10, host='172.18.11.103', port=8000)
-
-# """Standart"""
+# """Nginx"""
+# from waitress import serve
 # if __name__ == '__main__':
-#     print('Flask запущен')
-#     app.run(host='0.0.0.0', port=5000, debug=True)
+#     print('Flask для Nginx запущен!')
+#     serve(app, threads=10, host='172.18.11.103', port=8000)
+
+"""Standart"""
+if __name__ == '__main__':
+    print('Flask запущен')
+    app.run(host='0.0.0.0', port=5000, debug=True)
