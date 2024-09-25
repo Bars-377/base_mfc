@@ -125,11 +125,8 @@ def index():
     if year == 'None':  # Если year == 'None', фильтруем записи, у которых год == NULL
         query = query.filter(Service.year.is_(None) | (Service.year == ''))
     elif year:
-        query = query.filter(db.func.year(Service.year) == year)
-
-    print('NEVEROV')
-    print(year)
-    print(selected_column)
+        # query = query.filter(db.func.year(Service.year) == year)
+        query = query.filter(Service.year.like(f'%{year}%'))
 
     if keyword:
         if selected_column and hasattr(Service, selected_column):
