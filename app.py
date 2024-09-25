@@ -311,7 +311,7 @@ def export_excel():
         'Адрес': service.address,
         'Льгота': service.benefit,
         'Серия и номер': service.number,
-        'Дата выдачи сертификата': service.year.strftime('%Y-%m-%d') if service.year else None,
+        'Дата выдачи сертификата': service.year,
         'Размер выплаты': service.cost,
         'Сертификат': service.certificate,
         'Дата и номер решения о выдаче': service.date_number_get,
