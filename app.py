@@ -72,8 +72,50 @@ def index():
     page = request.args.get('page', 1, type=int)
     per_page = 20
 
-    service_years = db.session.query(db.func.year(Service.year)).distinct().all()
-    service_years = [str(year[0]) for year in service_years]
+    import re
+
+    # Регулярное выражение для формата "DD.MM.YYYY"
+    pattern_dd_mm_yyyy = r'\b\d{2}\.\d{2}\.\d{4}\b'
+
+    # Регулярное выражение для формата "YYYY-MM-DD"
+    pattern_yyyy_mm_dd = r'\b\d{4}-\d{2}-\d{2}\b'
+
+    # Сначала выбираем все уникальные значения year из базы
+    all_years = db.session.query(Service.year).distinct().all()
+
+    service_years = []
+    empty_found = False  # Флаг для отслеживания пустых строк
+
+    for year_value in all_years:
+        year_str = year_value[0]  # Извлекаем само значение year
+
+        # Проверяем на пустую строку
+        if not year_str:
+            empty_found = True
+
+        # Поиск всех дат в строке
+        match_dd_mm_yyyy = re.findall(pattern_dd_mm_yyyy, year_str)
+        match_yyyy_mm_dd = re.findall(pattern_yyyy_mm_dd, year_str)
+
+        # Извлечение годов из найденных дат
+        service_years.extend([date_str[-4:] for date_str in match_dd_mm_yyyy])  # Годы из формата "DD.MM.YYYY"
+        service_years.extend([date_str[:4] for date_str in match_yyyy_mm_dd])    # Годы из формата "YYYY-MM-DD"
+
+    # Оставляем только уникальные годы и преобразуем в целые числа
+    service_years = list(set(int(year) for year in service_years if year.isdigit()))
+
+    # Сортируем годы в порядке возрастания
+    service_years.sort()
+
+    # Если были пустые строки, добавляем None
+    if empty_found:
+        service_years.insert(0, None)
+
+    # Преобразуем все значения в строки
+    service_years = [str(year) for year in service_years]
+
+    # service_years = db.session.query(db.func.year(Service.year)).distinct().all()
+    # service_years = [str(year[0]) for year in service_years]
 
     query = Service.query
 
@@ -81,9 +123,13 @@ def index():
         year = None
 
     if year == 'None':  # Если year == 'None', фильтруем записи, у которых год == NULL
-        query = query.filter(Service.year.is_(None))
+        query = query.filter(Service.year.is_(None) | (Service.year == ''))
     elif year:
         query = query.filter(db.func.year(Service.year) == year)
+
+    print('NEVEROV')
+    print(year)
+    print(selected_column)
 
     if keyword:
         if selected_column and hasattr(Service, selected_column):
