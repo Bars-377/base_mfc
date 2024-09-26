@@ -170,7 +170,7 @@
                             <td class="stretch-width">
                                 <!-- Управление -->
                                 <div style="display: flex; justify-content: center; align-items: center; gap: 5px;">
-                                    <a href="{{ url_for('edit', id=service.id) }}"
+                                    <a href="{{ url_for('edit', id=service.id, page=page, keyword=keyword, selected_column=selected_column, selected_year=selected_year) }}"
                                         class="btn btn-sm btn-warning">Edit</a>
                                     <form class="delete-form" data-id="{{ service.id }}" style="display:inline;">
                                         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">  <!-- Скрытое поле для токена -->
@@ -259,7 +259,7 @@
             <h4>Итог сертификатов за выбранное время: {{ total_cost_2 }}</h4>
             <h4>Итог отказов в выдаче за выбранное время: {{ total_cost_3 }}</h4>
             <br>
-            <a href="{{ url_for('add_edit') }}" class="btn btn-warning">Добавить данные</a>
+            <a href="{{ url_for('add_edit', page=page, keyword=keyword, selected_column=selected_column, selected_year=selected_year, total_pages=total_pages) }}" class="btn btn-warning">Добавить данные</a>
             <br>
             <h1>Экспорт услуг в Excel</h1>
             <br>

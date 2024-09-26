@@ -27,7 +27,7 @@
         {% endwith %}
 
         <!-- Форма для добавления новой услуги -->
-        <form method="POST" action="{{ url_for('add') }}" class="form-group">
+        <form method="POST" action="{{ url_for('add', total_pages=total_pages) }}" class="form-group">
             <!-- Пример изменения отступов в форме с помощью классов -->
             <div class="form-item">
                 <label for="name">ФИО заявителя</label>
@@ -103,7 +103,7 @@
             </div>
             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">  <!-- Скрытое поле для токена -->
             <button type="submit" class="btn btn-primary">Добавить запись</button>
-            <a href="{{ url_for('index') }}" class="btn btn-secondary mt-3">Вернуться назад</a>
+            <a href="{{ url_for('index', page=page, keyword=keyword, column=selected_column, year=selected_year) }}" class="btn btn-secondary mt-3">Вернуться назад</a>
         </form>
     </div>
 

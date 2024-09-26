@@ -63,13 +63,7 @@ def login():
         flash('Неверное имя пользователя или пароль!', 'danger')
     return render_template('login.html')
 
-@app.route('/')
-@login_required
-def index():
-    year = request.args.get('year', None)
-    keyword = request.args.get('keyword', None)
-    selected_column = request.args.get('column', None)
-    page = request.args.get('page', 1, type=int)
+def skeleton(year, keyword, selected_column, page):
     per_page = 20
 
     import re
@@ -119,11 +113,13 @@ def index():
 
     query = Service.query
 
+    from sqlalchemy import not_, or_
+
     if year == 'No':
         year = None
 
     if year == 'None':  # Если year == 'None', фильтруем записи, у которых год == NULL
-        query = query.filter(Service.year.is_(None) | (Service.year == ''))
+        query = query.filter(not_(or_(Service.year.op('regexp')(pattern_dd_mm_yyyy), Service.year.op('regexp')(pattern_yyyy_mm_dd))))
     elif year:
         # query = query.filter(db.func.year(Service.year) == year)
         query = query.filter(Service.year.like(f'%{year}%'))
@@ -141,7 +137,26 @@ def index():
     from sqlalchemy import cast, Integer
     query = query.order_by(cast(Service.id_id, Integer).asc(), Service.year.asc())
 
-    if year is not None:
+    if year == 'None':
+        # Получение данных, которые не соответствуют формату "DD.MM.YYYY" и "YYYY-MM-DD"
+        costs = db.session.query(Service.cost).filter(
+            not_(or_(Service.year.op('regexp')(pattern_dd_mm_yyyy), Service.year.op('regexp')(pattern_yyyy_mm_dd)))
+        ).all()
+
+        total_cost_1 = sum(float(cost[0]) for cost in costs if cost[0].replace('.', '', 1).isdigit())
+
+        certificates = db.session.query(Service.certificate).filter(
+            not_(or_(Service.year.op('regexp')(pattern_dd_mm_yyyy), Service.year.op('regexp')(pattern_yyyy_mm_dd)))
+        ).all()
+
+        total_cost_2 = sum(float(cert[0]) for cert in certificates if cert[0].replace('.', '', 1).isdigit())
+
+        certificates_no = db.session.query(Service.certificate_no).filter(
+            not_(or_(Service.year.op('regexp')(pattern_dd_mm_yyyy), Service.year.op('regexp')(pattern_yyyy_mm_dd)))
+        ).all()
+
+        total_cost_3 = sum(float(cert_no[0]) for cert_no in certificates_no if cert_no[0].replace('.', '', 1).isdigit())
+    elif year:
         costs = db.session.query(Service.cost).filter(Service.year.like(f'%{year}%')).all()
         total_cost_1 = sum(float(cost[0]) for cost in costs if cost[0].replace('.', '', 1).isdigit())
 
@@ -170,6 +185,7 @@ def index():
         else:
             start_page = max(1, end_page - (max_page_buttons - (end_page - start_page)))
 
+    # return redirect(url_for('index'))
     return render_template(
         'index.html',
         services=services,
@@ -186,16 +202,50 @@ def index():
         service_years=service_years
     )
 
+@app.route('/')
+@login_required
+def index():
+    year = request.args.get('year', None)
+    keyword = request.args.get('keyword', None)
+    selected_column = request.args.get('column', None)
+    page = request.args.get('page', 1, type=int)
+    return skeleton(year, keyword, selected_column, page)
+
 @app.route('/edit/<int:id>', methods=['GET'])
 @login_required
 def edit(id):
+
+    page = request.args.get('page', 1, type=int)
+    keyword = request.args.get('keyword', '')
+    selected_column = request.args.get('selected_column', "")
+    selected_year = request.args.get('selected_year', 'No')
+
+    print('EDIT')
+    print(page)
+    print(keyword)
+    print(selected_column)
+    print(selected_year)
+
     service = Service.query.get_or_404(id)
-    return render_template('edit.html', service=service)
+    return render_template('edit.html', service=service, page=page, keyword=keyword, selected_column=selected_column, selected_year=selected_year)
 
 @app.route('/add_edit', methods=['GET'])
 @login_required
 def add_edit():
-    return render_template('add.html')
+
+    page = request.args.get('page', 1, type=int)
+    keyword = request.args.get('keyword', '')
+    selected_column = request.args.get('selected_column', "")
+    selected_year = request.args.get('selected_year', 'No')
+    total_pages = request.args.get('total_pages', 1, type=int)
+
+    print('ADD_EDIT')
+    print(page)
+    print(keyword)
+    print(selected_column)
+    print(selected_year)
+
+    return render_template('add.html', page=page, keyword=keyword, selected_column=selected_column, selected_year=selected_year, total_pages=total_pages)
 
 @app.route('/edit/<int:id>', methods=['POST'])
 @login_required
@@ -249,6 +299,14 @@ def update(id):
     db.session.commit()
     flash('Данные успешно обновлены!', 'success')
     return redirect(url_for('index'))
+    # return render_template(
+    #     'index.html',
+    #     page = page,
+    #     keyword = keyword,
+    #     selected_column = selected_column,
+    #     selected_year = selected_year
+    # )
+
 
 @app.route('/update-color/<int:id>', methods=['POST'])
 @login_required
@@ -280,6 +338,11 @@ def delete(id):
 @app.route('/add', methods=['POST'])
 @login_required
 def add():
+    total_pages = request.args.get('total_pages', 1, type=int)
+
+    print('total_pages')
+    print(total_pages)
+
     # id_id = request.foыrm['id_id']
     name = request.form['name']
     snils = request.form['snils']
@@ -339,7 +402,15 @@ def add():
     db.session.add(new_service)
     db.session.commit()
     flash('Данные успешно добавлены!', 'success')
-    return redirect(url_for('index'))
+
+
+    """---------------------------------"""
+
+    year = None
+    keyword = None
+    selected_column = None
+    page = total_pages
+    return skeleton(year, keyword, selected_column, page)
 
 # @app.route('/export-excel', methods=['GET'])
 # @login_required

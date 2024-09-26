@@ -137,7 +137,7 @@
             <!-- Кнопка для отправки формы -->
             <button type="submit" class="btn btn-primary btn-neverov">Внести изменения</button>
             <!-- Ссылка для возврата на главную страницу -->
-            <a href="{{ url_for('index') }}" class="btn btn-secondary btn-neverov mt-3">Вернуться назад</a>
+            <a href="{{ url_for('index', page=page, keyword=keyword, column=selected_column, year=selected_year) }}" class="btn btn-secondary btn-neverov mt-3">Вернуться назад</a>
         </form>
 
     </div>
