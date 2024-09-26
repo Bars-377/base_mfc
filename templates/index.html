@@ -264,9 +264,8 @@
             <h1>Экспорт услуг в Excel</h1>
             <br>
 
-            <form method="GET" action="{{ url_for('export_excel') }}" id="export-form"
-                onsubmit="showFlashMessage(event)">
-                <input type="hidden" name="year" value="{{ selected_year }}">
+            <form id="export-form" onsubmit="showFlashMessage(event)">
+                <input type="hidden" name="year" value="{{ selected_year if selected_year else 'No' }}">
                 <div class="alert alert-success" id="flash-message" style="display: none;"></div>
                 <button type="submit" class="btn btn-info" id="export-button">Экспорт в Excel</button>
             </form>
@@ -276,6 +275,7 @@
 
     <script src="{{ url_for('static', filename='js/jquery-3.5.1.slim.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.0/socket.io.min.js"></script>
     <script>
 
         function showFlashMessage(event) {
@@ -286,61 +286,62 @@
 
         }
 
-        document.addEventListener('DOMContentLoaded', function () {
-            document.getElementById('export-button').onclick = function (event) {
-                // Отключаем кнопку, чтобы предотвратить повторные нажатия
-                const exportButton = document.getElementById('export-button');
-                exportButton.disabled = true;
+        const socket = io();  // Инициализация сокета
 
+        document.addEventListener('DOMContentLoaded', function () {
+            const exportButton = document.getElementById('export-button');
+            let requestInProgress = false; // Флаг, указывающий на статус запроса
+            
+            exportButton.onclick = function (event) {
+                event.preventDefault();  // Предотвращаем стандартное поведение кнопки
+                
+                // Проверяем, есть ли уже активный запрос
+                if (requestInProgress) {
+                    return; // Если запрос в процессе, просто выходим
+                }
+
+                // Устанавливаем флаг, что запрос начат
+                requestInProgress = true;
+                
                 // Отображаем сообщение сразу после нажатия на кнопку
                 const flashMessage = document.getElementById('flash-message');
                 flashMessage.innerText = 'Пожалуйста, подождите, идёт загрузка!';
                 flashMessage.style.display = 'block'; // Убедитесь, что сообщение отображается
-                
+
                 // Создаем временный элемент формы для отправки
                 const form = document.getElementById('export-form');
                 const formData = new FormData(form);
 
-                fetch(form.action, {
-                    method: 'GET',
-                    headers: {
-                        'Accept': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-                    },
-                    body: null
-                })
-                    .then(response => {
-                        if (response.ok) {
-                            return response.blob();  // Получаем файл
-                        }
-                        throw new Error('Ошибка загрузки файла');
-                    })
-                    .then(blob => {
-                        // Создаем объект URL для файла
-                        const url = window.URL.createObjectURL(blob);
-                        const a = document.createElement('a');
-                        a.style.display = 'none';
-                        a.href = url;
-                        a.download = 'services.xlsx';  // Имя файла
-                        document.body.appendChild(a);
-                        a.click();  // Имитируем клик для загрузки файла
-                        window.URL.revokeObjectURL(url);  // Освобождаем объект URL
-                        
-                        // Изменяем сообщение после завершения загрузки
-                        flashMessage.innerText = 'Загрузка завершена!';
-                        // Перенаправляем на index.html через 2 секунды
-                        setTimeout(() => {
-                            window.location.href = '/';
-                        }, 2000);  // Задержка в 2 секунды
-                    })
-                    .catch(error => {
-                        flashMessage.innerText = 'Произошла ошибка: ' + error.message;  // Показываем сообщение об ошибке
-                        console.error(error);
-                    })
-                    .finally(() => {
-                        // Включаем кнопку обратно после завершения загрузки или ошибки
-                        exportButton.disabled = false;
-                    });
+                // Извлекаем значение года из FormData
+                const year = formData.get('year');
+
+                // Отправляем запрос на сервер через WebSocket
+                socket.emit('export_excel', { year: year });
             };
+
+            // Обработка события 'export_success' от сервера
+            socket.on('export_success', function(data) {
+                const link = document.createElement('a');
+                link.href = 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,' + data.file_data;
+                link.download = data.filename;
+                link.click();
+
+                // Скрываем сообщение после успешной загрузки
+                const flashMessage = document.getElementById('flash-message');
+                flashMessage.innerText = 'Экспорт завершен!';
+
+                // Сбрасываем флаг после завершения загрузки
+                requestInProgress = false; // Разрешаем отправку нового запроса
+            });
+
+            // Обработка ошибки экспорта (при необходимости)
+            socket.on('export_error', function(errorMessage) {
+                const flashMessage = document.getElementById('flash-message');
+                flashMessage.innerText = 'Ошибка экспорта: ' + errorMessage;
+                
+                // Сбрасываем флаг при ошибке
+                requestInProgress = false; // Разрешаем отправку нового запроса
+            });
         });
 
         window.onload = function () {
