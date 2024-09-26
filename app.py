@@ -141,9 +141,19 @@ def index():
     from sqlalchemy import cast, Integer
     query = query.order_by(cast(Service.id_id, Integer).asc(), Service.year.asc())
 
-    total_cost_1 = db.session.query(db.func.sum(Service.cost)).scalar() or 0
-    total_cost_2 = db.session.query(db.func.sum(Service.certificate)).scalar() or 0
-    total_cost_3 = db.session.query(db.func.sum(Service.certificate_no)).scalar() or 0
+    if year is not None:
+        costs = db.session.query(Service.cost).filter(Service.year.like(f'%{year}%')).all()
+        total_cost_1 = sum(float(cost[0]) for cost in costs if cost[0].replace('.', '', 1).isdigit())
+
+        certificates = db.session.query(Service.certificate).filter(Service.year.like(f'%{year}%')).all()
+        total_cost_2 = sum(float(cert[0]) for cert in certificates if cert[0].replace('.', '', 1).isdigit())
+
+        certificates_no = db.session.query(Service.certificate_no).filter(Service.year.like(f'%{year}%')).all()
+        total_cost_3 = sum(float(cert_no[0]) for cert_no in certificates_no if cert_no[0].replace('.', '', 1).isdigit())
+    else:
+        total_cost_1 = db.session.query(db.func.sum(Service.cost)).scalar() or 0
+        total_cost_2 = db.session.query(db.func.sum(Service.certificate)).scalar() or 0
+        total_cost_3 = db.session.query(db.func.sum(Service.certificate_no)).scalar() or 0
 
     offset = (page - 1) * per_page
     services = query.offset(offset).limit(per_page).all()
