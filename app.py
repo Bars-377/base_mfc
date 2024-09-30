@@ -75,7 +75,7 @@ def skeleton(year, keyword, selected_column, page):
     pattern_yyyy_mm_dd = r'\b\d{4}-\d{2}-\d{2}\b'
 
     # Сначала выбираем все уникальные значения year из базы
-    all_years = db.session.query(Service.year).distinct().all()
+    all_years = db.session.query(Service.year, Service.date_number_no_one).distinct().all()
 
     service_years = []
     empty_found = False  # Флаг для отслеживания пустых строк
@@ -117,12 +117,12 @@ def skeleton(year, keyword, selected_column, page):
 
     if year == 'No':
         year = None
-
+    """ДОДЕЛАТЬ ГОДА НОВЫЕ"""
     if year == 'None':  # Если year == 'None', фильтруем записи, у которых год == NULL
-        query = query.filter(not_(or_(Service.year.op('regexp')(pattern_dd_mm_yyyy), Service.year.op('regexp')(pattern_yyyy_mm_dd))))
+        query = query.filter(not_(or_(Service.year.op('regexp')(pattern_dd_mm_yyyy), Service.year.op('regexp')(pattern_yyyy_mm_dd), Service.date_number_no_one.op('regexp')(pattern_dd_mm_yyyy), Service.date_number_no_one.op('regexp')(pattern_yyyy_mm_dd))))
     elif year:
         # query = query.filter(db.func.year(Service.year) == year)
-        query = query.filter(Service.year.like(f'%{year}%'))
+        query = query.filter(Service.year.like(f'%{year}%') | Service.date_number_no_one.like(f'%{year}%'))
 
     if keyword:
         if selected_column and hasattr(Service, selected_column):
@@ -220,11 +220,11 @@ def edit(id):
     selected_column = request.args.get('selected_column', "")
     selected_year = request.args.get('selected_year', 'No')
 
-    print('EDIT')
-    print(page)
-    print(keyword)
-    print(selected_column)
-    print(selected_year)
+    # print('EDIT')
+    # print(page)
+    # print(keyword)
+    # print(selected_column)
+    # print(selected_year)
 
     service = Service.query.get_or_404(id)
     return render_template('edit.html', service=service, page=page, keyword=keyword, selected_column=selected_column, selected_year=selected_year)
@@ -239,11 +239,11 @@ def add_edit():
     selected_year = request.args.get('selected_year', 'No')
     total_pages = request.args.get('total_pages', 1, type=int)
 
-    print('ADD_EDIT')
-    print(page)
-    print(keyword)
-    print(selected_column)
-    print(selected_year)
+    # print('ADD_EDIT')
+    # print(page)
+    # print(keyword)
+    # print(selected_column)
+    # print(selected_year)
 
     return render_template('add.html', page=page, keyword=keyword, selected_column=selected_column, selected_year=selected_year, total_pages=total_pages)
 
@@ -267,16 +267,61 @@ def update(id):
             month = int(str(service.year).split('.')[1])
             if not (1 <= day <= 30 and 1 <= month <= 12):
                 flash('Вы ввели неверный формат Даты выдачи сертификата. Ожидаемый формат: ДД.ММ.ГГГГ.', 'danger')
-                return redirect(url_for('index'))
+                # return redirect(url_for('index'))
+                """---------------------------------"""
+
+                page = request.args.get('page', 1, type=int)
+                keyword = request.args.get('keyword', '')
+                selected_column = request.args.get('selected_column', "")
+
+                year = None
+                return skeleton(year, keyword, selected_column, page)
     except ValueError:
         flash('Вы ввели неверный формат Даты выдачи сертификата. Ожидаемый формат: ДД.ММ.ГГГГ.', 'danger')
-        return redirect(url_for('index'))
+        # return redirect(url_for('index'))
+        """---------------------------------"""
+
+        page = request.args.get('page', 1, type=int)
+        keyword = request.args.get('keyword', '')
+        selected_column = request.args.get('selected_column', "")
+
+        year = None
+        return skeleton(year, keyword, selected_column, page)
 
     service.cost = request.form['cost']
     service.certificate = request.form['certificate']
     service.date_number_get = request.form['date_number_get']
     service.date_number_cancellation = request.form['date_number_cancellation']
-    service.date_number_no = request.form['date_number_no']
+    """ДОДЕЛАТЬ НОВЫЕ ГОДА"""
+    service.date_number_no_one = request.form['date_number_no_one']
+    try:
+        if service.date_number_no_one:
+            day = int(str(service.date_number_no_one).split('.')[0])
+            month = int(str(service.date_number_no_one).split('.')[1])
+            if not (1 <= day <= 30 and 1 <= month <= 12):
+                flash('Вы ввели неверный формат Даты решения об отказе в выдаче. Ожидаемый формат: ДД.ММ.ГГГГ.', 'danger')
+                # return redirect(url_for('index'))
+                """---------------------------------"""
+
+                page = request.args.get('page', 1, type=int)
+                keyword = request.args.get('keyword', '')
+                selected_column = request.args.get('selected_column', "")
+
+                year = None
+                return skeleton(year, keyword, selected_column, page)
+    except ValueError:
+        flash('Вы ввели неверный формат Даты решения об отказе в выдаче. Ожидаемый формат: ДД.ММ.ГГГГ.', 'danger')
+        # return redirect(url_for('index'))
+        """---------------------------------"""
+
+        page = request.args.get('page', 1, type=int)
+        keyword = request.args.get('keyword', '')
+        selected_column = request.args.get('selected_column', "")
+
+        year = None
+        return skeleton(year, keyword, selected_column, page)
+
+    service.date_number_no_two = request.form['date_number_no_two']
     service.certificate_no = request.form['certificate_no']
     service.reason = request.form['reason']
     service.track = request.form['track']
@@ -288,24 +333,41 @@ def update(id):
             month = int(str(service.date_post).split('.')[1])
             if not (1 <= day <= 30 and 1 <= month <= 12):
                 flash('Вы ввели неверный формат Даты отправки почтой. Ожидаемый формат: ДД.ММ.ГГГГ.', 'danger')
-                return redirect(url_for('index'))
+                # return redirect(url_for('index'))
+                """---------------------------------"""
+
+                page = request.args.get('page', 1, type=int)
+                keyword = request.args.get('keyword', '')
+                selected_column = request.args.get('selected_column', "")
+
+                year = None
+                return skeleton(year, keyword, selected_column, page)
     except ValueError:
-        flash('Вы ввели неверный формат Даты выдачи сертификата. Ожидаемый формат: ДД.ММ.ГГГГ.', 'danger')
-        return redirect(url_for('index'))
+        flash('Вы ввели неверный формат Даты отправки почтой. Ожидаемый формат: ДД.ММ.ГГГГ.', 'danger')
+        # return redirect(url_for('index'))
+        """---------------------------------"""
+
+        page = request.args.get('page', 1, type=int)
+        keyword = request.args.get('keyword', '')
+        selected_column = request.args.get('selected_column', "")
+
+        year = None
+        return skeleton(year, keyword, selected_column, page)
 
     service.comment = request.form['comment']
     service.color = request.form.get('color')
 
     db.session.commit()
     flash('Данные успешно обновлены!', 'success')
-    return redirect(url_for('index'))
-    # return render_template(
-    #     'index.html',
-    #     page = page,
-    #     keyword = keyword,
-    #     selected_column = selected_column,
-    #     selected_year = selected_year
-    # )
+    # return redirect(url_for('index'))
+    """---------------------------------"""
+
+    page = request.args.get('page', 1, type=int)
+    keyword = request.args.get('keyword', '')
+    selected_column = request.args.get('selected_column', "")
+
+    year = None
+    return skeleton(year, keyword, selected_column, page)
 
 
 @app.route('/update-color/<int:id>', methods=['POST'])
@@ -332,16 +394,13 @@ def delete(id):
     service = Service.query.get_or_404(id)
     db.session.delete(service)
     db.session.commit()
-    flash('Данные успешно удалены!', 'success')
+    # flash('Данные успешно удалены!', 'success')
     return redirect(url_for('index'))
 
 @app.route('/add', methods=['POST'])
 @login_required
 def add():
     total_pages = request.args.get('total_pages', 1, type=int)
-
-    print('total_pages')
-    print(total_pages)
 
     # id_id = request.foыrm['id_id']
     name = request.form['name']
@@ -359,15 +418,30 @@ def add():
             month = int(str(year).split('.')[1])
             if not (1 <= day <= 30 and 1 <= month <= 12):
                 flash('Вы ввели неверный формат Даты выдачи сертификата. Ожидаемый формат: ДД.ММ.ГГГГ.', 'danger')
-                return redirect(url_for('index'))
+                # return redirect(url_for('index'))
+                """---------------------------------"""
+
+                year = None
+                keyword = None
+                selected_column = None
+                page = total_pages
+                return skeleton(year, keyword, selected_column, page)
     except ValueError:
         flash('Вы ввели неверный формат Даты выдачи сертификата. Ожидаемый формат: ДД.ММ.ГГГГ.', 'danger')
-        return redirect(url_for('index'))
+        # return redirect(url_for('index'))
+        """---------------------------------"""
+
+        year = None
+        keyword = None
+        selected_column = None
+        page = total_pages
+        return skeleton(year, keyword, selected_column, page)
 
     cost = request.form['cost']
     certificate = request.form['certificate']
     date_number_get = request.form['date_number_get']
     date_number_cancellation = request.form['date_number_cancellation']
+    """ДОДЕЛАТЬ НОВЫЕ ГОДА"""
     date_number_no = request.form['date_number_no']
     certificate_no = request.form['certificate_no']
     reason = request.form['reason']
@@ -380,10 +454,24 @@ def add():
             month = int(str(date_post).split('.')[1])
             if not (1 <= day <= 30 and 1 <= month <= 12):
                 flash('Вы ввели неверный формат Даты отправки почтой. Ожидаемый формат: ДД.ММ.ГГГГ.', 'danger')
-                return redirect(url_for('index'))
+                # return redirect(url_for('index'))
+                """---------------------------------"""
+
+                year = None
+                keyword = None
+                selected_column = None
+                page = total_pages
+                return skeleton(year, keyword, selected_column, page)
     except ValueError:
         flash('Вы ввели неверный формат Даты выдачи сертификата. Ожидаемый формат: ДД.ММ.ГГГГ.', 'danger')
-        return redirect(url_for('index'))
+        # return redirect(url_for('index'))
+        """---------------------------------"""
+
+        year = None
+        keyword = None
+        selected_column = None
+        page = total_pages
+        return skeleton(year, keyword, selected_column, page)
 
     comment = request.form['comment']
     color = request.form.get('color')

@@ -67,8 +67,11 @@
                             Дата и номер решения о выдаче</option>
                         <option value="date_number_cancellation" {% if selected_column=='date_number_cancellation'
                             %}selected{% endif %}>Дата и № решения об аннулировании</option>
-                        <option value="date_number_no" {% if selected_column=='date_number_no' %}selected{% endif %}>
-                            Дата и № решения об отказе в выдаче</option>
+                        <option value="date_number_no_one" {% if selected_column=='date_number_no' %}selected{% endif %}>
+                            Дата решения об отказе в выдаче</option>
+                        <option value="certificate_no" {% if selected_column=='certificate_no' %}selected{% endif %}>
+                        <option value="date_number_no_two" {% if selected_column=='date_number_no' %}selected{% endif %}>
+                            № решения об отказе в выдаче</option>
                         <option value="certificate_no" {% if selected_column=='certificate_no' %}selected{% endif %}>
                             Отказ в выдаче</option>
                         <option value="reason" {% if selected_column=='reason' %}selected{% endif %}>Основная причина
@@ -115,7 +118,8 @@
                             <th class="stretch-width">Сертификат</th>
                             <th class="fixed-width">Дата и номер решения о выдаче</th>
                             <th class="fixed-width">Дата и № решения об аннулировании</th>
-                            <th class="fixed-width">Дата и № решения об отказе в выдаче</th>
+                            <th class="fixed-width">Дата решения об отказе в выдаче</th>
+                            <th class="fixed-width">№ решения об отказе в выдаче</th>
                             <th class="stretch-width">Отказ в выдаче</th>
                             <th class="stretch-width">Основная причина отказа</th>
                             <th class="stretch-width">ТРЕК</th>
@@ -156,7 +160,9 @@
                             <td class="fixed-width" style="background-color: {{ service.color or '' }}">{{
                                 service.date_number_cancellation }}</td>
                             <td class="fixed-width" style="background-color: {{ service.color or '' }}">{{
-                                service.date_number_no }}</td>
+                                service.date_number_no_one }}</td>
+                            <td class="fixed-width" style="background-color: {{ service.color or '' }}">{{
+                                service.date_number_no_two }}</td>
                             <td class="stretch-width" style="background-color: {{ service.color or '' }}">{{
                                 service.certificate_no }}</td>
                             <td class="stretch-width" style="background-color: {{ service.color or '' }}">{{
@@ -495,6 +501,7 @@
                                 if (row) {
                                     row.remove();
                                 }
+                                alert('Элемент успешно удален!'); // Уведомление об успешном удалении
                             } else {
                                 alert('Ошибка удаления');
                             }

@@ -78,8 +78,12 @@
                 <input type="text" class="form-control" id="date_number_cancellation" name="date_number_cancellation" maxlength="30" title="Максимальное количество значений 30">
             </div>
             <div class="form-item">
-                <label for="date_number_no">Дата и № решения об отказе в выдаче</label>
-                <input type="text" class="form-control" id="date_number_no" name="date_number_no" maxlength="30" title="Максимальное количество значений 30">
+                <label for="date_number_no_one">Дата решения об отказе в выдаче</label>
+                <input type="text" class="form-control" id="date_number_no_one" name="date_number_no_one" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this)" title="Введите дату в формате ДД.ММ.ГГГГ">
+            </div>
+            <div class="form-item">
+                <label for="date_number_no_two">№ решения об отказе в выдаче</label>
+                <input type="text" class="form-control" id="date_number_no_two" name="date_number_no_two" maxlength="30" title="Максимальное количество значений 30">
             </div>
             <div class="form-item">
                 <label for="certificate_no">Отказ в выдаче</label>
