@@ -442,7 +442,33 @@ def add():
     date_number_get = request.form['date_number_get']
     date_number_cancellation = request.form['date_number_cancellation']
     """ДОДЕЛАТЬ НОВЫЕ ГОДА"""
-    date_number_no = request.form['date_number_no']
+    date_number_no_one = request.form['date_number_no_one']
+    try:
+        if date_number_no_one:
+            day = int(str(date_number_no_one).split('.')[0])
+            month = int(str(date_number_no_one).split('.')[1])
+            if not (1 <= day <= 30 and 1 <= month <= 12):
+                flash('Вы ввели неверный формат Даты решения об отказе в выдаче. Ожидаемый формат: ДД.ММ.ГГГГ.', 'danger')
+                # return redirect(url_for('index'))
+                """---------------------------------"""
+
+                year = None
+                keyword = None
+                selected_column = None
+                page = total_pages
+                return skeleton(year, keyword, selected_column, page)
+    except ValueError:
+        flash('Вы ввели неверный формат Даты решения об отказе в выдаче. Ожидаемый формат: ДД.ММ.ГГГГ.', 'danger')
+        # return redirect(url_for('index'))
+        """---------------------------------"""
+
+        year = None
+        keyword = None
+        selected_column = None
+        page = total_pages
+        return skeleton(year, keyword, selected_column, page)
+
+    date_number_no_two = request.form['date_number_no_two']
     certificate_no = request.form['certificate_no']
     reason = request.form['reason']
     track = request.form['track']
@@ -485,7 +511,7 @@ def add():
                         number=number, year=year, cost=cost,
                         certificate=certificate, date_number_get=date_number_get,
                         date_number_cancellation=date_number_cancellation,
-                        date_number_no=date_number_no, certificate_no=certificate_no,
+                        date_number_no_one=date_number_no_one, date_number_no_two=date_number_no_two, certificate_no=certificate_no,
                         reason=reason, track=track, date_post=date_post, comment=comment, color=color)
     db.session.add(new_service)
     db.session.commit()
@@ -661,7 +687,8 @@ def handle_export_excel(data):
         'Сертификат': service.certificate,
         'Дата и номер решения о выдаче': service.date_number_get,
         'Дата и № решения об аннулировании': service.date_number_cancellation,
-        'Дата и № решения об отказе в выдаче': service.date_number_no,
+        'Дата решения об отказе в выдаче': service.date_number_no_one,
+        '№ решения об отказе в выдаче': service.date_number_no_two,
         'Отказ в выдаче': service.certificate_no,
         'Причина отказа': service.reason,
         'ТРЕК': service.track,
@@ -695,7 +722,8 @@ def handle_export_excel(data):
         'Сертификат': total_certificate,
         'Дата и номер решения о выдаче': '',
         'Дата и № решения об аннулировании': '',
-        'Дата и № решения об отказе в выдаче': '',
+        'Дата решения об отказе в выдаче': '',
+        '№ решения об отказе в выдаче': '',
         'Отказ в выдаче': total_certificate_no,
         'Причина отказа': '',
         'ТРЕК': '',
