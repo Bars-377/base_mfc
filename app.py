@@ -140,30 +140,30 @@ def skeleton(year, keyword, selected_column, page):
     if year == 'None':
         # Получение данных, которые не соответствуют формату "DD.MM.YYYY" и "YYYY-MM-DD"
         costs = db.session.query(Service.cost).filter(
-            not_(or_(Service.year.op('regexp')(pattern_dd_mm_yyyy), Service.year.op('regexp')(pattern_yyyy_mm_dd)))
+            not_(or_(Service.year.op('regexp')(pattern_dd_mm_yyyy), Service.year.op('regexp')(pattern_yyyy_mm_dd), Service.date_number_no_one.op('regexp')(pattern_dd_mm_yyyy), Service.date_number_no_one.op('regexp')(pattern_yyyy_mm_dd)))
         ).all()
 
         total_cost_1 = sum(float(cost[0]) for cost in costs if cost[0].replace('.', '', 1).isdigit())
 
         certificates = db.session.query(Service.certificate).filter(
-            not_(or_(Service.year.op('regexp')(pattern_dd_mm_yyyy), Service.year.op('regexp')(pattern_yyyy_mm_dd)))
+            not_(or_(Service.year.op('regexp')(pattern_dd_mm_yyyy), Service.year.op('regexp')(pattern_yyyy_mm_dd), Service.date_number_no_one.op('regexp')(pattern_dd_mm_yyyy), Service.date_number_no_one.op('regexp')(pattern_yyyy_mm_dd)))
         ).all()
 
         total_cost_2 = sum(float(cert[0]) for cert in certificates if cert[0].replace('.', '', 1).isdigit())
 
         certificates_no = db.session.query(Service.certificate_no).filter(
-            not_(or_(Service.year.op('regexp')(pattern_dd_mm_yyyy), Service.year.op('regexp')(pattern_yyyy_mm_dd)))
+            not_(or_(Service.year.op('regexp')(pattern_dd_mm_yyyy), Service.year.op('regexp')(pattern_yyyy_mm_dd), Service.date_number_no_one.op('regexp')(pattern_dd_mm_yyyy), Service.date_number_no_one.op('regexp')(pattern_yyyy_mm_dd)))
         ).all()
 
         total_cost_3 = sum(float(cert_no[0]) for cert_no in certificates_no if cert_no[0].replace('.', '', 1).isdigit())
     elif year:
-        costs = db.session.query(Service.cost).filter(Service.year.like(f'%{year}%')).all()
+        costs = db.session.query(Service.cost).filter(Service.year.like(f'%{year}%') | Service.date_number_no_one.like(f'%{year}%')).all()
         total_cost_1 = sum(float(cost[0]) for cost in costs if cost[0].replace('.', '', 1).isdigit())
 
-        certificates = db.session.query(Service.certificate).filter(Service.year.like(f'%{year}%')).all()
+        certificates = db.session.query(Service.certificate).filter(Service.year.like(f'%{year}%') | Service.date_number_no_one.like(f'%{year}%')).all()
         total_cost_2 = sum(float(cert[0]) for cert in certificates if cert[0].replace('.', '', 1).isdigit())
 
-        certificates_no = db.session.query(Service.certificate_no).filter(Service.year.like(f'%{year}%')).all()
+        certificates_no = db.session.query(Service.certificate_no).filter(Service.year.like(f'%{year}%') | Service.date_number_no_one.like(f'%{year}%')).all()
         total_cost_3 = sum(float(cert_no[0]) for cert_no in certificates_no if cert_no[0].replace('.', '', 1).isdigit())
     else:
         total_cost_1 = db.session.query(db.func.sum(Service.cost)).scalar() or 0
