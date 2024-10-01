@@ -347,6 +347,26 @@
                 // Сбрасываем флаг при ошибке
                 requestInProgress = false; // Разрешаем отправку нового запроса
             });
+
+            // Обработка потери соединения
+            socket.on('disconnect', function() {
+                const flashMessage = document.getElementById('flash-message');
+                flashMessage.innerText = 'Соединение потеряно. Экспорт отменён.';
+                flashMessage.style.display = 'block';
+
+                // Сбрасываем флаг при потере соединения
+                requestInProgress = false; // Разрешаем отправку нового запроса
+            });
+
+            // Обработка ошибки соединения
+            socket.on('connect_error', function() {
+                const flashMessage = document.getElementById('flash-message');
+                flashMessage.innerText = 'Ошибка соединения. Пожалуйста, попробуйте позже.';
+                flashMessage.style.display = 'block';
+
+                // Сбрасываем флаг при ошибке соединения
+                requestInProgress = false; // Разрешаем отправку нового запроса
+            });
         });
 
         window.onload = function () {
