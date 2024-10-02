@@ -656,8 +656,15 @@ from flask_socketio import SocketIO, emit
 socketio = SocketIO(app)
 import time
 
-import threading
-tasks = {}  # Для хранения активных задач по id соединений
+# from multiprocessing import Process
+
+# import threading
+# tasks = {}  # Для хранения активных задач по id соединений
+
+from concurrent.futures import ThreadPoolExecutor
+
+# Создаем пул потоков с ограничением на количество потоков
+executor = ThreadPoolExecutor(max_workers=10)
 
 from flask import current_app
 
@@ -666,11 +673,11 @@ def export_excel_task(sid, data, app):
     with app.app_context():  # Явно создаем контекст приложения
 
         time.sleep(0.1)
-        print(tasks)
+        # print(tasks)
 
-        if sid not in tasks:  # Проверка, не отменена ли задача
-            print(f"Task for {sid} was cancelled.")
-            return
+        # if sid not in tasks:  # Проверка, не отменена ли задача
+        #     print(f"Task for {sid} was cancelled.")
+        #     return
 
         year = data.get('year', None)
 
@@ -814,20 +821,26 @@ def handle_export_excel(data):
     sid = request.sid  # Идентификатор соединения
 
     # Запускаем задачу экспорта в отдельном потоке
-    task = threading.Thread(target=export_excel_task, args=(sid, data, current_app._get_current_object()))
-    task.start()
+    # task = threading.Thread(target=export_excel_task, args=(sid, data, current_app._get_current_object()))
+    # task.start()
 
-    # Сохраняем задачу по идентификатору соединения
-    tasks[sid] = task
+    # task = Process(target=export_excel_task, args=(sid, data, current_app._get_current_object()))
+    # task.start()
+
+    # Запускаем задачу в пуле потоков
+    executor.submit(export_excel_task, sid, data, current_app._get_current_object())
+
+    # # Сохраняем задачу по идентификатору соединения
+    # tasks[sid] = task
 
 @socketio.on('disconnect')
 def handle_disconnect():
     sid = request.sid
     print(f"Client disconnected: {sid}")
 
-    # Отменяем задачу, если соединение разрывается
-    if sid in tasks:
-        del tasks[sid]  # Удаляем задачу, что приведет к ее остановке
+    # # Отменяем задачу, если соединение разрывается
+    # if sid in tasks:
+    #     del tasks[sid]  # Удаляем задачу, что приведет к ее остановке
 
 # """Nginx"""
 # from waitress import serve
