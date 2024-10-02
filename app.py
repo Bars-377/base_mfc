@@ -655,9 +655,14 @@ import base64
 from flask_socketio import SocketIO, emit
 socketio = SocketIO(app)
 
-# Обработчик события для экспорта данных
-@socketio.on('export_excel')
-def handle_export_excel(data):
+import threading
+tasks = {}  # Для хранения активных задач по id соединений
+
+def export_excel_task(sid, data):
+
+    if sid not in tasks:  # Проверка, не отменена ли задача
+        print(f"Task for {sid} was cancelled.")
+        return
 
     year = data.get('year', None)
 
@@ -793,7 +798,28 @@ def handle_export_excel(data):
     file_data = base64.b64encode(output.read()).decode('utf-8')
 
     # Отправляем файл клиенту
-    emit('export_success', {'file_data': file_data, 'filename': 'services.xlsx'})
+    socketio.emit('export_success', {'file_data': file_data, 'filename': 'services.xlsx'}, room=sid)
+
+# Обработчик события для экспорта данных
+@socketio.on('export_excel')
+def handle_export_excel(data):
+    sid = request.sid  # Идентификатор соединения
+
+    # Запускаем задачу экспорта в отдельном потоке
+    task = threading.Thread(target=export_excel_task, args=(sid, data))
+    task.start()
+
+    # Сохраняем задачу по идентификатору соединения
+    tasks[sid] = task
+
+@socketio.on('disconnect')
+def handle_disconnect():
+    sid = request.sid
+    print(f"Client disconnected: {sid}")
+
+    # Отменяем задачу, если соединение разрывается
+    if sid in tasks:
+        del tasks[sid]  # Удаляем задачу, что приведет к ее остановке
 
 # """Nginx"""
 # from waitress import serve
