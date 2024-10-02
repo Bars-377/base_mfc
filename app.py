@@ -654,151 +654,159 @@ def add():
 import base64
 from flask_socketio import SocketIO, emit
 socketio = SocketIO(app)
+import time
 
 import threading
 tasks = {}  # Для хранения активных задач по id соединений
 
-def export_excel_task(sid, data):
+from flask import current_app
 
-    if sid not in tasks:  # Проверка, не отменена ли задача
-        print(f"Task for {sid} was cancelled.")
-        return
+def export_excel_task(sid, data, app):
 
-    year = data.get('year', None)
+    with app.app_context():  # Явно создаем контекст приложения
 
-    query = Service.query
+        time.sleep(0.1)
+        print(tasks)
 
-    # Регулярное выражение для формата "DD.MM.YYYY"
-    pattern_dd_mm_yyyy = r'\b\d{2}\.\d{2}\.\d{4}\b'
+        if sid not in tasks:  # Проверка, не отменена ли задача
+            print(f"Task for {sid} was cancelled.")
+            return
 
-    # Регулярное выражение для формата "YYYY-MM-DD"
-    pattern_yyyy_mm_dd = r'\b\d{4}-\d{2}-\d{2}\b'
+        year = data.get('year', None)
 
-    from sqlalchemy import not_, or_
+        query = Service.query
 
-    if year == 'None':  # Если year == 'None', фильтруем записи, у которых год == NULL
-        # query = query.filter(Service.year.is_(None) | (Service.year == ''))
-        query = query.filter(not_(or_(Service.year.op('regexp')(pattern_dd_mm_yyyy), Service.year.op('regexp')(pattern_yyyy_mm_dd), Service.date_number_no_one.op('regexp')(pattern_dd_mm_yyyy), Service.date_number_no_one.op('regexp')(pattern_yyyy_mm_dd))))
-    elif year and year != 'No':
-        # query = query.filter(db.func.year(Service.year) == year)
-        query = query.filter(Service.year.like(f'%{year}%') | Service.date_number_no_one.like(f'%{year}%'))
-    elif year == 'No':
-        year = None
+        # Регулярное выражение для формата "DD.MM.YYYY"
+        pattern_dd_mm_yyyy = r'\b\d{2}\.\d{2}\.\d{4}\b'
 
-    services = query.all()
+        # Регулярное выражение для формата "YYYY-MM-DD"
+        pattern_yyyy_mm_dd = r'\b\d{4}-\d{2}-\d{2}\b'
 
-    df = pd.DataFrame([{
-        '№ п/п': service.id_id,
-        'ФИО заявителя': service.name,
-        'СНИЛС': service.snils,
-        'Район': service.location,
-        'Населённый пункт': service.address_p,
-        'Адрес': service.address,
-        'Льгота': service.benefit,
-        'Серия и номер': service.number,
-        'Дата выдачи сертификата': service.year,
-        'Размер выплаты': service.cost,
-        'Сертификат': service.certificate,
-        'Дата и номер решения о выдаче': service.date_number_get,
-        'Дата и № решения об аннулировании': service.date_number_cancellation,
-        'Дата решения об отказе в выдаче': service.date_number_no_one,
-        '№ решения об отказе в выдаче': service.date_number_no_two,
-        'Отказ в выдаче': service.certificate_no,
-        'Причина отказа': service.reason,
-        'ТРЕК': service.track,
-        'Дата отправки почтой': service.date_post,
-        'Комментарий': service.comment,
-        'Color': getattr(service, 'color', '')
-    } for service in services])
+        from sqlalchemy import not_, or_
 
-    # Приводим колонки к числовому типу данных
-    df['Размер выплаты'] = pd.to_numeric(df['Размер выплаты'], errors='coerce')
-    df['Сертификат'] = pd.to_numeric(df['Сертификат'], errors='coerce')
-    df['Отказ в выдаче'] = pd.to_numeric(df['Отказ в выдаче'], errors='coerce')
+        if year == 'None':  # Если year == 'None', фильтруем записи, у которых год == NULL
+            # query = query.filter(Service.year.is_(None) | (Service.year == ''))
+            query = query.filter(not_(or_(Service.year.op('regexp')(pattern_dd_mm_yyyy), Service.year.op('regexp')(pattern_yyyy_mm_dd), Service.date_number_no_one.op('regexp')(pattern_dd_mm_yyyy), Service.date_number_no_one.op('regexp')(pattern_yyyy_mm_dd))))
+        elif year and year != 'No':
+            # query = query.filter(db.func.year(Service.year) == year)
+            query = query.filter(Service.year.like(f'%{year}%') | Service.date_number_no_one.like(f'%{year}%'))
+        elif year == 'No':
+            year = None
 
-    # Расчет итогов
-    total_cost = df['Размер выплаты'].sum()
-    total_certificate = df['Сертификат'].sum()
-    total_certificate_no = df['Отказ в выдаче'].sum()
+        services = query.all()
 
-    # Создание строки с итогами
-    totals_row = pd.DataFrame([{
-        '№ п/п': '',
-        'ФИО заявителя': '',
-        'СНИЛС': '',
-        'Район': '',
-        'Населённый пункт': '',
-        'Адрес': '',
-        'Льгота': '',
-        'Серия и номер': '',
-        'Дата выдачи сертификата': '',
-        'Размер выплаты': total_cost,
-        'Сертификат': total_certificate,
-        'Дата и номер решения о выдаче': '',
-        'Дата и № решения об аннулировании': '',
-        'Дата решения об отказе в выдаче': '',
-        '№ решения об отказе в выдаче': '',
-        'Отказ в выдаче': total_certificate_no,
-        'Причина отказа': '',
-        'ТРЕК': '',
-        'Дата отправки почтой': '',
-        'Комментарий': '',
-        'Color': ''
-    }])
+        df = pd.DataFrame([{
+            '№ п/п': service.id_id,
+            'ФИО заявителя': service.name,
+            'СНИЛС': service.snils,
+            'Район': service.location,
+            'Населённый пункт': service.address_p,
+            'Адрес': service.address,
+            'Льгота': service.benefit,
+            'Серия и номер': service.number,
+            'Дата выдачи сертификата': service.year,
+            'Размер выплаты': service.cost,
+            'Сертификат': service.certificate,
+            'Дата и номер решения о выдаче': service.date_number_get,
+            'Дата и № решения об аннулировании': service.date_number_cancellation,
+            'Дата решения об отказе в выдаче': service.date_number_no_one,
+            '№ решения об отказе в выдаче': service.date_number_no_two,
+            'Отказ в выдаче': service.certificate_no,
+            'Причина отказа': service.reason,
+            'ТРЕК': service.track,
+            'Дата отправки почтой': service.date_post,
+            'Комментарий': service.comment,
+            'Color': getattr(service, 'color', '')
+        } for service in services])
 
-    # Добавление строки с итогами в DataFrame
-    df = pd.concat([df, totals_row], ignore_index=True)
+        # Приводим колонки к числовому типу данных
+        df['Размер выплаты'] = pd.to_numeric(df['Размер выплаты'], errors='coerce')
+        df['Сертификат'] = pd.to_numeric(df['Сертификат'], errors='coerce')
+        df['Отказ в выдаче'] = pd.to_numeric(df['Отказ в выдаче'], errors='coerce')
 
-    # Создаем файл Excel
-    output = BytesIO()
-    with pd.ExcelWriter(output, engine='openpyxl') as writer:
-        df.to_excel(writer, index=False, sheet_name='Services')
+        # Расчет итогов
+        total_cost = df['Размер выплаты'].sum()
+        total_certificate = df['Сертификат'].sum()
+        total_certificate_no = df['Отказ в выдаче'].sum()
 
-        # Настройка стиля
-        worksheet = writer.sheets['Services']
+        # Создание строки с итогами
+        totals_row = pd.DataFrame([{
+            '№ п/п': '',
+            'ФИО заявителя': '',
+            'СНИЛС': '',
+            'Район': '',
+            'Населённый пункт': '',
+            'Адрес': '',
+            'Льгота': '',
+            'Серия и номер': '',
+            'Дата выдачи сертификата': '',
+            'Размер выплаты': total_cost,
+            'Сертификат': total_certificate,
+            'Дата и номер решения о выдаче': '',
+            'Дата и № решения об аннулировании': '',
+            'Дата решения об отказе в выдаче': '',
+            '№ решения об отказе в выдаче': '',
+            'Отказ в выдаче': total_certificate_no,
+            'Причина отказа': '',
+            'ТРЕК': '',
+            'Дата отправки почтой': '',
+            'Комментарий': '',
+            'Color': ''
+        }])
 
-        # Определяем стиль для границ
-        border_style = Border(left=Side(style='thin'),
-                            right=Side(style='thin'),
-                            top=Side(style='thin'),
-                            bottom=Side(style='thin'))
+        # Добавление строки с итогами в DataFrame
+        df = pd.concat([df, totals_row], ignore_index=True)
 
-        # Определяем стиль для заливки желтым цветом
-        yellow_fill = PatternFill(start_color='FFFF00', end_color='FFFF00', fill_type='solid')
+        # Создаем файл Excel
+        output = BytesIO()
+        with pd.ExcelWriter(output, engine='openpyxl') as writer:
+            df.to_excel(writer, index=False, sheet_name='Services')
 
-        # Применяем границы ко всем ячейкам и цвет к ячейкам, где он задан
-        for row_num in range(2, worksheet.max_row + 1):  # Пропускаем заголовки
+            # Настройка стиля
+            worksheet = writer.sheets['Services']
+
+            # Определяем стиль для границ
+            border_style = Border(left=Side(style='thin'),
+                                right=Side(style='thin'),
+                                top=Side(style='thin'),
+                                bottom=Side(style='thin'))
+
+            # Определяем стиль для заливки желтым цветом
+            yellow_fill = PatternFill(start_color='FFFF00', end_color='FFFF00', fill_type='solid')
+
+            # Применяем границы ко всем ячейкам и цвет к ячейкам, где он задан
+            for row_num in range(2, worksheet.max_row + 1):  # Пропускаем заголовки
+                for col_num in range(1, worksheet.max_column + 1):
+                    cell = worksheet.cell(row=row_num, column=col_num)
+                    cell.border = border_style
+
+                    # Применяем цвет только к ячейкам данных
+                    color = df.iloc[row_num - 2]['Color']  # Сопоставление индексов DataFrame
+                    if color:
+                        cell.fill = PatternFill(start_color=color.replace('#', ''), end_color=color.replace('#', ''), fill_type="solid")
+
+            # Применяем границы к заголовкам
             for col_num in range(1, worksheet.max_column + 1):
-                cell = worksheet.cell(row=row_num, column=col_num)
+                cell = worksheet.cell(row=1, column=col_num)
                 cell.border = border_style
 
-                # Применяем цвет только к ячейкам данных
-                color = df.iloc[row_num - 2]['Color']  # Сопоставление индексов DataFrame
-                if color:
-                    cell.fill = PatternFill(start_color=color.replace('#', ''), end_color=color.replace('#', ''), fill_type="solid")
+            # Применяем желтый цвет к строке с итогами
+            totals_row_num = worksheet.max_row
+            for col_num in range(1, worksheet.max_column + 1):
+                cell = worksheet.cell(row=totals_row_num, column=col_num)
+                cell.fill = yellow_fill
+                cell.border = border_style
 
-        # Применяем границы к заголовкам
-        for col_num in range(1, worksheet.max_column + 1):
-            cell = worksheet.cell(row=1, column=col_num)
-            cell.border = border_style
+            # Удаляем столбец Color из Excel-файла
+            worksheet.delete_cols(df.columns.get_loc("Color") + 1)
 
-        # Применяем желтый цвет к строке с итогами
-        totals_row_num = worksheet.max_row
-        for col_num in range(1, worksheet.max_column + 1):
-            cell = worksheet.cell(row=totals_row_num, column=col_num)
-            cell.fill = yellow_fill
-            cell.border = border_style
+        output.seek(0)
 
-        # Удаляем столбец Color из Excel-файла
-        worksheet.delete_cols(df.columns.get_loc("Color") + 1)
+        # Преобразуем файл в base64, чтобы отправить его через WebSocket
+        file_data = base64.b64encode(output.read()).decode('utf-8')
 
-    output.seek(0)
-
-    # Преобразуем файл в base64, чтобы отправить его через WebSocket
-    file_data = base64.b64encode(output.read()).decode('utf-8')
-
-    # Отправляем файл клиенту
-    socketio.emit('export_success', {'file_data': file_data, 'filename': 'services.xlsx'}, room=sid)
+        # Отправляем файл клиенту
+        socketio.emit('export_success', {'file_data': file_data, 'filename': 'services.xlsx'}, room=sid)
 
 # Обработчик события для экспорта данных
 @socketio.on('export_excel')
@@ -806,7 +814,7 @@ def handle_export_excel(data):
     sid = request.sid  # Идентификатор соединения
 
     # Запускаем задачу экспорта в отдельном потоке
-    task = threading.Thread(target=export_excel_task, args=(sid, data))
+    task = threading.Thread(target=export_excel_task, args=(sid, data, current_app._get_current_object()))
     task.start()
 
     # Сохраняем задачу по идентификатору соединения
@@ -835,4 +843,4 @@ def handle_disconnect():
 """SocketIo"""
 if __name__ == '__main__':
     print('Flask запущен')
-    socketio.run(app, host='0.0.0.0', port=5000, debug=False)
+    socketio.run(app, host='0.0.0.0', port=5000, debug=True)
